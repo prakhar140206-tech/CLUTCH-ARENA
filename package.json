@@ -1,0 +1,18 @@
+{
+  "name": "dsa-battle-arena",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Next-Gen 3D Multiplayer DSA Game",
+  "scripts": {
+    "install:all": "npm.cmd --prefix server install && npm.cmd --prefix client install",
+    "dev:server": "npm.cmd --prefix server run dev",
+    "dev:client": "npm.cmd --prefix client run dev",
+    "dev": "npm.cmd --prefix server run dev",
+    "build": "npm.cmd --prefix client run build && npm.cmd --prefix server run build",
+    "test": "npm.cmd --prefix server test",
+    "test:load": "npm.cmd --prefix server run test:load"
+  },
+  "keywords": ["dsa", "multiplayer", "threejs", "gaming", "algorithms"],
+  "author": "Antigravity Engineering",
+  "license": "MIT"
+}
