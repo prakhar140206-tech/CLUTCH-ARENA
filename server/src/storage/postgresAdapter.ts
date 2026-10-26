@@ -68,6 +68,22 @@ export class PostgresStorageAdapter {
     return this.isConnected;
   }
 
+  public async ping(): Promise<boolean> {
+    try {
+      const client = await this.pool.connect();
+      try {
+        await client.query('SELECT 1');
+        this.isConnected = true;
+        return true;
+      } finally {
+        client.release();
+      }
+    } catch {
+      this.isConnected = false;
+      return false;
+    }
+  }
+
   public async getUser(userId: string) {
     const res = await this.pool.query(
       `SELECT a.id, a.username, a.email, p.rating_mmr as "ratingMMR", p.aura_points as "auraPoints", 

@@ -110,8 +110,8 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
-app.get('/api/ready', (_req, res) => {
-  const dbReadiness = persistenceStore.getReadiness();
+app.get('/api/ready', async (_req, res) => {
+  const dbReadiness = await persistenceStore.checkLiveReadiness();
   const isolation = isolatedExecutionWorker.getIsolationStatus();
   const isProd = process.env.NODE_ENV === 'production';
 

@@ -254,6 +254,20 @@ export class PersistenceStore {
     };
   }
 
+  public async checkLiveReadiness(): Promise<{ ready: boolean; engine: string; error: string | null }> {
+    if (this.isProduction) {
+      if (!this.postgres) {
+        return { ready: false, engine: 'disabled', error: 'PostgreSQL instance not configured in production' };
+      }
+      const alive = await this.postgres.ping();
+      if (!alive) {
+        return { ready: false, engine: 'postgresql', error: 'PostgreSQL database connection failed live health probe' };
+      }
+      return { ready: true, engine: 'postgresql', error: null };
+    }
+    return this.getReadiness();
+  }
+
   public getStorageEngine(): 'postgresql' | 'json_fallback' | 'disabled' {
     if (this.usePostgres) return 'postgresql';
     if (this.isProduction) return 'disabled';
