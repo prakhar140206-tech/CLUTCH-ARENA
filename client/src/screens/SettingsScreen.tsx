@@ -1,345 +1,504 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore.js';
-import { AppShell } from '../components/navigation/AppShell.js';
 import { soundSynth } from '../services/soundSynth.js';
+import { AppShell } from '../components/navigation/AppShell.js';
+import { API_BASE_URL } from '../config/api.js';
+import { 
+  DSATopic, 
+  SupportedLanguage, 
+  ChallengeType, 
+  DSAOnboardingPreferences 
+} from '../../../shared/types.js';
 import {
-  User,
+  Settings,
   Volume2,
   VolumeX,
-  Bell,
-  Shield,
-  Sliders,
-  Check,
-  X,
+  Mic,
+  MicOff,
+  Eye,
+  Monitor,
+  Code2,
+  Trash2,
+  LogOut,
   Sparkles,
-  Smartphone,
-  Flame,
-  Award
+  Check,
+  RotateCcw,
+  ShieldAlert,
+  BrainCircuit,
+  GraduationCap,
+  Target,
+  Cpu,
+  Layers,
+  ArrowRight
 } from 'lucide-react';
 
 export const SettingsScreen: React.FC = () => {
+  const setScreen = useGameStore((s) => s.setScreen);
   const userProfile = useGameStore((s) => s.userProfile);
   const updateUserProfile = useGameStore((s) => s.updateUserProfile);
+  const logoutUser = useGameStore((s) => s.logoutUser);
+  const is3DFallback = useGameStore((s) => s.is3DFallback);
+  const toggle3DFallback = useGameStore((s) => s.toggle3DFallback);
   const sfxEnabled = useGameStore((s) => s.sfxEnabled);
   const toggleSfx = useGameStore((s) => s.toggleSfx);
+  const editorTheme = useGameStore((s) => s.editorTheme);
+  const editorFontSize = useGameStore((s) => s.editorFontSize);
+  const preferredLanguage = useGameStore((s) => s.preferredLanguage);
+  const setEditorSettings = useGameStore((s) => s.setEditorSettings);
+  const setOnboardingOpen = useGameStore((s) => s.setOnboardingOpen);
+  const setDSAPreferences = useGameStore((s) => s.setDSAPreferences);
 
-  const [callsignInput, setCallsignInput] = useState<string>(userProfile.username || 'GR36_99');
-  const [passwordInput, setPasswordInput] = useState<string>('••••••••••••');
-  const [isSaved, setIsSaved] = useState<boolean>(false);
+  const existingPrefs = userProfile.dsaPreferences;
 
-  // Audio & Gameplay Switches
-  const [touchControls, setTouchControls] = useState<boolean>(true);
-  const [gameStartSound, setGameStartSound] = useState<boolean>(true);
-  const [pushNotifications, setPushNotifications] = useState<boolean>(true);
-  const [gameplayControl, setGameplayControl] = useState<boolean>(true);
-  const [gameScenarios, setGameScenarios] = useState<boolean>(true);
-  const [aiAggression, setAiAggression] = useState<number>(30);
-  const [speedVal, setSpeedVal] = useState<number>(160);
+  const [savedToast, setSavedToast] = useState<boolean>(false);
+  const [voiceOn, setVoiceOn] = useState<boolean>(soundSynth.isVoiceEnabled());
 
-  // Match Invites State
-  const [invites, setInvites] = useState<any[]>([
-    { id: 'inv-1', from: 'cyber_knight', elo: 2000, time: '5 hours ago' }
-  ]);
+  // DSA Adaptive Preferences State
+  const [dsaLanguages, setDsaLanguages] = useState<SupportedLanguage[]>(
+    existingPrefs?.languages?.length ? existingPrefs.languages : ['python']
+  );
+  const [dsaExperience, setDsaExperience] = useState<'beginner' | 'intermediate' | 'advanced' | 'assess_my_level'>(
+    existingPrefs?.experienceLevel || 'intermediate'
+  );
+  const [dsaPacing, setDsaPacing] = useState<'steady' | 'balanced' | 'aggressive' | 'accelerated' | 'mastery_first'>(
+    existingPrefs?.progressionPacing || 'steady'
+  );
+  const [dsaTopics, setDsaTopics] = useState<DSATopic[]>(
+    existingPrefs?.preferredTopics?.length ? existingPrefs.preferredTopics : ['arrays_and_strings', 'searching_and_sorting']
+  );
+  const [dsaFormats, setDsaFormats] = useState<ChallengeType[]>(
+    existingPrefs?.preferredFormats?.length ? existingPrefs.preferredFormats : ['mcq', 'code_sprint']
+  );
+  const [savingDSA, setSavingDSA] = useState<boolean>(false);
 
-  const handleSaveProfile = () => {
-    soundSynth.levelUp();
-    updateUserProfile({ username: callsignInput.trim() });
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2000);
+  const toggleDsaLanguage = (lang: SupportedLanguage) => {
+    if (dsaLanguages.includes(lang)) {
+      if (dsaLanguages.length > 1) setDsaLanguages(dsaLanguages.filter(l => l !== lang));
+    } else {
+      setDsaLanguages([...dsaLanguages, lang]);
+    }
   };
 
-  const handleRespondInvite = (id: string, accept: boolean) => {
-    if (accept) {
-      soundSynth.airhorn();
+  const toggleDsaTopic = (topic: DSATopic) => {
+    if (dsaTopics.includes(topic)) {
+      if (dsaTopics.length > 1) setDsaTopics(dsaTopics.filter(t => t !== topic));
     } else {
-      soundSynth.click();
+      setDsaTopics([...dsaTopics, topic]);
     }
-    setInvites(invites.filter((inv) => inv.id !== id));
+  };
+
+  const toggleDsaFormat = (fmt: ChallengeType) => {
+    if (dsaFormats.includes(fmt)) {
+      if (dsaFormats.length > 1) setDsaFormats(dsaFormats.filter(f => f !== fmt));
+    } else {
+      setDsaFormats([...dsaFormats, fmt]);
+    }
+  };
+
+  const handleSaveDSAPreferences = async () => {
+    setSavingDSA(true);
+    soundSynth.levelUp();
+    const updated: DSAOnboardingPreferences = {
+      userId: userProfile.id,
+      languages: dsaLanguages,
+      experienceLevel: dsaExperience,
+      preferredTopics: dsaTopics,
+      preferredFormats: dsaFormats,
+      goals: existingPrefs?.goals || ['interview_prep'],
+      progressionPacing: dsaPacing,
+      diagnosticScore: existingPrefs?.diagnosticScore,
+      assessedLevel: existingPrefs?.assessedLevel,
+      completedAt: Date.now()
+    };
+
+    try {
+      await fetch(`${API_BASE_URL}/api/user/dsa-preferences`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+    } catch {}
+
+    setDSAPreferences(updated);
+    updateUserProfile({
+      dsaPreferences: updated,
+      preferredLanguage: dsaLanguages[0]
+    });
+    setSavingDSA(false);
+    setSavedToast(true);
+    setTimeout(() => setSavedToast(false), 2000);
+  };
+
+  const ALL_TOPIC_OPTIONS: { id: DSATopic; label: string }[] = [
+    { id: 'arrays_and_strings', label: 'Arrays & Strings' },
+    { id: 'searching_and_sorting', label: 'Search & Sort' },
+    { id: 'linked_lists', label: 'Linked Lists' },
+    { id: 'stacks_and_queues', label: 'Stacks & Queues' },
+    { id: 'recursion_and_backtracking', label: 'Recursion' },
+    { id: 'trees_and_bst', label: 'Trees & BST' },
+    { id: 'graphs', label: 'Graphs' },
+    { id: 'greedy_algorithms', label: 'Greedy' },
+    { id: 'dynamic_programming', label: 'DP' },
+    { id: 'hashing', label: 'Hashing' },
+    { id: 'heaps_and_priority_queues', label: 'Heaps' },
+    { id: 'bit_manipulation', label: 'Bitwise' },
+    { id: 'complexity_analysis', label: 'Complexity' }
+  ];
+
+  const ALL_FORMAT_OPTIONS: { id: ChallengeType; label: string }[] = [
+    { id: 'mcq', label: 'Multiple Choice' },
+    { id: 'code_sprint', label: 'Coding Sprint' },
+    { id: 'bug_hunter', label: 'Debugging' },
+    { id: 'predict_output', label: 'Code Output' },
+    { id: 'complexity', label: 'Complexity Analysis' },
+    { id: 'visual_puzzle', label: 'Visual Puzzles' },
+    { id: 'fill_in_blank', label: 'Fill-in-the-Blank' },
+    { id: 'matching', label: 'Matching Pairs' },
+    { id: 'arrange_steps', label: 'Arrange Steps' },
+    { id: 'pseudocode', label: 'Pseudocode Tracing' },
+    { id: 'interactive_array', label: '3D/2D Array Matrix' }
+  ];
+
+  const handleToggleVoice = () => {
+    const next = soundSynth.toggleVoice();
+    setVoiceOn(next);
+  };
+
+  const handleToggleAudio = () => {
+    toggleSfx();
+    soundSynth.toggleSfx();
+  };
+
+  const handleSave = () => {
+    soundSynth.levelUp();
+    setSavedToast(true);
+    setTimeout(() => setSavedToast(false), 2000);
+  };
+
+  const handleLogout = () => {
+    soundSynth.vineBoom();
+    logoutUser();
+    setScreen('home');
+  };
+
+  const handleResetData = () => {
+    if (confirm('Are you sure you want to reset local settings and combat stats?')) {
+      localStorage.clear();
+      window.location.reload();
+    }
   };
 
   return (
     <AppShell activeScreen="settings">
-      <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto font-sans pb-8">
-        {/* Title */}
-        <div className="flex items-center justify-between">
-          <h2 className="font-cyber font-black text-xl sm:text-2xl text-white tracking-wider uppercase">
-            SETTINGS &amp; NOTIFICATION CENTER
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6 font-sans">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-clutch-border">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender">
+              <Settings className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="font-cyber font-bold text-xl text-white">
+                CLIENT SETTINGS
+              </h1>
+              <p className="text-xs font-mono text-clutch-muted">
+                Configure audio synthesis, 3D graphics rendering, and IDE preferences
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={handleSave}
+            className="clutch-btn-primary px-5 py-2 text-xs flex items-center gap-1.5"
+          >
+            {savedToast ? <Check className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
+            <span>{savedToast ? 'Saved ✔' : 'Save Changes'}</span>
+          </button>
+        </div>
+
+        {/* Section 1: Audio Engine */}
+        <div className="clutch-panel rounded-2xl p-6">
+          <h2 className="font-cyber font-bold text-sm text-white mb-4 flex items-center gap-2">
+            <Volume2 className="w-4 h-4 text-clutch-lavender" />
+            <span>SYNTHETIC AUDIO ENGINE</span>
           </h2>
-          <span className="text-xs font-mono text-emerald-400 font-bold">
-            SYSTEM PREFERENCES
-          </span>
-        </div>
 
-        {/* =========================================================
-            THREE-COLUMN SETTINGS GRID (Matching Image 4 Bottom-Right)
-            ========================================================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Column 1: Profile Preferences (4 cols) */}
-          <div className="lg:col-span-4 rounded-2xl bg-[#0f151c]/95 border border-white/10 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.7)] flex flex-col gap-5">
-            <span className="text-xs font-cyber font-bold text-slate-300 uppercase tracking-wider">
-              Profile Preferences
-            </span>
-
-            {/* User Avatar with Green Glow */}
-            <div className="flex items-center gap-4">
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg text-white border-2 border-emerald-400 shadow-[0_0_15px_rgba(34,197,94,0.4)] shrink-0"
-                style={{ backgroundColor: userProfile.avatar?.color || '#10b981' }}
-              >
-                {userProfile.username ? userProfile.username.charAt(0).toUpperCase() : 'G'}
-              </div>
-
-              <div className="flex flex-col">
-                <span className="font-cyber font-bold text-base text-white">
-                  {userProfile.username || 'GR36_99'}
-                </span>
-                <span className="text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  ONLINE
-                </span>
-              </div>
-            </div>
-
-            {/* Callsign Input */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-mono text-slate-400 uppercase">Callsign Username</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={callsignInput}
-                  onChange={(e) => setCallsignInput(e.target.value)}
-                  className="flex-1 bg-[#141b22] border border-white/10 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-emerald-400"
-                />
-                <button
-                  onClick={handleSaveProfile}
-                  className="px-3 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold hover:bg-emerald-500/30 transition-all shrink-0"
-                >
-                  {isSaved ? <Check className="w-3.5 h-3.5" /> : 'Save'}
-                </button>
-              </div>
-            </div>
-
-            {/* Password Input */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-mono text-slate-400 uppercase">Password</label>
-              <input
-                type="password"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full bg-[#141b22] border border-white/10 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-emerald-400"
-              />
-            </div>
-
-            {/* ELO Telemetry Preview */}
-            <div className="p-3 rounded-xl bg-[#141b22] border border-white/10 flex items-center justify-between">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between py-2 border-b border-clutch-border">
               <div>
-                <span className="text-[10px] font-mono text-slate-400 uppercase">ELO Rating</span>
-                <div className="font-cyber font-black text-sm text-emerald-400">
-                  {userProfile.ratingMMR || 2890} ELO
-                </div>
+                <div className="text-sm font-semibold text-white">Synthesizer Sound Effects</div>
+                <div className="text-xs font-mono text-clutch-muted">Web Audio API procedural sound cues (clicks, vine booms, level-ups)</div>
               </div>
-              {/* Mini Sparkline Chart */}
-              <div className="flex items-end gap-1 h-6">
-                {[30, 50, 45, 70, 85, 80, 100].map((h, i) => (
-                  <div key={i} className="w-1 bg-emerald-400 rounded-t-sm" style={{ height: `${h}%` }} />
-                ))}
+              <button
+                onClick={handleToggleAudio}
+                className={`w-12 h-6 rounded-full p-1 transition-colors ${
+                  sfxEnabled ? 'bg-clutch-violet' : 'bg-clutch-surface-light border border-clutch-border'
+                }`}
+              >
+                <div className={`w-4 h-4 rounded-full bg-white transition-transform ${sfxEnabled ? 'translate-x-6' : ''}`} />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between py-2">
+              <div>
+                <div className="text-sm font-semibold text-white">Speech Synthesis Hype Caster</div>
+                <div className="text-xs font-mono text-clutch-muted">Speech synthesis caster announcing streaks and round results</div>
               </div>
+              <button
+                onClick={handleToggleVoice}
+                className={`w-12 h-6 rounded-full p-1 transition-colors ${
+                  voiceOn ? 'bg-clutch-violet' : 'bg-clutch-surface-light border border-clutch-border'
+                }`}
+              >
+                <div className={`w-4 h-4 rounded-full bg-white transition-transform ${voiceOn ? 'translate-x-6' : ''}`} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2: Graphics & Rendering */}
+        <div className="clutch-panel rounded-2xl p-6">
+          <h2 className="font-cyber font-bold text-sm text-white mb-4 flex items-center gap-2">
+            <Monitor className="w-4 h-4 text-clutch-lavender" />
+            <span>GRAPHICS & 3D HARDWARE</span>
+          </h2>
+
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <div className="text-sm font-semibold text-white">Low-Power 2D Fallback Mode</div>
+              <div className="text-xs font-mono text-clutch-muted">Bypasses WebGL 3D rendering to save GPU and battery on low-end hardware</div>
+            </div>
+            <button
+              onClick={toggle3DFallback}
+              className={`w-12 h-6 rounded-full p-1 transition-colors ${
+                is3DFallback ? 'bg-clutch-amber' : 'bg-clutch-surface-light border border-clutch-border'
+              }`}
+            >
+              <div className={`w-4 h-4 rounded-full bg-white transition-transform ${is3DFallback ? 'translate-x-6' : ''}`} />
+            </button>
+          </div>
+        </div>
+
+        {/* Section 3: Code Editor Preferences */}
+        <div className="clutch-panel rounded-2xl p-6">
+          <h2 className="font-cyber font-bold text-sm text-white mb-4 flex items-center gap-2">
+            <Code2 className="w-4 h-4 text-clutch-lavender" />
+            <span>CODE SPRINT PREFERENCES</span>
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-mono text-clutch-muted block mb-1.5">DEFAULT PROGRAMMING LANGUAGE</label>
+              <select
+                value={preferredLanguage}
+                onChange={(e) => setEditorSettings({ preferredLanguage: e.target.value as any })}
+                className="w-full bg-clutch-surface-light border border-clutch-border text-white text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
+              >
+                <option value="python">Python 3</option>
+                <option value="javascript">JavaScript (Node)</option>
+                <option value="cpp">C++ (G++17)</option>
+                <option value="java">Java 21</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-mono text-clutch-muted block mb-1.5">EDITOR FONT SIZE</label>
+              <select
+                value={editorFontSize}
+                onChange={(e) => setEditorSettings({ editorFontSize: Number(e.target.value) })}
+                className="w-full bg-clutch-surface-light border border-clutch-border text-white text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
+              >
+                <option value={12}>12px (Compact)</option>
+                <option value={14}>14px (Standard)</option>
+                <option value={16}>16px (Comfortable)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4: DSA Adaptive Learning Engine Preferences */}
+        <div className="clutch-panel rounded-2xl p-6 border-cyan-500/30">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 pb-3 border-b border-clutch-border">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                <BrainCircuit className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="font-cyber font-bold text-sm text-white">DSA ADAPTIVE ENGINE PREFERENCES</h2>
+                <p className="text-xs font-mono text-clutch-muted">Personalize programming languages, learning progression, topic focus, and question types</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setOnboardingOpen(true)}
+                className="clutch-btn-secondary px-3 py-1.5 text-xs flex items-center gap-1.5 border-purple-500/40 text-purple-300 hover:border-purple-400"
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>Recalibrate Diagnostic</span>
+              </button>
+              <button
+                onClick={handleSaveDSAPreferences}
+                disabled={savingDSA}
+                className="clutch-btn-primary px-4 py-1.5 text-xs flex items-center gap-1.5"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>{savingDSA ? 'Saving...' : 'Apply Preferences'}</span>
+              </button>
             </div>
           </div>
 
-          {/* Column 2: Audio & Gameplay Toggles (4 cols) */}
-          <div className="lg:col-span-4 rounded-2xl bg-[#0f151c]/95 border border-white/10 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.7)] flex flex-col gap-4">
-            <span className="text-xs font-cyber font-bold text-slate-300 uppercase tracking-wider">
-              Audio &amp; Gameplay Toggles
-            </span>
-
-            {/* Toggle Switches */}
-            <div className="flex flex-col gap-3">
-              {/* Sound Effects Toggle */}
-              <div className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5">
-                <span className="text-xs font-mono text-slate-300">Audio Toggles</span>
-                <button
-                  onClick={() => {
-                    toggleSfx();
-                    soundSynth.toggleSfx();
-                  }}
-                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${
-                    sfxEnabled ? 'bg-emerald-500' : 'bg-slate-700'
-                  }`}
-                >
-                  <div
-                    className={`w-5 h-5 rounded-full bg-white transition-transform ${
-                      sfxEnabled ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Touch Controls */}
-              <div className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5">
-                <span className="text-xs font-mono text-slate-300">Touch Controls</span>
-                <button
-                  onClick={() => setTouchControls(!touchControls)}
-                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${
-                    touchControls ? 'bg-emerald-500' : 'bg-slate-700'
-                  }`}
-                >
-                  <div
-                    className={`w-5 h-5 rounded-full bg-white transition-transform ${
-                      touchControls ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Game Start Sound */}
-              <div className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5">
-                <span className="text-xs font-mono text-slate-300">Game Start Audio</span>
-                <button
-                  onClick={() => setGameStartSound(!gameStartSound)}
-                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${
-                    gameStartSound ? 'bg-emerald-500' : 'bg-slate-700'
-                  }`}
-                >
-                  <div
-                    className={`w-5 h-5 rounded-full bg-white transition-transform ${
-                      gameStartSound ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Notifications */}
-              <div className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5">
-                <span className="text-xs font-mono text-slate-300">Push Alerts</span>
-                <button
-                  onClick={() => setPushNotifications(!pushNotifications)}
-                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${
-                    pushNotifications ? 'bg-emerald-500' : 'bg-slate-700'
-                  }`}
-                >
-                  <div
-                    className={`w-5 h-5 rounded-full bg-white transition-transform ${
-                      pushNotifications ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
+          <div className="space-y-5">
+            {/* Languages */}
+            <div>
+              <label className="text-xs font-mono text-clutch-muted block mb-2 font-semibold">
+                ACTIVE PROGRAMMING LANGUAGES (Select one or more)
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'python' as SupportedLanguage, label: 'Python 3' },
+                  { id: 'cpp' as SupportedLanguage, label: 'C++ (G++17)' },
+                  { id: 'java' as SupportedLanguage, label: 'Java 21' },
+                  { id: 'javascript' as SupportedLanguage, label: 'JavaScript' },
+                  { id: 'c' as SupportedLanguage, label: 'C (GCC)' }
+                ].map((lang) => {
+                  const active = dsaLanguages.includes(lang.id);
+                  return (
+                    <button
+                      key={lang.id}
+                      type="button"
+                      onClick={() => toggleDsaLanguage(lang.id)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-all ${
+                        active
+                          ? 'bg-cyan-950/60 border-cyan-500 text-cyan-300 font-bold'
+                          : 'bg-clutch-surface-light border-clutch-border text-clutch-muted hover:border-clutch-subtle'
+                      }`}
+                    >
+                      {active ? '✔ ' : '+ '}{lang.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Gameplay Sliders */}
-            <div className="pt-3 border-t border-white/5 flex flex-col gap-3">
-              <div className="flex flex-col gap-1.5">
-                <div className="flex justify-between text-xs font-mono text-slate-400">
-                  <span>AI Aggression</span>
-                  <span className="text-emerald-400 font-bold">{aiAggression}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={aiAggression}
-                  onChange={(e) => setAiAggression(Number(e.target.value))}
-                  className="accent-emerald-400 w-full"
-                />
+            {/* Experience Level & Progression Pacing */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-mono text-clutch-muted block mb-1.5 font-semibold">
+                  EXPERIENCE LEVEL
+                </label>
+                <select
+                  value={dsaExperience}
+                  onChange={(e) => setDsaExperience(e.target.value as any)}
+                  className="w-full bg-clutch-surface-light border border-clutch-border text-white text-xs p-2.5 rounded-lg focus:outline-none focus:border-cyan-400 font-mono capitalize"
+                >
+                  <option value="beginner">Beginner (Foundations & Easy)</option>
+                  <option value="intermediate">Intermediate (Medium Tier)</option>
+                  <option value="advanced">Advanced (Hard & Extreme)</option>
+                  <option value="assess_my_level">Assess My Level (Diagnostic Calibrated)</option>
+                </select>
               </div>
 
-              <div className="flex flex-col gap-1.5">
-                <div className="flex justify-between text-xs font-mono text-slate-400">
-                  <span>Speed Sensitivity</span>
-                  <span className="text-cyan-400 font-bold">{speedVal}</span>
-                </div>
-                <input
-                  type="range"
-                  min="50"
-                  max="250"
-                  value={speedVal}
-                  onChange={(e) => setSpeedVal(Number(e.target.value))}
-                  className="accent-cyan-400 w-full"
-                />
+              <div>
+                <label className="text-xs font-mono text-clutch-muted block mb-1.5 font-semibold">
+                  DIFFICULTY PROGRESSION PACING
+                </label>
+                <select
+                  value={dsaPacing}
+                  onChange={(e) => setDsaPacing(e.target.value as any)}
+                  className="w-full bg-clutch-surface-light border border-clutch-border text-white text-xs p-2.5 rounded-lg focus:outline-none focus:border-cyan-400 font-mono capitalize"
+                >
+                  <option value="steady">Steady (Patient, 3+ fast proofs before tier promotion)</option>
+                  <option value="balanced">Balanced (Standard adaptive scaling)</option>
+                  <option value="aggressive">Aggressive (Rapid promotion to higher tiers)</option>
+                </select>
               </div>
             </div>
-          </div>
 
-          {/* Column 3: Notification Center (4 cols) */}
-          <div className="lg:col-span-4 rounded-2xl bg-[#0f151c]/95 border border-white/10 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.7)] flex flex-col gap-4">
-            <span className="text-xs font-cyber font-bold text-slate-300 uppercase tracking-wider">
-              Notification Center
-            </span>
-
-            {/* Recent Match Invites Card */}
-            <div className="flex flex-col gap-2">
-              <span className="text-[10px] font-mono text-slate-400 uppercase font-bold">
-                Recent Match Invites
-              </span>
-
-              {invites.length > 0 ? (
-                invites.map((inv) => (
-                  <div
-                    key={inv.id}
-                    className="p-3.5 rounded-xl bg-[#141b22] border border-emerald-500/30 flex flex-col gap-2.5 shadow-sm"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-cyan-950 border border-cyan-500 flex items-center justify-center font-bold text-xs text-cyan-300">
-                        {inv.from.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-cyber font-bold text-xs text-white">
-                          {inv.from}
-                        </span>
-                        <span className="text-[10px] font-mono text-slate-400">
-                          {inv.elo} ELO
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-1">
-                      <button
-                        onClick={() => handleRespondInvite(inv.id, true)}
-                        className="flex-1 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-cyber font-black text-xs hover:bg-emerald-400 transition-colors shadow-[0_0_10px_rgba(34,197,94,0.4)]"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() => handleRespondInvite(inv.id, false)}
-                        className="flex-1 py-1.5 rounded-lg border border-white/15 text-slate-400 font-cyber font-bold text-xs hover:text-white hover:bg-white/5 transition-colors"
-                      >
-                        Decline
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-3 rounded-xl bg-[#141b22] border border-white/5 text-center text-xs font-mono text-slate-500">
-                  No pending match invites
-                </div>
-              )}
+            {/* Question Formats */}
+            <div>
+              <label className="text-xs font-mono text-clutch-muted block mb-2 font-semibold">
+                PREFERRED QUESTION FORMATS (Adaptive engine prioritizes these)
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {ALL_FORMAT_OPTIONS.map((fmt) => {
+                  const active = dsaFormats.includes(fmt.id);
+                  return (
+                    <button
+                      key={fmt.id}
+                      type="button"
+                      onClick={() => toggleDsaFormat(fmt.id)}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-mono border transition-all ${
+                        active
+                          ? 'bg-purple-950/60 border-purple-500 text-purple-200 font-semibold'
+                          : 'bg-clutch-surface-light border-clutch-border text-clutch-subtle hover:border-clutch-muted'
+                      }`}
+                    >
+                      {active ? '● ' : '○ '}{fmt.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* System Alerts */}
-            <div className="pt-2 border-t border-white/5 flex flex-col gap-2">
-              <span className="text-[10px] font-mono text-slate-400 uppercase font-bold">
-                System Alerts
-              </span>
-
-              <div className="p-3 rounded-xl bg-[#141b22] border border-white/5 flex flex-col gap-1 text-xs font-mono">
-                <span className="font-bold text-emerald-400">Round Match Updates</span>
-                <span className="text-slate-400 text-[11px]">
-                  Provenance validation completed for Match 4408.
-                </span>
-                <span className="text-[9px] text-slate-600">5 hours ago</span>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#141b22] border border-white/5 flex flex-col gap-1 text-xs font-mono">
-                <span className="font-bold text-cyan-400">System Broadcast</span>
-                <span className="text-slate-400 text-[11px]">
-                  Season 4 Ranked ladder rewards unlocked.
-                </span>
-                <span className="text-[9px] text-slate-600">2 days ago</span>
+            {/* Preferred Topics */}
+            <div>
+              <label className="text-xs font-mono text-clutch-muted block mb-2 font-semibold">
+                CORE DSA TOPIC FOCUS (13 Disciplines)
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {ALL_TOPIC_OPTIONS.map((topic) => {
+                  const active = dsaTopics.includes(topic.id);
+                  return (
+                    <button
+                      key={topic.id}
+                      type="button"
+                      onClick={() => toggleDsaTopic(topic.id)}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-mono border transition-all ${
+                        active
+                          ? 'bg-clutch-violet/20 border-clutch-violet text-clutch-lavender font-semibold'
+                          : 'bg-clutch-surface-light border-clutch-border text-clutch-subtle hover:border-clutch-muted'
+                      }`}
+                    >
+                      {active ? '✔ ' : '+ '}{topic.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
+
+        {/* Section 5: Account Actions */}
+        <div className="clutch-panel rounded-2xl p-6 border-clutch-rose/30">
+          <h2 className="font-cyber font-bold text-sm text-clutch-rose mb-4 flex items-center gap-2">
+            <ShieldAlert className="w-4 h-4" />
+            <span>ACCOUNT & STORAGE</span>
+          </h2>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-xs font-mono text-clutch-muted">
+              Pilot session: <strong className="text-white">{userProfile.username}</strong> ({userProfile.isGuest ? 'Guest' : 'Authenticated'})
+            </div>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <button
+                onClick={handleResetData}
+                className="clutch-btn-ghost text-xs text-clutch-muted hover:text-white"
+              >
+                Reset Combat Cache
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="clutch-btn-secondary py-2 px-4 text-xs text-clutch-rose hover:border-clutch-rose"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </AppShell>
   );

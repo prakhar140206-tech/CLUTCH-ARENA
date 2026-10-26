@@ -17,43 +17,27 @@ export const CyberTiltCard: React.FC<CyberTiltCardProps> = ({
   const [transform, setTransform] = useState<string>('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
   const [sheenPos, setSheenPos] = useState<{ x: number; y: number; opacity: number }>({ x: 50, y: 50, opacity: 0 });
 
-  const calculateTilt = (clientX: number, clientY: number) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateX = -((y - centerY) / centerY) * 8;
-    const rotateY = ((x - centerX) / centerX) * 8;
+    const rotateX = -((y - centerY) / centerY) * 7;
+    const rotateY = ((x - centerX) / centerX) * 7;
 
     setTransform(`perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`);
     setSheenPos({
       x: (x / rect.width) * 100,
       y: (y / rect.height) * 100,
-      opacity: 0.22
+      opacity: 0.18
     });
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    calculateTilt(e.clientX, e.clientY);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length > 0) {
-      calculateTilt(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  };
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length > 0) {
-      calculateTilt(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  };
-
-  const resetTilt = () => {
+  const handleMouseLeave = () => {
     setTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
     setSheenPos((prev) => ({ ...prev, opacity: 0 }));
   };
@@ -70,23 +54,20 @@ export const CyberTiltCard: React.FC<CyberTiltCardProps> = ({
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
-      onMouseLeave={resetTilt}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={resetTilt}
+      onMouseLeave={handleMouseLeave}
       onClick={onClick}
       style={{
         transform,
         transformStyle: 'preserve-3d',
         transition: 'transform 0.15s ease-out, box-shadow 0.25s ease'
       }}
-      className={`relative rounded-2xl bg-slate-900/70 backdrop-blur-xl border ${glowStyles} tech-corner overflow-hidden cursor-pointer active:scale-[0.98] transition-all select-none ${className}`}
+      className={`relative rounded-2xl bg-slate-900/70 backdrop-blur-xl border ${glowStyles} tech-corner overflow-hidden cursor-pointer ${className}`}
     >
-      {/* Dynamic Sheen Light following cursor/touch */}
+      {/* Dynamic Sheen Light following cursor */}
       <div
         className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-300"
         style={{
-          background: `radial-gradient(circle 220px at ${sheenPos.x}% ${sheenPos.y}%, rgba(255,255,255,${sheenPos.opacity}), transparent 80%)`
+          background: `radial-gradient(circle 200px at ${sheenPos.x}% ${sheenPos.y}%, rgba(255,255,255,${sheenPos.opacity}), transparent 80%)`
         }}
       />
       {children}

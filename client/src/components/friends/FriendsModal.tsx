@@ -215,16 +215,11 @@ export const FriendsModal: React.FC<FriendsModalProps> = ({ isOpen, onClose }) =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
-      <div className="w-full max-w-2xl bg-clutch-surface border border-clutch-border rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
+      <div className="w-full max-w-2xl bg-clutch-surface border border-clutch-border rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
         
-        {/* Android Drag Handle Pill (Mobile Only) */}
-        <div className="sm:hidden pt-2.5 pb-1 flex justify-center bg-clutch-surface-elevated/60">
-          <div className="w-12 h-1.5 rounded-full bg-white/25" />
-        </div>
-
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-clutch-border flex items-center justify-between bg-clutch-surface-elevated/50">
+        <div className="p-5 border-b border-clutch-border flex items-center justify-between bg-clutch-surface-elevated/50">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender">
               <Users className="w-5 h-5" />

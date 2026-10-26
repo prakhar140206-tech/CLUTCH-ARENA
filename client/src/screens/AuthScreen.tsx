@@ -1,25 +1,42 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore.js';
 import { soundSynth } from '../services/soundSynth.js';
+import { AppShell } from '../components/navigation/AppShell.js';
+import { API_BASE_URL } from '../config/api';
 import { CLUTCH_LOGO } from '../config/assets.js';
-import { API_BASE_URL } from '../config/api.js';
-import { Mail, Lock, User, ArrowRight, Github, Chrome } from 'lucide-react';
+import {
+  ShieldCheck,
+  Lock,
+  Mail,
+  User,
+  Sparkles,
+  ArrowRight,
+  Code2,
+  Zap,
+  CheckCircle2,
+  LogIn,
+  ArrowLeft
+} from 'lucide-react';
 
 export const AuthScreen: React.FC = () => {
   const setScreen = useGameStore((s) => s.setScreen);
   const loginUser = useGameStore((s) => s.loginUser);
   const updateUserProfile = useGameStore((s) => s.updateUserProfile);
+  const setOnboardingOpen = useGameStore((s) => s.setOnboardingOpen);
 
-  const [isRegister, setIsRegister] = useState<boolean>(false);
-  const [emailOrHandle, setEmailOrHandle] = useState<string>('');
+  const [tab, setTab] = useState<'login' | 'signup'>('login');
+  const [handle, setHandle] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [selectedLanguage, setSelectedLanguage] = useState<'python' | 'javascript' | 'cpp' | 'java'>('python');
+  const [selectedTitle, setSelectedTitle] = useState<string>('Dijkstra’s Favorite Child 👑');
   const [errorMsg, setErrorMsg] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [successMsg, setSuccessMsg] = useState<string>('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!emailOrHandle.trim()) {
-      setErrorMsg('Please enter your email or player callsign');
+    if (!handle.trim()) {
+      setErrorMsg('Please enter your player callsign handle');
       soundSynth.vineBoom();
       return;
     }
@@ -28,162 +45,274 @@ export const AuthScreen: React.FC = () => {
       soundSynth.vineBoom();
       return;
     }
-
     setErrorMsg('');
-    setLoading(true);
 
     try {
-      const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
-      const cleanInput = emailOrHandle.trim();
-      const bodyPayload = isRegister
-        ? {
-            username: cleanInput.includes('@') ? cleanInput.split('@')[0] : cleanInput,
-            email: cleanInput.includes('@') ? cleanInput : `${cleanInput.toLowerCase()}@clutch.gg`,
-            password: password.trim()
-          }
-        : {
-            username: cleanInput.includes('@') ? cleanInput.split('@')[0] : cleanInput,
-            password: password.trim()
-          };
-
-      const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyPayload)
+        body: JSON.stringify({ username: handle.trim(), password: password.trim() })
       });
-
       const data = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.error || 'Authentication error. Please check your credentials.');
+        setErrorMsg(data.error || 'Invalid callsign handle or password. Please verify or register an account.');
         soundSynth.vineBoom();
         return;
       }
-
       loginUser(data.profile.username, data.profile.email);
       updateUserProfile(data.profile);
+      setSuccessMsg('Authentication verified. Welcome to CLUTCH Arena, ' + data.profile.username + '!');
+      if (!data.profile?.dsaPreferences) {
+        setOnboardingOpen(true);
+      }
       soundSynth.levelUp();
-      setScreen('dashboard');
+      setTimeout(() => {
+        setScreen('dashboard');
+      }, 500);
     } catch {
-      // Local fallback
-      loginUser(emailOrHandle.trim(), `${emailOrHandle.toLowerCase()}@clutch.gg`);
+      // In local static mode if server is offline
+      loginUser(handle.trim(), email.trim() || `${handle.toLowerCase()}@clutch.gg`);
+      setSuccessMsg('Authenticated pilot session initialized.');
       soundSynth.levelUp();
-      setScreen('dashboard');
-    } finally {
-      setLoading(false);
+      setTimeout(() => setScreen('dashboard'), 500);
     }
   };
 
-  const handleSocialAuth = (provider: string) => {
-    soundSynth.click();
-    const guestCallsign = `${provider}_pilot_${Math.floor(100 + Math.random() * 900)}`;
-    loginUser(guestCallsign, `${guestCallsign}@clutch.gg`);
-    soundSynth.levelUp();
-    setScreen('dashboard');
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!handle.trim()) {
+      setErrorMsg('Please choose an arena callsign handle');
+      soundSynth.vineBoom();
+      return;
+    }
+    if (!password.trim()) {
+      setErrorMsg('Please choose an account password');
+      soundSynth.vineBoom();
+      return;
+    }
+    setErrorMsg('');
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: handle.trim(),
+          password: password.trim(),
+          email: email.trim() || `${handle.toLowerCase()}@clutch.gg`
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Registration failed. Callsign handle may already be taken.');
+        soundSynth.vineBoom();
+        return;
+      }
+      loginUser(data.profile.username, data.profile.email);
+      updateUserProfile({
+        ...data.profile,
+        equippedTitle: selectedTitle,
+        preferredLanguage: selectedLanguage
+      });
+      setSuccessMsg('Callsign registered! Welcome to CLUTCH Arena.');
+      soundSynth.levelUp();
+      setOnboardingOpen(true);
+      setTimeout(() => {
+        setScreen('dashboard');
+      }, 500);
+    } catch {
+      loginUser(handle.trim(), email.trim() || `${handle.toLowerCase()}@clutch.gg`);
+      updateUserProfile({
+        equippedTitle: selectedTitle,
+        preferredLanguage: selectedLanguage,
+        auraPoints: 0,
+        auraTitle: 'Novice Coder'
+      });
+      soundSynth.levelUp();
+      setSuccessMsg('Account registered successfully.');
+      setOnboardingOpen(true);
+      setTimeout(() => setScreen('dashboard'), 500);
+    }
   };
 
   return (
-    <div className="w-full max-w-full min-h-screen min-h-[100dvh] flex flex-col items-center justify-center bg-[#090d10] text-slate-100 p-4 select-none relative font-sans overflow-y-auto overflow-x-hidden">
-      {/* Background Perspective Ground Grid */}
-      <div className="cyber-grid-floor opacity-50" />
-
-      {/* Ambient Neon Atmosphere Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-emerald-500/10 rounded-full blur-[160px] pointer-events-none" />
-
-      {/* Main Authentication Card matching Image 4 Top-Left */}
-      <div className="w-full max-w-md rounded-2xl bg-[#0f151c]/95 border border-white/10 p-8 sm:p-10 shadow-[0_12px_45px_rgba(0,0,0,0.85),0_0_25px_rgba(34,197,94,0.15)] relative z-10 flex flex-col items-center text-center my-auto">
-        {/* Emblem Logo */}
-        <div className="w-14 h-14 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 p-2.5 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(34,197,94,0.35)]">
-          <img src={CLUTCH_LOGO} alt="CLUTCH" className="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(34,197,94,0.6)]" />
-        </div>
-
-        <span className="font-cyber font-black text-sm tracking-wider text-emerald-400 mb-1">
-          CLUTCH-ARENA
-        </span>
-
-        <h2 className="font-cyber font-black text-xl sm:text-2xl text-white tracking-wider uppercase mb-6">
-          {isRegister ? 'CREATE ACCOUNT' : 'LOGIN / REGISTER'}
-        </h2>
-
-        {errorMsg && (
-          <div className="w-full p-2.5 mb-4 rounded-xl bg-red-950/40 border border-red-500/40 text-red-300 text-xs font-mono">
-            {errorMsg}
-          </div>
-        )}
-
-        {/* Input Form */}
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3.5">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Email Address"
-              value={emailOrHandle}
-              onChange={(e) => setEmailOrHandle(e.target.value)}
-              className="w-full bg-[#141b22] border border-white/10 rounded-xl px-4 py-3 text-xs font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
-            />
-          </div>
-
-          <div className="relative flex items-center gap-2">
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="flex-1 bg-[#141b22] border border-white/10 rounded-xl px-4 py-3 text-xs font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
-            />
-
-            {/* Neon SIGN IN Button */}
+    <AppShell activeScreen="auth" showSidebar={false}>
+      <div className="flex-1 min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 relative z-10">
+        <div className="w-full max-w-md clutch-panel-elevated rounded-2xl p-6 sm:p-8 shadow-2xl relative">
+          {/* Back to Home Navigation */}
+          <div className="mb-4">
             <button
-              type="submit"
-              disabled={loading}
-              className="clutch-btn-neon px-5 py-3 text-xs font-black tracking-wider uppercase shrink-0"
+              onClick={() => {
+                soundSynth.click();
+                setScreen('home');
+              }}
+              className="text-xs font-mono text-clutch-muted hover:text-white flex items-center gap-1.5 transition-colors"
             >
-              {isRegister ? 'SIGN UP' : 'SIGN IN'}
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Home</span>
             </button>
           </div>
-        </form>
 
-        {/* OR CONTINUE WITH Divider */}
-        <div className="w-full flex items-center my-6">
-          <div className="flex-1 h-px bg-white/10" />
-          <span className="px-3 text-[10px] font-mono text-slate-500 font-bold uppercase tracking-wider">
-            OR CONTINUE WITH
-          </span>
-          <div className="flex-1 h-px bg-white/10" />
-        </div>
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center p-2 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
+              <img src={CLUTCH_LOGO} alt="CLUTCH" className="w-full h-full object-contain" />
+            </div>
+            <h2 className="font-cyber font-black text-2xl text-white tracking-wide">
+              AUTHENTICATE PILOT
+            </h2>
+            <p className="text-xs font-mono text-clutch-muted mt-1">
+              Enter the competitive DSA proving grounds
+            </p>
+          </div>
 
-        {/* Social Authentication Buttons */}
-        <div className="grid grid-cols-2 gap-3 w-full">
-          <button
-            onClick={() => handleSocialAuth('github')}
-            className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#141b22] border border-white/10 hover:border-slate-400 text-xs font-mono font-bold text-slate-300 hover:text-white transition-all shadow-sm active:scale-95"
-          >
-            <Github className="w-4 h-4 text-white" />
-            <span>GitHub</span>
-          </button>
+          {/* Tab Selector */}
+          <div className="flex bg-clutch-surface-light p-1 rounded-xl border border-clutch-border mb-6">
+            <button
+              onClick={() => {
+                setTab('login');
+                setErrorMsg('');
+              }}
+              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+                tab === 'login'
+                  ? 'bg-clutch-violet text-white shadow-md'
+                  : 'text-clutch-muted hover:text-white'
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => {
+                setTab('signup');
+                setErrorMsg('');
+              }}
+              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+                tab === 'signup'
+                  ? 'bg-clutch-violet text-white shadow-md'
+                  : 'text-clutch-muted hover:text-white'
+              }`}
+            >
+              Create Account
+            </button>
+          </div>
 
-          <button
-            onClick={() => handleSocialAuth('google')}
-            className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#141b22] border border-white/10 hover:border-slate-400 text-xs font-mono font-bold text-slate-300 hover:text-white transition-all shadow-sm active:scale-95"
-          >
-            <Chrome className="w-4 h-4 text-emerald-400" />
-            <span>Google</span>
-          </button>
-        </div>
+          {/* Feedback Messages */}
+          {errorMsg && (
+            <div className="mb-4 p-3 rounded-xl bg-clutch-rose/10 border border-clutch-rose/40 text-clutch-rose text-xs font-mono">
+              {errorMsg}
+            </div>
+          )}
+          {successMsg && (
+            <div className="mb-4 p-3 rounded-xl bg-clutch-emerald/10 border border-clutch-emerald/40 text-clutch-emerald text-xs font-mono flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <span>{successMsg}</span>
+            </div>
+          )}
 
-        {/* Toggle Mode */}
-        <div className="mt-6 text-xs font-mono text-slate-400">
-          <span>{isRegister ? 'Already have an account? ' : "Don't have an account? "}</span>
-          <button
-            onClick={() => {
-              soundSynth.click();
-              setIsRegister(!isRegister);
-            }}
-            className="text-emerald-400 font-bold hover:underline"
-          >
-            {isRegister ? 'Sign in' : 'Sign up'}
-          </button>
+          {/* Form */}
+          <form onSubmit={tab === 'login' ? handleLogin : handleSignUp} className="space-y-4">
+            <div>
+              <label className="text-xs font-mono text-clutch-muted block mb-1.5">
+                CALLSIGN HANDLE / USERNAME
+              </label>
+              <div className="relative">
+                <User className="w-4 h-4 text-clutch-subtle absolute left-3 top-3" />
+                <input
+                  type="text"
+                  placeholder="e.g. ByteKnight_99"
+                  value={handle}
+                  onChange={(e) => setHandle(e.target.value)}
+                  className="w-full bg-clutch-surface-light border border-clutch-border text-white text-xs pl-9 pr-3 py-2.5 rounded-lg focus:outline-none focus:border-clutch-violet transition-colors font-mono"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-mono text-clutch-muted block mb-1.5">
+                PASSWORD
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-clutch-subtle absolute left-3 top-3" />
+                <input
+                  type="password"
+                  placeholder="Enter secure password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-clutch-surface-light border border-clutch-border text-white text-xs pl-9 pr-3 py-2.5 rounded-lg focus:outline-none focus:border-clutch-violet transition-colors font-mono"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-mono text-clutch-muted block mb-1.5">
+                EMAIL {tab === 'login' ? '(OPTIONAL)' : ''}
+              </label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-clutch-subtle absolute left-3 top-3" />
+                <input
+                  type="email"
+                  placeholder="coder@algorithm.arena"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-clutch-surface-light border border-clutch-border text-white text-xs pl-9 pr-3 py-2.5 rounded-lg focus:outline-none focus:border-clutch-violet transition-colors font-mono"
+                />
+              </div>
+            </div>
+
+            {tab === 'signup' && (
+              <>
+                <div>
+                  <label className="text-xs font-mono text-clutch-muted block mb-1.5">
+                    PREFERRED CODING LANGUAGE
+                  </label>
+                  <select
+                    value={selectedLanguage}
+                    onChange={(e) => setSelectedLanguage(e.target.value as any)}
+                    className="w-full bg-clutch-surface-light border border-clutch-border text-clutch-lavender text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
+                  >
+                    <option value="python">Python 3 (Recommended)</option>
+                    <option value="javascript">JavaScript / TypeScript</option>
+                    <option value="cpp">C++ (G++17)</option>
+                    <option value="java">Java 21</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-mono text-clutch-muted block mb-1.5">
+                    EQUIPPED REPUTATION TITLE
+                  </label>
+                  <select
+                    value={selectedTitle}
+                    onChange={(e) => setSelectedTitle(e.target.value)}
+                    className="w-full bg-clutch-surface-light border border-clutch-border text-clutch-lavender text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
+                  >
+                    <option value="Dijkstra’s Favorite Child 👑">Dijkstra’s Favorite Child 👑</option>
+                    <option value="O(1) Space Sigma 🗿">O(1) Space Sigma 🗿</option>
+                    <option value="Binary Tree Whisperer 🌲">Binary Tree Whisperer 🌲</option>
+                    <option value="Recursion Without Fear ⚡">Recursion Without Fear ⚡</option>
+                  </select>
+                </div>
+              </>
+            )}
+
+            <button
+              type="submit"
+              className="w-full clutch-btn-primary py-3 text-xs flex items-center justify-center gap-2 mt-2"
+            >
+              <span>{tab === 'login' ? 'Authenticate & Enter' : 'Register Callsign'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </form>
+
+          {/* Mandatory Authentication Notice */}
+          <div className="mt-6 pt-5 border-t border-clutch-border text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-clutch-surface-light border border-clutch-border text-[11px] font-mono text-clutch-muted">
+              <Lock className="w-3.5 h-3.5 text-clutch-violet" />
+              <span>Mandatory Gateway: Sign Up or Log In to access CLUTCH ARENA</span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 };
