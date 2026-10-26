@@ -103,7 +103,7 @@ export const InteractiveArrayWorkspace: React.FC<InteractiveArrayWorkspaceProps>
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0b0f19] border border-cyan-500/30 rounded-xl p-5 overflow-hidden">
+    <div className="flex flex-col h-full bg-[#0b0f19] border border-cyan-500/30 rounded-xl p-3.5 sm:p-5 overflow-y-auto font-sans">
       {/* Target Mission Prompt */}
       <div className="mb-4 p-3 bg-gradient-to-r from-cyan-950/40 via-gray-900 to-purple-950/40 border border-cyan-500/20 rounded-lg">
         <div className="flex items-center justify-between">
@@ -195,7 +195,7 @@ export const InteractiveArrayWorkspace: React.FC<InteractiveArrayWorkspaceProps>
       </div>
 
       {/* Action Footer */}
-      <div className="pt-3 border-t border-gray-800/80 flex items-center justify-between">
+      <div className="pt-3 border-t border-gray-800/80 flex items-center justify-between gap-2 shrink-0 z-20 relative">
         <div className="text-xs font-mono text-gray-400">
           {arrayData?.actionType === 'select_subarray' && (
             <span>
@@ -211,7 +211,7 @@ export const InteractiveArrayWorkspace: React.FC<InteractiveArrayWorkspaceProps>
         <button
           onClick={handleSubmit}
           disabled={disabled || (arrayData?.actionType === 'select_subarray' && (startIndex === null || endIndex === null))}
-          className="px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 disabled:opacity-40 text-white font-bold text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-1.5"
+          className="px-5 sm:px-6 py-2.5 min-h-[44px] rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 disabled:opacity-40 text-white font-bold text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none shrink-0"
         >
           <Check className="w-4 h-4" /> Submit Interaction
         </button>

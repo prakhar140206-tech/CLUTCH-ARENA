@@ -108,7 +108,7 @@ export const ArenaScreen: React.FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-clutch-bg text-clutch-text overflow-hidden relative font-sans">
+    <div className="w-screen h-screen h-[100dvh] flex flex-col bg-clutch-bg text-clutch-text overflow-hidden relative font-sans">
       {/* Top Arena Telemetry Header */}
       <ArenaHeader />
 
@@ -141,25 +141,28 @@ export const ArenaScreen: React.FC = () => {
 
       {/* Mobile Segmented Navigation (Only during in_round state) */}
       {activeRoom.status === 'in_round' && (
-        <div className="md:hidden flex bg-clutch-surface border-b border-clutch-border p-1 z-20 shrink-0">
+        <div className="md:hidden flex bg-clutch-surface border-b border-clutch-border p-1 z-20 shrink-0 gap-1">
           <button
             onClick={() => setMobileTab('workspace')}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${mobileTab === 'workspace' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
-              }`}
+            className={`flex-1 py-2 min-h-[40px] text-xs font-semibold rounded-md transition-all flex items-center justify-center focus-visible:ring-2 focus-visible:ring-clutch-lavender focus-visible:outline-none ${
+              mobileTab === 'workspace' ? 'bg-clutch-violet text-white shadow-sm font-bold' : 'text-clutch-muted hover:text-white'
+            }`}
           >
             Challenge Code
           </button>
           <button
             onClick={() => setMobileTab('arena3d')}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${mobileTab === 'arena3d' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
-              }`}
+            className={`flex-1 py-2 min-h-[40px] text-xs font-semibold rounded-md transition-all flex items-center justify-center focus-visible:ring-2 focus-visible:ring-clutch-lavender focus-visible:outline-none ${
+              mobileTab === 'arena3d' ? 'bg-clutch-violet text-white shadow-sm font-bold' : 'text-clutch-muted hover:text-white'
+            }`}
           >
             3D Arena
           </button>
           <button
             onClick={() => setMobileTab('standings')}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${mobileTab === 'standings' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
-              }`}
+            className={`flex-1 py-2 min-h-[40px] text-xs font-semibold rounded-md transition-all flex items-center justify-center focus-visible:ring-2 focus-visible:ring-clutch-lavender focus-visible:outline-none ${
+              mobileTab === 'standings' ? 'bg-clutch-violet text-white shadow-sm font-bold' : 'text-clutch-muted hover:text-white'
+            }`}
           >
             Standings
           </button>
@@ -167,7 +170,7 @@ export const ArenaScreen: React.FC = () => {
       )}
 
       {/* Main Container */}
-      <div className="flex-1 relative flex flex-col md:flex-row overflow-hidden">
+      <div className="flex-1 min-h-0 relative flex flex-col md:flex-row overflow-hidden">
 
         {/* =========================================================
             LOBBY WAITING STAGING STATE
@@ -302,7 +305,7 @@ export const ArenaScreen: React.FC = () => {
             ========================================================= */}
         {activeRoom.status === 'in_round' && challenge && (
           <div
-            className={`w-full md:w-7/12 h-full flex flex-col p-3 sm:p-5 overflow-hidden z-10 border-l border-clutch-border bg-clutch-bg ${mobileTab !== 'workspace' ? 'hidden md:flex' : 'flex'
+            className={`w-full md:w-7/12 h-full flex flex-col p-2 sm:p-5 overflow-hidden z-10 border-l border-clutch-border bg-clutch-bg ${mobileTab !== 'workspace' ? 'hidden md:flex' : 'flex'
               }`}
           >
             {challenge.type === 'code_sprint' || challenge.type === 'bug_hunter' ? (
@@ -361,11 +364,10 @@ export const ArenaScreen: React.FC = () => {
         {(activeRoom.status === 'round_review' || activeRoom.status === 'match_ended') && (
           <RoundReviewOverlay />
         )}
-
-        {/* Hype Reaction Stream */}
-        <HypeReactionStream />
-
       </div>
+
+      {/* Responsive AuraBot Reaction Stream & Bottom Toolbar */}
+      <HypeReactionStream isDockedMobile={true} />
     </div>
   );
 };

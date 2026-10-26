@@ -35,9 +35,9 @@ export const FillBlankWorkspace: React.FC<FillBlankWorkspaceProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0b0f19] border border-cyan-500/30 rounded-xl p-5 overflow-hidden">
+    <div className="flex flex-col h-full bg-[#0b0f19] border border-cyan-500/30 rounded-xl p-3.5 sm:p-5 overflow-y-auto font-sans">
       {/* Header */}
-      <div className="mb-4 p-3 bg-gradient-to-r from-cyan-950/40 via-gray-900 to-purple-950/40 border border-cyan-500/20 rounded-lg">
+      <div className="mb-4 p-3 bg-gradient-to-r from-cyan-950/40 via-gray-900 to-purple-950/40 border border-cyan-500/20 rounded-lg shrink-0">
         <span className="text-xs font-mono font-bold text-cyan-400 flex items-center gap-1.5 uppercase tracking-wider">
           <Edit3 className="w-3.5 h-3.5" /> Fill-In-The-Blanks Challenge
         </span>
@@ -46,7 +46,7 @@ export const FillBlankWorkspace: React.FC<FillBlankWorkspaceProps> = ({
 
       {/* Code Snippet Box */}
       {challenge.codeSnippet && (
-        <div className="p-4 bg-black/60 border border-gray-800 rounded-xl font-mono text-xs text-cyan-300 overflow-x-auto mb-4 leading-relaxed">
+        <div className="p-3.5 sm:p-4 bg-black/60 border border-gray-800 rounded-xl font-mono text-xs text-cyan-300 overflow-x-auto mb-4 leading-relaxed shrink-0">
           <pre>{challenge.codeSnippet}</pre>
         </div>
       )}
@@ -58,7 +58,7 @@ export const FillBlankWorkspace: React.FC<FillBlankWorkspaceProps> = ({
         </span>
 
         {blanks.map(blank => (
-          <div key={blank.id} className="p-3.5 rounded-xl border border-gray-800 bg-gray-900/60 space-y-1.5">
+          <div key={blank.id} className="p-3 sm:p-3.5 rounded-xl border border-gray-800 bg-gray-900/60 space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-xs font-mono font-bold text-cyan-300">
                 {blank.id} ({blank.label})
@@ -76,21 +76,21 @@ export const FillBlankWorkspace: React.FC<FillBlankWorkspaceProps> = ({
               onChange={(e) => handleChange(blank.id, e.target.value)}
               disabled={disabled}
               placeholder="Type matching expression..."
-              className="w-full px-3 py-2 rounded-lg bg-black/50 border border-gray-700 focus:border-cyan-400 text-white font-mono text-xs outline-none transition"
+              className="w-full px-3 py-2.5 min-h-[44px] rounded-lg bg-black/50 border border-gray-700 focus:border-cyan-400 text-white font-mono text-base sm:text-xs outline-none transition"
             />
           </div>
         ))}
       </form>
 
       {/* Footer */}
-      <div className="pt-3 border-t border-gray-800/80 flex items-center justify-between">
+      <div className="pt-3 border-t border-gray-800/80 flex items-center justify-between gap-2 shrink-0 z-20 relative">
         <span className="text-xs font-mono text-gray-400">
           Filled: <strong className="text-cyan-400">{Object.values(answers).filter(v => v.trim().length > 0).length}</strong> of {blanks.length}
         </span>
         <button
           onClick={() => handleSubmit()}
           disabled={disabled || Object.values(answers).some(v => v.trim().length === 0)}
-          className="px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 disabled:opacity-40 text-white font-bold text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-1.5"
+          className="px-5 sm:px-6 py-2.5 min-h-[44px] rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 disabled:opacity-40 text-white font-bold text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none shrink-0"
         >
           <Check className="w-4 h-4" /> Submit Answers
         </button>

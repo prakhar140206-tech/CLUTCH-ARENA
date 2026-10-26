@@ -22,7 +22,7 @@ export const VisualPuzzleWorkspace: React.FC<VisualPuzzleWorkspaceProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full clutch-panel rounded-2xl overflow-y-auto p-5 sm:p-6 font-sans border border-clutch-border">
+    <div className="flex flex-col h-full clutch-panel rounded-2xl overflow-y-auto p-3.5 sm:p-6 font-sans border border-clutch-border">
       <div className="flex items-center gap-2 mb-3 text-clutch-lavender font-cyber font-bold text-xs sm:text-sm tracking-wide">
         <GitBranch className="w-4 h-4" />
         <span>INTERACTIVE DATA STRUCTURE MATRIX</span>
@@ -139,14 +139,14 @@ export const VisualPuzzleWorkspace: React.FC<VisualPuzzleWorkspaceProps> = ({
       )}
 
       {/* Bottom Submit */}
-      <div className="mt-5 pt-4 border-t border-clutch-border flex items-center justify-between">
-        <span className="text-xs text-clutch-subtle font-mono">
+      <div className="mt-4 pt-3 border-t border-clutch-border flex items-center justify-between gap-2 shrink-0 z-20 relative">
+        <span className="text-xs text-clutch-subtle font-mono truncate max-w-[140px] sm:max-w-xs">
           Slot: <strong className="text-white">{selectedOp || 'None selected'}</strong>
         </span>
         <button
           onClick={handleSubmit}
           disabled={!selectedOp || disabled}
-          className="clutch-btn-primary px-6 py-2.5 text-xs flex items-center gap-1.5"
+          className="clutch-btn-primary px-5 sm:px-6 py-2.5 min-h-[44px] text-xs flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-clutch-lavender focus-visible:outline-none shrink-0"
         >
           <Send className="w-3.5 h-3.5" />
           <span>Commit Pointer</span>

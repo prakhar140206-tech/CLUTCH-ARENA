@@ -280,14 +280,14 @@ export const AppShell: React.FC<AppShellProps> = ({
         </header>
 
         {/* Content Area with Independent Scroll */}
-        <main className="flex-1 overflow-y-auto pb-20 md:pb-6 relative z-10">
+        <main className="flex-1 overflow-y-auto pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-6 relative z-10">
           {children}
         </main>
 
         {/* =========================================================
             MOBILE BOTTOM NAVIGATION BAR
             ========================================================= */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-clutch-surface/95 border-t border-clutch-border backdrop-blur-2xl grid grid-cols-5 items-center px-1 z-40 shadow-2xl">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 min-h-[4rem] pb-[max(0.25rem,env(safe-area-inset-bottom))] bg-clutch-surface/95 border-t border-clutch-border backdrop-blur-2xl grid grid-cols-5 items-center px-1 z-40 shadow-2xl">
           {bottomNavItems.map((item) => {
             const Icon = item.icon;
             const isCurrent = active === item.id;

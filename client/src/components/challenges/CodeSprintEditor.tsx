@@ -197,20 +197,20 @@ export const CodeSprintEditor: React.FC<CodeSprintEditorProps> = ({
       </div>
 
       {/* Bottom Action Footer */}
-      <div className="px-4 py-3 bg-clutch-surface/90 border-t border-clutch-border flex items-center justify-between gap-3 shrink-0">
+      <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-clutch-surface/95 border-t border-clutch-border flex items-center justify-between gap-2 sm:gap-3 shrink-0 z-20 relative">
         <button
           onClick={handleRunSampleTests}
           disabled={isRunningLocal || disabled}
-          className="clutch-btn-secondary py-2 px-4 text-xs flex items-center gap-1.5"
+          className="clutch-btn-secondary py-2.5 px-3.5 sm:px-4 min-h-[44px] text-xs flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-clutch-lavender focus-visible:outline-none"
         >
           <Play className="w-3.5 h-3.5 fill-current text-clutch-lavender" />
-          <span>{isRunningLocal ? 'Testing...' : 'Run Sample Tests'}</span>
+          <span>{isRunningLocal ? 'Testing...' : 'Run Tests'}</span>
         </button>
 
         <button
           onClick={handleFinalSubmit}
           disabled={disabled || !code.trim()}
-          className="clutch-btn-primary py-2 px-5 text-xs flex items-center gap-1.5"
+          className="clutch-btn-primary py-2.5 px-4 sm:px-5 min-h-[44px] text-xs flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-clutch-lavender focus-visible:outline-none"
         >
           <Send className="w-3.5 h-3.5" />
           <span>Submit Solution</span>

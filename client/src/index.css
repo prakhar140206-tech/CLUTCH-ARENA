@@ -102,12 +102,18 @@ html, body {
   font-weight: 700;
   border-radius: 0.5rem;
   padding: 0.625rem 1.25rem;
+  min-height: 44px;
   font-size: 0.8125rem;
   letter-spacing: 0.04em;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 0 20px -3px rgba(124, 58, 237, 0.45);
   border: 1px solid rgba(167, 139, 250, 0.3);
   cursor: pointer;
+  touch-action: manipulation;
+}
+.clutch-btn-primary:focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 2px;
 }
 .clutch-btn-primary:hover:not(:disabled) {
   background: linear-gradient(135deg, #8b5cf6, #7c3aed);
@@ -133,11 +139,17 @@ html, body {
   font-weight: 600;
   border-radius: 0.5rem;
   padding: 0.625rem 1.25rem;
+  min-height: 44px;
   font-size: 0.8125rem;
   letter-spacing: 0.02em;
   border: 1px solid #1e2552;
   transition: all 0.2s ease;
   cursor: pointer;
+  touch-action: manipulation;
+}
+.clutch-btn-secondary:focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 2px;
 }
 .clutch-btn-secondary:hover:not(:disabled) {
   background: #171c42;
@@ -237,12 +249,30 @@ html, body {
 }
 
 /* Utilities */
-.no-scrollbar::-webkit-scrollbar {
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
   display: none;
 }
-.no-scrollbar {
+.no-scrollbar,
+.scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Dynamic Viewport and Safe Area Utilities */
+.h-dvh {
+  height: 100vh;
+  height: 100dvh;
+}
+.min-h-dvh {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+.pt-safe {
+  padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
 }
 
 /* Accessibility: Reduced Motion */
