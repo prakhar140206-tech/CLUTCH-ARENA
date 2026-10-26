@@ -125,6 +125,16 @@ export interface MatchRecord {
   leaderboardSnippet: Array<{ id: string; username: string; score: number; rank: number }>;
 }
 
+export interface FriendRequest {
+  id: string;
+  fromUserId: string;
+  fromUsername: string;
+  toUserId: string;
+  toUsername: string;
+  status: 'pending' | 'accepted' | 'declined';
+  createdAt: number;
+}
+
 export interface DatabaseSchema {
   users: Record<string, StoredUserProfile>;
   matchHistory: MatchRecord[];
@@ -132,6 +142,8 @@ export interface DatabaseSchema {
   questCompletions?: Record<string, boolean>; // key: userId_challengeId
   dsaPreferences?: Record<string, DSAOnboardingPreferences>;
   conceptMastery?: Record<string, Record<string, ConceptMasteryRecord>>;
+  friends?: Record<string, string[]>; // userId -> array of friend userIds
+  friendRequests?: FriendRequest[];
 }
 
 const DEFAULT_SEEDS: DatabaseSchema = {
@@ -140,7 +152,9 @@ const DEFAULT_SEEDS: DatabaseSchema = {
   globalLeaderboard: [],
   questCompletions: {},
   dsaPreferences: {},
-  conceptMastery: {}
+  conceptMastery: {},
+  friends: {},
+  friendRequests: []
 };
 
 /**
@@ -477,6 +491,113 @@ export class PersistenceStore {
         highestStreak: u.stats?.highestStreak || 0
       }));
     this.data.globalLeaderboard = sorted;
+  }
+
+  public sendFriendRequest(fromUserId: string, toUsername: string): { success: boolean; message: string; request?: FriendRequest } {
+    if (!this.data.friends) this.data.friends = {};
+    if (!this.data.friendRequests) this.data.friendRequests = [];
+
+    const sender = this.data.users[fromUserId];
+    if (!sender) {
+      return { success: false, message: 'Sender pilot profile not found.' };
+    }
+
+    const cleanTarget = toUsername.trim().toLowerCase();
+    const recipient = Object.values(this.data.users).find(u => u.username.toLowerCase() === cleanTarget);
+
+    if (!recipient) {
+      return { success: false, message: `Pilot "${toUsername}" not found. Verify the callsign.` };
+    }
+
+    if (recipient.id === fromUserId) {
+      return { success: false, message: 'You cannot send a friend request to yourself.' };
+    }
+
+    const senderFriends = this.data.friends[fromUserId] || [];
+    if (senderFriends.includes(recipient.id)) {
+      return { success: false, message: `You are already friends with ${recipient.username}.` };
+    }
+
+    const existingPending = this.data.friendRequests.find(
+      r => r.fromUserId === fromUserId && r.toUserId === recipient.id && r.status === 'pending'
+    );
+    if (existingPending) {
+      return { success: false, message: `Friend request already pending with ${recipient.username}.` };
+    }
+
+    const req: FriendRequest = {
+      id: `freq-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      fromUserId: sender.id,
+      fromUsername: sender.username,
+      toUserId: recipient.id,
+      toUsername: recipient.username,
+      status: 'pending',
+      createdAt: Date.now()
+    };
+
+    this.data.friendRequests.unshift(req);
+    this.saveToDisk();
+    return { success: true, message: `Friend request sent to ${recipient.username}!`, request: req };
+  }
+
+  public respondFriendRequest(userId: string, requestId: string, action: 'accept' | 'decline'): { success: boolean; message: string; friend?: StoredUserProfile } {
+    if (!this.data.friends) this.data.friends = {};
+    if (!this.data.friendRequests) this.data.friendRequests = [];
+
+    const req = this.data.friendRequests.find(r => r.id === requestId && r.toUserId === userId && r.status === 'pending');
+    if (!req) {
+      return { success: false, message: 'Pending friend request not found.' };
+    }
+
+    req.status = action === 'accept' ? 'accepted' : 'declined';
+
+    if (action === 'accept') {
+      if (!this.data.friends[userId]) this.data.friends[userId] = [];
+      if (!this.data.friends[req.fromUserId]) this.data.friends[req.fromUserId] = [];
+
+      if (!this.data.friends[userId].includes(req.fromUserId)) {
+        this.data.friends[userId].push(req.fromUserId);
+      }
+      if (!this.data.friends[req.fromUserId].includes(userId)) {
+        this.data.friends[req.fromUserId].push(userId);
+      }
+    }
+
+    this.saveToDisk();
+
+    const friend = action === 'accept' ? this.data.users[req.fromUserId] : undefined;
+    return {
+      success: true,
+      message: action === 'accept' ? `Accepted ${req.fromUsername}'s friend request!` : 'Friend request declined.',
+      friend
+    };
+  }
+
+  public getFriendsData(userId: string): {
+    friends: Array<{ id: string; username: string; ratingMMR: number; rankTier: string; auraPoints: number; stats: any }>;
+    incomingRequests: FriendRequest[];
+    outgoingRequests: FriendRequest[];
+  } {
+    if (!this.data.friends) this.data.friends = {};
+    if (!this.data.friendRequests) this.data.friendRequests = [];
+
+    const friendIds = this.data.friends[userId] || [];
+    const friends = friendIds
+      .map(id => this.data.users[id])
+      .filter(Boolean)
+      .map(u => ({
+        id: u.id,
+        username: u.username,
+        ratingMMR: u.ratingMMR,
+        rankTier: u.rankTier,
+        auraPoints: u.auraPoints || 0,
+        stats: u.stats || { matchesPlayed: 0, matchesWon: 0, challengesSolved: 0, highestStreak: 0 }
+      }));
+
+    const incomingRequests = this.data.friendRequests.filter(r => r.toUserId === userId && r.status === 'pending');
+    const outgoingRequests = this.data.friendRequests.filter(r => r.fromUserId === userId && r.status === 'pending');
+
+    return { friends, incomingRequests, outgoingRequests };
   }
 }
 

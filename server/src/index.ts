@@ -598,6 +598,77 @@ app.post('/api/quests/claim', (req, res) => {
   }
 });
 
+// ==================== Real-time Friends System Endpoints ====================
+
+// Get Friends & Pending Requests
+app.get('/api/friends', (req, res) => {
+  try {
+    const userId = req.query.userId as string;
+    if (!userId) {
+      return res.status(400).json({ error: 'Missing userId parameter' });
+    }
+    const data = persistenceStore.getFriendsData(userId);
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Send Friend Request
+app.post('/api/friends/request', (req, res) => {
+  try {
+    const { fromUserId, toUsername } = req.body;
+    if (!fromUserId || !toUsername) {
+      return res.status(400).json({ error: 'Missing fromUserId or toUsername' });
+    }
+    const result = persistenceStore.sendFriendRequest(fromUserId, toUsername);
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    // Broadcast real-time socket event if recipient is connected
+    if (result.request) {
+      io.emit('friend_request_received', {
+        targetUserId: result.request.toUserId,
+        request: result.request
+      });
+    }
+
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Respond to Friend Request (Accept or Decline)
+app.post('/api/friends/respond', (req, res) => {
+  try {
+    const { userId, requestId, action } = req.body;
+    if (!userId || !requestId || !action) {
+      return res.status(400).json({ error: 'Missing userId, requestId, or action' });
+    }
+    if (action !== 'accept' && action !== 'decline') {
+      return res.status(400).json({ error: 'Invalid action: must be "accept" or "decline"' });
+    }
+    const result = persistenceStore.respondFriendRequest(userId, requestId, action);
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    // Broadcast real-time socket event if accepted
+    if (action === 'accept') {
+      io.emit('friend_request_accepted', {
+        userId,
+        friend: result.friend
+      });
+    }
+
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ============================================================================
 // REAL-TIME SOCKET CONNECTION HANDLERS & AUTHORIZATION
 // ============================================================================

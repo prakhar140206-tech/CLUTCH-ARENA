@@ -34,6 +34,7 @@ import {
   AlertTriangle,
   RotateCcw
 } from 'lucide-react';
+import { FriendsModal } from '../components/friends/FriendsModal.js';
 
 interface QuestItem {
   id: string;
@@ -57,6 +58,8 @@ export const DashboardScreen: React.FC = () => {
 
   const [leaderboardFilter, setLeaderboardFilter] = useState<'global' | 'friends' | 'tier'>('global');
   const [showPrivateModal, setShowPrivateModal] = useState<boolean>(false);
+  const [friendsModalOpen, setFriendsModalOpen] = useState<boolean>(false);
+  const [friendsList, setFriendsList] = useState<any[]>([]);
   const [privateRoomCode, setPrivateRoomCode] = useState<string>('');
   const [isJoiningRoom, setIsJoiningRoom] = useState<boolean>(false);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
@@ -99,11 +102,32 @@ export const DashboardScreen: React.FC = () => {
     fetchLeaderboard();
     const interval = setInterval(fetchLeaderboard, 15000);
 
+    const fetchFriends = async () => {
+      if (userProfile.isGuest) return;
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/friends?userId=${userProfile.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.friends && isMounted) {
+            setFriendsList(data.friends);
+          }
+        }
+      } catch (err) {
+        // Fallback
+      }
+    };
+    fetchFriends();
+
+    const unsubAccepted = socketService.on('friend_request_accepted', () => {
+      fetchFriends();
+    });
+
     return () => {
       isMounted = false;
       clearInterval(interval);
+      if (typeof unsubAccepted === 'function') unsubAccepted();
     };
-  }, [userProfile.id]);
+  }, [userProfile.id, userProfile.isGuest]);
 
   // Daily Quests tied strictly to real user achievements and solo solved IDs
   const [quests, setQuests] = useState<QuestItem[]>([
@@ -213,16 +237,30 @@ export const DashboardScreen: React.FC = () => {
 
   let filteredLeaderboard = combinedPilots;
   if (leaderboardFilter === 'friends') {
-    // Real friends filter: displays current user with clear invite action when no friends have joined yet
-    filteredLeaderboard = combinedPilots.filter(p => p.id === userProfile.id);
+    const friendIds = new Set(friendsList.map(f => f.id));
+    filteredLeaderboard = combinedPilots.filter(p => p.id === userProfile.id || friendIds.has(p.id));
+    for (const f of friendsList) {
+      if (!filteredLeaderboard.some(p => p.id === f.id)) {
+        filteredLeaderboard.push({
+          id: f.id,
+          username: f.username,
+          ratingMMR: f.ratingMMR || 1200,
+          rankTier: f.rankTier || 'Novice Bit',
+          auraPoints: f.auraPoints || 0,
+          solved: f.stats?.challengesSolved || 0
+        });
+      }
+    }
+    filteredLeaderboard.sort((a, b) => (b.ratingMMR || 1200) - (a.ratingMMR || 1200) || (b.solved || 0) - (a.solved || 0));
   } else if (leaderboardFilter === 'tier') {
-    filteredLeaderboard = combinedPilots.filter(p => (p.rankTier || 'Byte Scout') === userProfile.rankTier);
+    filteredLeaderboard = combinedPilots.filter(p => (p.rankTier || 'Novice Bit') === userProfile.rankTier);
   }
 
   const verifiedLeaderboard = filteredLeaderboard.map((item, idx) => ({
     rank: idx + 1,
+    id: item.id,
     username: item.username,
-    tier: item.rankTier || 'Byte Scout',
+    tier: item.rankTier || 'Novice Bit',
     rating: item.ratingMMR || 1200,
     solved: item.solved || item.stats?.challengesSolved || 0,
     aura: item.auraPoints || 0,
@@ -838,44 +876,65 @@ export const DashboardScreen: React.FC = () => {
                 </div>
 
                 {/* Filter Tabs */}
-                <div className="flex items-center gap-1 bg-clutch-surface-light p-0.5 rounded-lg border border-clutch-border text-[11px] font-mono">
-                  <button
-                    onClick={() => setLeaderboardFilter('global')}
-                    className={`px-2 py-0.5 rounded ${
-                      leaderboardFilter === 'global' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted'
-                    }`}
-                  >
-                    Global
-                  </button>
-                  <button
-                    onClick={() => setLeaderboardFilter('friends')}
-                    className={`px-2 py-0.5 rounded ${
-                      leaderboardFilter === 'friends' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted'
-                    }`}
-                  >
-                    Friends
-                  </button>
-                  <button
-                    onClick={() => setLeaderboardFilter('tier')}
-                    className={`px-2 py-0.5 rounded ${
-                      leaderboardFilter === 'tier' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted'
-                    }`}
-                  >
-                    Tier
-                  </button>
+                <div className="flex items-center gap-2">
+                  {leaderboardFilter === 'friends' && (
+                    <button
+                      onClick={() => setFriendsModalOpen(true)}
+                      className="px-2.5 py-1 rounded bg-clutch-violet/20 hover:bg-clutch-violet/30 border border-clutch-violet/40 text-[10px] font-mono text-clutch-lavender flex items-center gap-1 transition-colors"
+                      title="Manage Friends & Send Requests"
+                    >
+                      <Users className="w-3 h-3 text-clutch-lavender" />
+                      <span>Manage Friends</span>
+                    </button>
+                  )}
+                  <div className="flex items-center gap-1 bg-clutch-surface-light p-0.5 rounded-lg border border-clutch-border text-[11px] font-mono">
+                    <button
+                      onClick={() => setLeaderboardFilter('global')}
+                      className={`px-2 py-0.5 rounded ${
+                        leaderboardFilter === 'global' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted'
+                      }`}
+                    >
+                      Global
+                    </button>
+                    <button
+                      onClick={() => setLeaderboardFilter('friends')}
+                      className={`px-2 py-0.5 rounded ${
+                        leaderboardFilter === 'friends' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted'
+                      }`}
+                    >
+                      Friends
+                    </button>
+                    <button
+                      onClick={() => setLeaderboardFilter('tier')}
+                      className={`px-2 py-0.5 rounded ${
+                        leaderboardFilter === 'tier' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted'
+                      }`}
+                    >
+                      Tier
+                    </button>
+                  </div>
                 </div>
               </div>
 
               {/* Leaderboard Table */}
               <div className="space-y-2">
                 {verifiedLeaderboard.length === 0 ? (
-                  <div className="py-8 text-center text-clutch-muted font-mono text-xs space-y-1 bg-clutch-surface-light/40 rounded-xl border border-clutch-border/40">
+                  <div className="py-8 text-center text-clutch-muted font-mono text-xs space-y-2.5 bg-clutch-surface-light/40 rounded-xl border border-clutch-border/40 p-4">
                     <p className="text-white font-medium">No real-time combatants found for this filter.</p>
                     <p className="text-[11px] text-clutch-subtle">
                       {leaderboardFilter === 'friends'
-                        ? 'Share your private room code with friends to compete!'
+                        ? 'You haven\'t added any friends yet. Add fellow coders to view their stats and duel!'
                         : 'Play an arena match or solve solo quests to claim rank #1!'}
                     </p>
+                    {leaderboardFilter === 'friends' && (
+                      <button
+                        onClick={() => setFriendsModalOpen(true)}
+                        className="clutch-btn-primary px-3 py-1.5 text-xs mx-auto flex items-center gap-1.5"
+                      >
+                        <Users className="w-3.5 h-3.5" />
+                        <span>Find & Add Friends</span>
+                      </button>
+                    )}
                   </div>
                 ) : (
                   verifiedLeaderboard.map((item) => (
@@ -978,12 +1037,23 @@ export const DashboardScreen: React.FC = () => {
             {/* Host Private Match */}
             <div className="flex flex-col gap-3">
               <button
+                onClick={() => {
+                  setShowPrivateModal(false);
+                  setFriendsModalOpen(true);
+                }}
+                className="w-full clutch-btn-primary py-2.5 text-xs flex items-center justify-center gap-2"
+              >
+                <Users className="w-4 h-4" />
+                <span>Play with Friends (Invite & Duel)</span>
+              </button>
+
+              <button
                 onClick={handleCreatePrivateRoom}
                 disabled={isJoiningRoom}
                 className="w-full clutch-btn-secondary py-2.5 text-xs flex items-center justify-center gap-2"
               >
                 <Users className="w-4 h-4 text-clutch-lavender" />
-                <span>Host New Private Room</span>
+                <span>Host Empty Room Code</span>
               </button>
 
               <button
@@ -996,6 +1066,12 @@ export const DashboardScreen: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Friends & Matchmaking Modal */}
+      <FriendsModal
+        isOpen={friendsModalOpen}
+        onClose={() => setFriendsModalOpen(false)}
+      />
     </AppShell>
   );
 };

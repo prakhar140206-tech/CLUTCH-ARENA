@@ -138,6 +138,18 @@ class SocketService {
     return this.socket;
   }
 
+  public on(event: string, callback: (...args: any[]) => void): () => void {
+    const socket = this.getSocket();
+    socket.on(event, callback);
+    return () => socket.off(event, callback);
+  }
+
+  public off(event: string, callback?: (...args: any[]) => void) {
+    if (this.socket) {
+      this.socket.off(event, callback);
+    }
+  }
+
   public createRoom(user: any, settings?: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.getSocket().emit('create_room', { user, settings }, (res: any) => {

@@ -106,6 +106,21 @@
         "highestStreak": 0
       },
       "lastActive": 1793046440788
+    },
+    "guest-hebhtz3": {
+      "id": "guest-hebhtz3",
+      "username": "CyberNinja_752",
+      "ratingMMR": 1200,
+      "auraPoints": 0,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793047887762
     }
   },
   "matchHistory": [
@@ -2261,6 +2276,17 @@
     {
       "id": "guest-jbbtko3",
       "username": "CyberNinja_608",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout",
+      "auraPoints": 0,
+      "solved": 0,
+      "matchesPlayed": 0,
+      "matchesWon": 0,
+      "highestStreak": 0
+    },
+    {
+      "id": "guest-hebhtz3",
+      "username": "CyberNinja_752",
       "ratingMMR": 1200,
       "rankTier": "Byte Scout",
       "auraPoints": 0,

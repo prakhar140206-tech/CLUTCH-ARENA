@@ -21,8 +21,10 @@ import {
   Shield,
   Smartphone,
   Sparkles,
-  Zap
+  Zap,
+  Users
 } from 'lucide-react';
+import { FriendsModal } from '../friends/FriendsModal.js';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -43,6 +45,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [friendsModalOpen, setFriendsModalOpen] = useState<boolean>(false);
 
   const active = activeScreen || currentScreen;
 
@@ -231,6 +234,18 @@ export const AppShell: React.FC<AppShellProps> = ({
               <span>ARENA ONLINE</span>
             </div>
 
+            {/* Friends System Trigger */}
+            {!userProfile.isGuest && (
+              <button
+                onClick={() => setFriendsModalOpen(true)}
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-clutch-surface-light border border-clutch-border hover:border-clutch-violet hover:bg-clutch-violet/10 text-xs font-mono font-medium text-clutch-lavender transition-all shadow-sm"
+                title="Friends & Match Invites"
+              >
+                <Users className="w-3.5 h-3.5 text-clutch-lavender" />
+                <span className="hidden sm:inline">Friends</span>
+              </button>
+            )}
+
             {/* Aura Points Pill */}
             <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-full bg-clutch-surface-elevated border border-clutch-violet/40 text-[11px] sm:text-xs font-mono font-bold text-clutch-lavender shadow-sm">
               <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-clutch-amber fill-current" />
@@ -314,6 +329,12 @@ export const AppShell: React.FC<AppShellProps> = ({
           })}
         </nav>
       </div>
+
+      {/* Friends Modal */}
+      <FriendsModal
+        isOpen={friendsModalOpen}
+        onClose={() => setFriendsModalOpen(false)}
+      />
     </div>
   );
 };

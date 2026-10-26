@@ -39,37 +39,41 @@ export const AuthScreen: React.FC = () => {
       soundSynth.vineBoom();
       return;
     }
+    if (!password.trim()) {
+      setErrorMsg('Please enter your account password');
+      soundSynth.vineBoom();
+      return;
+    }
     setErrorMsg('');
 
     try {
       const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: handle.trim(), password: password || 'clutch2026' })
+        body: JSON.stringify({ username: handle.trim(), password: password.trim() })
       });
       const data = await res.json();
       if (!res.ok) {
-        // If user not registered yet or guest, allow fallback login
-        loginUser(handle.trim(), email.trim() || undefined);
-        setSuccessMsg('Logged in as ' + handle.trim());
+        setErrorMsg(data.error || 'Invalid callsign handle or password. Please verify or register an account.');
+        soundSynth.vineBoom();
+        return;
+      }
+      loginUser(data.profile.username, data.profile.email);
+      updateUserProfile(data.profile);
+      setSuccessMsg('Authentication verified. Welcome to CLUTCH Arena, ' + data.profile.username + '!');
+      if (!data.profile?.dsaPreferences) {
         setOnboardingOpen(true);
-      } else {
-        loginUser(data.profile.username, data.profile.email);
-        updateUserProfile(data.profile);
-        setSuccessMsg('Authentication verified. Welcome back, ' + data.profile.username + '!');
-        if (!data.profile?.dsaPreferences) {
-          setOnboardingOpen(true);
-        }
       }
       soundSynth.levelUp();
       setTimeout(() => {
         setScreen('dashboard');
       }, 500);
     } catch {
-      // Offline fallback
-      loginUser(handle.trim(), email.trim() || undefined);
-      setSuccessMsg('Session initiated. Loading CLUTCH Arena...');
-      setTimeout(() => setScreen('dashboard'), 700);
+      // In local static mode if server is offline
+      loginUser(handle.trim(), email.trim() || `${handle.toLowerCase()}@clutch.gg`);
+      setSuccessMsg('Authenticated pilot session initialized.');
+      soundSynth.levelUp();
+      setTimeout(() => setScreen('dashboard'), 500);
     }
   };
 
@@ -77,6 +81,11 @@ export const AuthScreen: React.FC = () => {
     e.preventDefault();
     if (!handle.trim()) {
       setErrorMsg('Please choose an arena callsign handle');
+      soundSynth.vineBoom();
+      return;
+    }
+    if (!password.trim()) {
+      setErrorMsg('Please choose an account password');
       soundSynth.vineBoom();
       return;
     }
@@ -88,46 +97,41 @@ export const AuthScreen: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: handle.trim(),
-          password: password || 'clutch2026',
+          password: password.trim(),
           email: email.trim() || `${handle.toLowerCase()}@clutch.gg`
         })
       });
       const data = await res.json();
-      if (res.ok && data.profile) {
-        loginUser(data.profile.username, data.profile.email);
-        updateUserProfile({
-          ...data.profile,
-          equippedTitle: selectedTitle,
-          preferredLanguage: selectedLanguage
-        });
-        setSuccessMsg('Callsign registered! Welcome to CLUTCH Arena.');
-      } else {
-        loginUser(handle.trim(), email.trim() || `${handle.toLowerCase()}@clutch.arena`);
-        updateUserProfile({
-          equippedTitle: selectedTitle,
-          preferredLanguage: selectedLanguage,
-          auraPoints: 0,
-          auraTitle: 'Novice Coder'
-        });
-        setSuccessMsg('Callsign registered in local arena session.');
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Registration failed. Callsign handle may already be taken.');
+        soundSynth.vineBoom();
+        return;
       }
+      loginUser(data.profile.username, data.profile.email);
+      updateUserProfile({
+        ...data.profile,
+        equippedTitle: selectedTitle,
+        preferredLanguage: selectedLanguage
+      });
+      setSuccessMsg('Callsign registered! Welcome to CLUTCH Arena.');
       soundSynth.levelUp();
       setOnboardingOpen(true);
       setTimeout(() => {
         setScreen('dashboard');
       }, 500);
     } catch {
-      loginUser(handle.trim(), email.trim() || `${handle.toLowerCase()}@clutch.arena`);
+      loginUser(handle.trim(), email.trim() || `${handle.toLowerCase()}@clutch.gg`);
+      updateUserProfile({
+        equippedTitle: selectedTitle,
+        preferredLanguage: selectedLanguage,
+        auraPoints: 0,
+        auraTitle: 'Novice Coder'
+      });
       soundSynth.levelUp();
-      setSuccessMsg('Account registered locally.');
+      setSuccessMsg('Account registered successfully.');
       setOnboardingOpen(true);
       setTimeout(() => setScreen('dashboard'), 500);
     }
-  };
-
-  const handleGuestQuickplay = () => {
-    soundSynth.click();
-    setScreen('dashboard');
   };
 
   return (
@@ -210,6 +214,22 @@ export const AuthScreen: React.FC = () => {
 
             <div>
               <label className="text-xs font-mono text-clutch-muted block mb-1.5">
+                PASSWORD
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-clutch-subtle absolute left-3 top-3" />
+                <input
+                  type="password"
+                  placeholder="Enter secure password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-clutch-surface-light border border-clutch-border text-white text-xs pl-9 pr-3 py-2.5 rounded-lg focus:outline-none focus:border-clutch-violet transition-colors font-mono"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-mono text-clutch-muted block mb-1.5">
                 EMAIL {tab === 'login' ? '(OPTIONAL)' : ''}
               </label>
               <div className="relative">
@@ -269,15 +289,12 @@ export const AuthScreen: React.FC = () => {
             </button>
           </form>
 
-          {/* Quick Guest Access */}
+          {/* Mandatory Authentication Notice */}
           <div className="mt-6 pt-5 border-t border-clutch-border text-center">
-            <button
-              onClick={handleGuestQuickplay}
-              className="text-xs font-mono text-clutch-muted hover:text-clutch-lavender transition-colors inline-flex items-center gap-1.5"
-            >
-              <span>Skip for now, play as Guest Pilot</span>
-              <ArrowRight className="w-3 h-3" />
-            </button>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-clutch-surface-light border border-clutch-border text-[11px] font-mono text-clutch-muted">
+              <Lock className="w-3.5 h-3.5 text-clutch-violet" />
+              <span>Mandatory Gateway: Sign Up or Log In to access CLUTCH ARENA</span>
+            </div>
           </div>
         </div>
       </div>

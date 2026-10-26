@@ -15,11 +15,24 @@ import { DSAOnboardingModal } from './components/onboarding/DSAOnboardingModal.j
 
 export const App: React.FC = () => {
   const currentScreen = useGameStore((s) => s.currentScreen);
+  const userProfile = useGameStore((s) => s.userProfile);
 
   useEffect(() => {
     // Connect to real-time multiplayer backend
     socketService.connect();
   }, []);
+
+  // MANDATORY AUTHENTICATION GATE:
+  // If the user is a guest or not yet authenticated, they must sign up or log in.
+  // No one can access the platform, main dashboard, or game arenas without credentials.
+  if (userProfile.isGuest) {
+    return (
+      <div className="w-screen h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-hidden">
+        <AuthScreen />
+        <DSAOnboardingModal />
+      </div>
+    );
+  }
 
   return (
     <div className="w-screen h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-hidden">
