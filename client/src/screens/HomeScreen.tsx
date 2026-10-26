@@ -21,6 +21,7 @@ import {
   ChevronRight,
   LogIn
 } from 'lucide-react';
+import { CyberTiltCard } from '../components/ui/CyberTiltCard.js';
 
 export const HomeScreen: React.FC = () => {
   const setScreen = useGameStore((s) => s.setScreen);
@@ -159,9 +160,12 @@ export const HomeScreen: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="clutch-panel rounded-2xl p-6 flex flex-col justify-between">
+          <CyberTiltCard
+            glowColor="cyan"
+            className="p-6 flex flex-col justify-between"
+          >
             <div>
-              <div className="w-12 h-12 rounded-xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender mb-5">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 mb-5">
                 <Compass className="w-6 h-6" />
               </div>
               <h3 className="font-cyber font-bold text-lg text-white mb-2">1. Practice</h3>
@@ -169,13 +173,16 @@ export const HomeScreen: React.FC = () => {
                 Explore curated topics spanning Arrays, Trees, Graphs, and DP with adaptive time limits, hints, and automated sandbox validation.
               </p>
             </div>
-            <div className="pt-3 border-t border-clutch-border text-[11px] font-mono text-clutch-lavender flex items-center gap-1">
+            <div className="pt-3 border-t border-clutch-border/70 text-[11px] font-mono text-cyan-300 flex items-center gap-1">
               <span>Interactive Workspaces</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </div>
-          </div>
+          </CyberTiltCard>
 
-          <div className="clutch-panel rounded-2xl p-6 flex flex-col justify-between border-clutch-violet/40 shadow-lg">
+          <CyberTiltCard
+            glowColor="violet"
+            className="p-6 flex flex-col justify-between"
+          >
             <div>
               <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-clutch-violet/30 to-clutch-surface-elevated border border-clutch-violet/50 flex items-center justify-center text-white mb-5">
                 <Swords className="w-6 h-6 text-clutch-lavender" />
@@ -185,15 +192,18 @@ export const HomeScreen: React.FC = () => {
                 Enter synchronized multiplayer rounds with authoritative timers, real-time participant leaderboards, and instant execution results.
               </p>
             </div>
-            <div className="pt-3 border-t border-clutch-border text-[11px] font-mono text-clutch-lavender flex items-center gap-1">
+            <div className="pt-3 border-t border-clutch-border/70 text-[11px] font-mono text-clutch-lavender flex items-center gap-1">
               <span>Synchronized WebSockets</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </div>
-          </div>
+          </CyberTiltCard>
 
-          <div className="clutch-panel rounded-2xl p-6 flex flex-col justify-between">
+          <CyberTiltCard
+            glowColor="emerald"
+            className="p-6 flex flex-col justify-between"
+          >
             <div>
-              <div className="w-12 h-12 rounded-xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender mb-5">
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 mb-5">
                 <TrendingUp className="w-6 h-6" />
               </div>
               <h3 className="font-cyber font-bold text-lg text-white mb-2">3. Progress</h3>
@@ -201,11 +211,11 @@ export const HomeScreen: React.FC = () => {
                 Level up your rating MMR, unlock custom 3D avatar loadouts, and track your topic mastery across every data structure category.
               </p>
             </div>
-            <div className="pt-3 border-t border-clutch-border text-[11px] font-mono text-clutch-lavender flex items-center gap-1">
+            <div className="pt-3 border-t border-clutch-border/70 text-[11px] font-mono text-emerald-300 flex items-center gap-1">
               <span>Verifiable Elo Ratings</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </div>
-          </div>
+          </CyberTiltCard>
         </div>
       </section>
 

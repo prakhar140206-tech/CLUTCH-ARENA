@@ -202,15 +202,20 @@ export const AppShell: React.FC<AppShellProps> = ({
           ========================================================= */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* Top Header Bar */}
-        <header className="h-16 border-b border-clutch-border bg-clutch-surface/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between gap-4 z-20 shrink-0">
+        <header className="h-14 sm:h-16 border-b border-clutch-border bg-clutch-surface/90 backdrop-blur-xl px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 z-20 shrink-0">
           {/* Mobile Brand Logo */}
           <div className="flex items-center gap-2 md:hidden">
             <button
               onClick={() => handleNav('home')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 active:scale-95 transition-transform"
             >
-              <img src={CLUTCH_LOGO} alt="CLUTCH" className="w-8 h-8 object-contain" />
-              <span className="font-cyber font-black text-sm text-white">CLUTCH</span>
+              <div className="w-8 h-8 rounded-lg bg-clutch-violet/20 border border-clutch-violet/40 p-1 flex items-center justify-center shadow-[0_0_10px_rgba(124,58,237,0.3)]">
+                <img src={CLUTCH_LOGO} alt="CLUTCH" className="w-full h-full object-contain" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="font-cyber font-black text-xs text-white leading-tight">CLUTCH</span>
+                <span className="text-[8px] font-mono text-cyan-400">ONLINE</span>
+              </div>
             </button>
           </div>
 
@@ -227,7 +232,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           </div>
 
           {/* Right Header Badges & Actions */}
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
             {/* Live Server Indicator */}
             <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-clutch-surface-light border border-clutch-border text-[11px] font-mono text-clutch-muted">
               <span className="w-2 h-2 rounded-full bg-clutch-emerald animate-pulse" />
@@ -238,7 +243,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             {!userProfile.isGuest && (
               <button
                 onClick={() => setFriendsModalOpen(true)}
-                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-clutch-surface-light border border-clutch-border hover:border-clutch-violet hover:bg-clutch-violet/10 text-xs font-mono font-medium text-clutch-lavender transition-all shadow-sm"
+                className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-full bg-clutch-surface-light border border-clutch-border hover:border-clutch-violet hover:bg-clutch-violet/10 text-[11px] sm:text-xs font-mono font-medium text-clutch-lavender transition-all shadow-sm active:scale-95"
                 title="Friends & Match Invites"
               >
                 <Users className="w-3.5 h-3.5 text-clutch-lavender" />
@@ -250,13 +255,13 @@ export const AppShell: React.FC<AppShellProps> = ({
             <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-full bg-clutch-surface-elevated border border-clutch-violet/40 text-[11px] sm:text-xs font-mono font-bold text-clutch-lavender shadow-sm">
               <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-clutch-amber fill-current" />
               <span>{(userProfile.auraPoints || 0).toLocaleString()}</span>
-              <span className="text-[9px] sm:text-[10px] text-clutch-muted hidden xs:inline sm:inline">AURA</span>
+              <span className="text-[9px] sm:text-[10px] text-clutch-muted hidden sm:inline">AURA</span>
             </div>
 
             {/* Sound Toggle */}
             <button
               onClick={handleToggleSound}
-              className={`p-1.5 sm:p-2 rounded-lg border text-xs transition-colors flex items-center justify-center ${
+              className={`p-1.5 sm:p-2 rounded-lg border text-xs transition-colors flex items-center justify-center active:scale-95 ${
                 sfxEnabled
                   ? 'bg-clutch-violet/20 border-clutch-violet/40 text-clutch-lavender'
                   : 'bg-clutch-surface-light border-clutch-border text-clutch-subtle hover:text-white'
@@ -270,7 +275,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             {userProfile.isGuest ? (
               <button
                 onClick={() => handleNav('auth')}
-                className="clutch-btn-primary py-1 sm:py-1.5 px-2.5 sm:px-3 text-xs flex items-center gap-1.5"
+                className="clutch-btn-primary py-1 sm:py-1.5 px-2.5 sm:px-3 text-xs flex items-center gap-1.5 active:scale-95"
               >
                 <LogIn className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span className="hidden sm:inline">Sign In</span>
@@ -278,7 +283,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             ) : (
               <button
                 onClick={() => handleNav('profile')}
-                className="flex items-center gap-1.5 sm:gap-2 p-1 pl-1.5 sm:pl-2 pr-2 sm:pr-3 rounded-full bg-clutch-surface-light border border-clutch-border hover:border-clutch-violet transition-colors"
+                className="flex items-center gap-1.5 sm:gap-2 p-1 pl-1.5 sm:pl-2 pr-1.5 sm:pr-3 rounded-full bg-clutch-surface-light border border-clutch-border hover:border-clutch-violet transition-colors active:scale-95"
               >
                 <div
                   className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow"
@@ -295,38 +300,95 @@ export const AppShell: React.FC<AppShellProps> = ({
         </header>
 
         {/* Content Area with Independent Scroll */}
-        <main className="flex-1 overflow-y-auto pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-6 relative z-10">
+        <main className="flex-1 overflow-y-auto pb-[calc(5.2rem+env(safe-area-inset-bottom))] md:pb-6 relative z-10">
           {children}
         </main>
 
         {/* =========================================================
-            MOBILE BOTTOM NAVIGATION BAR
+            ANDROID PROFESSIONAL BOTTOM NAVIGATION DOCK (M3 + 3D ESPORTS)
             ========================================================= */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 min-h-[4rem] pb-[max(0.25rem,env(safe-area-inset-bottom))] bg-clutch-surface/95 border-t border-clutch-border backdrop-blur-2xl grid grid-cols-5 items-center px-1 z-40 shadow-2xl">
-          {bottomNavItems.map((item) => {
-            const Icon = item.icon;
-            const isCurrent = active === item.id;
-            return (
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-clutch-surface/95 border-t border-clutch-violet/30 rounded-t-2xl sm:rounded-t-3xl backdrop-blur-2xl z-40 shadow-[0_-10px_35px_rgba(0,0,0,0.85)] pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1">
+          <div className="grid grid-cols-5 items-center px-1">
+            {/* Tab 1: Dashboard */}
+            <button
+              onClick={() => handleNav('dashboard')}
+              className={`flex flex-col items-center justify-center py-1 transition-all active:scale-95 ${
+                active === 'dashboard' ? 'text-clutch-lavender font-bold' : 'text-clutch-subtle hover:text-clutch-muted'
+              }`}
+            >
+              <div className={`px-3 py-1 rounded-full transition-all ${active === 'dashboard' ? 'bg-clutch-violet/30 border border-clutch-violet/50 shadow-[0_0_12px_rgba(124,58,237,0.4)]' : ''}`}>
+                <LayoutDashboard className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] tracking-tight mt-0.5">Dashboard</span>
+            </button>
+
+            {/* Tab 2: Practice (Solo Quest) */}
+            <button
+              onClick={() => handleNav('solo_quest')}
+              className={`flex flex-col items-center justify-center py-1 transition-all active:scale-95 ${
+                active === 'solo_quest' ? 'text-clutch-lavender font-bold' : 'text-clutch-subtle hover:text-clutch-muted'
+              }`}
+            >
+              <div className={`px-3 py-1 rounded-full transition-all ${active === 'solo_quest' ? 'bg-clutch-violet/30 border border-clutch-violet/50 shadow-[0_0_12px_rgba(124,58,237,0.4)]' : ''}`}>
+                <Compass className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] tracking-tight mt-0.5">Practice</span>
+            </button>
+
+            {/* Tab 3 (CENTER FAB): 3D ELEVATED BATTLE LAUNCHER */}
+            <div className="relative flex flex-col items-center justify-center -mt-6">
               <button
-                key={item.id}
-                onClick={() => handleNav(item.id)}
-                className={`flex flex-col items-center justify-center py-1 transition-all text-center ${
-                  isCurrent
-                    ? 'text-clutch-lavender font-bold'
-                    : 'text-clutch-subtle hover:text-clutch-muted'
+                onClick={() => {
+                  soundSynth.airhorn();
+                  handleNav('lobby');
+                }}
+                className={`w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-cyan-400 p-0.5 shadow-[0_0_25px_rgba(124,58,237,0.7)] active:scale-90 transition-transform flex items-center justify-center relative group border border-white/20 ${
+                  active === 'lobby' ? 'ring-2 ring-cyan-400 ring-offset-2 ring-offset-clutch-bg' : ''
                 }`}
+                title="Launch Arena Battle"
               >
-                <div
-                  className={`p-1 rounded-md transition-colors ${
-                    isCurrent ? 'bg-clutch-violet/25' : ''
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
+                {/* 3D Inner Pod with Glowing Swords */}
+                <div className="w-full h-full rounded-2xl bg-clutch-surface flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-clutch-violet/40 to-transparent pointer-events-none" />
+                  <Swords className="w-6 h-6 text-white drop-shadow-[0_0_10px_rgba(167,139,250,0.8)]" />
+                  {/* Pulsing Live Dot */}
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400" />
                 </div>
-                <span className="text-[9px] sm:text-[10px] tracking-tight">{item.label}</span>
               </button>
-            );
-          })}
+              <span className="text-[9px] font-cyber font-bold tracking-wider text-clutch-lavender mt-1">ARENA</span>
+            </div>
+
+            {/* Tab 4: DSA Shorts */}
+            <button
+              onClick={() => handleNav('brainrot_shorts')}
+              className={`flex flex-col items-center justify-center py-1 transition-all active:scale-95 ${
+                active === 'brainrot_shorts' ? 'text-clutch-lavender font-bold' : 'text-clutch-subtle hover:text-clutch-muted'
+              }`}
+            >
+              <div className={`px-3 py-1 rounded-full transition-all relative ${active === 'brainrot_shorts' ? 'bg-clutch-violet/30 border border-clutch-violet/50 shadow-[0_0_12px_rgba(124,58,237,0.4)]' : ''}`}>
+                <Smartphone className="w-4 h-4" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-clutch-amber" />
+              </div>
+              <span className="text-[10px] tracking-tight mt-0.5">Shorts</span>
+            </button>
+
+            {/* Tab 5: Profile */}
+            <button
+              onClick={() => handleNav('profile')}
+              className={`flex flex-col items-center justify-center py-1 transition-all active:scale-95 ${
+                active === 'profile' ? 'text-clutch-lavender font-bold' : 'text-clutch-subtle hover:text-clutch-muted'
+              }`}
+            >
+              <div className={`px-3 py-1 rounded-full transition-all ${active === 'profile' ? 'bg-clutch-violet/30 border border-clutch-violet/50 shadow-[0_0_12px_rgba(124,58,237,0.4)]' : ''}`}>
+                <User className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] tracking-tight mt-0.5">Profile</span>
+            </button>
+          </div>
+
+          {/* Android Native Gesture Navigation Bar Pill */}
+          <div className="w-28 h-1 rounded-full bg-white/15 mx-auto mt-1 pointer-events-none" />
         </nav>
       </div>
 

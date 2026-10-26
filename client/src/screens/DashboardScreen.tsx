@@ -35,6 +35,7 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { FriendsModal } from '../components/friends/FriendsModal.js';
+import { CyberTiltCard } from '../components/ui/CyberTiltCard.js';
 
 interface QuestItem {
   id: string;
@@ -507,38 +508,41 @@ export const DashboardScreen: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* 3D Interactive Mode Cards with Horizontal Snap Scroll on Mobile */}
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-auto no-scrollbar pb-3 sm:pb-0 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0">
             {/* Mode 1: Solo Quest */}
-            <div
+            <CyberTiltCard
+              glowColor="cyan"
               onClick={handleLaunchSoloQuest}
-              className="clutch-panel clutch-panel-interactive rounded-2xl p-5 flex flex-col justify-between cursor-pointer group"
+              className="min-w-[270px] sm:min-w-0 snap-center p-5 flex flex-col justify-between"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-clutch-surface-elevated border border-clutch-border flex items-center justify-center text-clutch-lavender mb-4 group-hover:border-clutch-violet transition-colors">
-                  <Compass className="w-5 h-5" />
+                  <Compass className="w-5 h-5 text-cyan-400" />
                 </div>
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-cyber font-bold text-sm text-white">Solo Quest</h3>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-clutch-surface-light text-clutch-muted border border-clutch-border">PRACTICE</span>
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-cyan-950/40 text-cyan-300 border border-cyan-500/30">PRACTICE</span>
                 </div>
                 <p className="text-xs text-clutch-muted leading-relaxed mb-4">
                   Practice DSA topics independently with adaptive timers and isolated code execution.
                 </p>
               </div>
-              <div className="pt-3 border-t border-clutch-border flex items-center justify-between text-xs font-semibold text-clutch-lavender">
+              <div className="pt-3 border-t border-clutch-border/70 flex items-center justify-between text-xs font-semibold text-cyan-300">
                 <span>Start Practice</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
-            </div>
+            </CyberTiltCard>
 
             {/* Mode 2: AI Duel */}
-            <div
+            <CyberTiltCard
+              glowColor="violet"
               onClick={handleLaunchAIDuel}
-              className="clutch-panel clutch-panel-interactive rounded-2xl p-5 flex flex-col justify-between cursor-pointer group"
+              className="min-w-[270px] sm:min-w-0 snap-center p-5 flex flex-col justify-between"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-clutch-surface-elevated border border-clutch-border flex items-center justify-center text-clutch-lavender mb-4 group-hover:border-clutch-violet transition-colors">
-                  <Bot className="w-5 h-5" />
+                  <Bot className="w-5 h-5 text-clutch-lavender" />
                 </div>
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-cyber font-bold text-sm text-white">AI Duel</h3>
@@ -548,20 +552,21 @@ export const DashboardScreen: React.FC = () => {
                   Face off against an adaptive synthetic opponent simulating competitive pressure.
                 </p>
               </div>
-              <div className="pt-3 border-t border-clutch-border flex items-center justify-between text-xs font-semibold text-clutch-lavender">
+              <div className="pt-3 border-t border-clutch-border/70 flex items-center justify-between text-xs font-semibold text-clutch-lavender">
                 <span>Match AI</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
-            </div>
+            </CyberTiltCard>
 
             {/* Mode 3: Multiplayer Arena */}
-            <div
+            <CyberTiltCard
+              glowColor="emerald"
               onClick={handleLaunchMultiplayer}
-              className="clutch-panel clutch-panel-interactive rounded-2xl p-5 flex flex-col justify-between cursor-pointer group border-clutch-violet/40"
+              className="min-w-[270px] sm:min-w-0 snap-center p-5 flex flex-col justify-between border-clutch-violet/40"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-clutch-violet/30 to-clutch-surface-elevated border border-clutch-violet/50 flex items-center justify-center text-white mb-4 group-hover:border-clutch-lavender transition-colors shadow-sm">
-                  <Swords className="w-5 h-5 text-clutch-lavender" />
+                  <Swords className="w-5 h-5 text-emerald-400" />
                 </div>
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-cyber font-bold text-sm text-white">Multiplayer</h3>
@@ -571,34 +576,35 @@ export const DashboardScreen: React.FC = () => {
                   Join public queues or 70-player blitz tournaments with real participants.
                 </p>
               </div>
-              <div className="pt-3 border-t border-clutch-border flex items-center justify-between text-xs font-semibold text-clutch-lavender">
+              <div className="pt-3 border-t border-clutch-border/70 flex items-center justify-between text-xs font-semibold text-emerald-400">
                 <span>Find Match</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
-            </div>
+            </CyberTiltCard>
 
             {/* Mode 4: Private Room */}
-            <div
+            <CyberTiltCard
+              glowColor="amber"
               onClick={() => setShowPrivateModal(true)}
-              className="clutch-panel clutch-panel-interactive rounded-2xl p-5 flex flex-col justify-between cursor-pointer group"
+              className="min-w-[270px] sm:min-w-0 snap-center p-5 flex flex-col justify-between"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-clutch-surface-elevated border border-clutch-border flex items-center justify-center text-clutch-lavender mb-4 group-hover:border-clutch-violet transition-colors">
-                  <Users className="w-5 h-5" />
+                  <Users className="w-5 h-5 text-amber-400" />
                 </div>
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-cyber font-bold text-sm text-white">Private Room</h3>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-clutch-surface-light text-clutch-muted border border-clutch-border">CUSTOM</span>
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-amber-950/40 text-amber-300 border border-amber-500/30">CUSTOM</span>
                 </div>
                 <p className="text-xs text-clutch-muted leading-relaxed mb-4">
                   Host a private battle room or enter with a room code to play with friends.
                 </p>
               </div>
-              <div className="pt-3 border-t border-clutch-border flex items-center justify-between text-xs font-semibold text-clutch-lavender">
+              <div className="pt-3 border-t border-clutch-border/70 flex items-center justify-between text-xs font-semibold text-amber-300">
                 <span>Create / Join</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
-            </div>
+            </CyberTiltCard>
           </div>
         </section>
 
@@ -1000,8 +1006,13 @@ export const DashboardScreen: React.FC = () => {
           MODAL: PRIVATE ROOM HOST OR JOIN
           ========================================================= */}
       {showPrivateModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-md clutch-panel-elevated rounded-2xl p-6 relative">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+          <div className="w-full max-w-md clutch-panel-elevated rounded-t-3xl sm:rounded-2xl p-6 relative shadow-2xl">
+            {/* Android Drag Handle Pill (Mobile Only) */}
+            <div className="sm:hidden -mt-2 pb-3 flex justify-center">
+              <div className="w-12 h-1.5 rounded-full bg-white/20" />
+            </div>
+
             <h3 className="font-cyber font-bold text-lg text-white mb-2">PRIVATE ARENA ROOM</h3>
             <p className="text-xs font-mono text-clutch-muted mb-6">
               Create a custom match for friends or enter an existing invite room code.
