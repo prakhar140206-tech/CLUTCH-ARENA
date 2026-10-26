@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { RoomState, ClientChallenge, SubmissionResponse, AvatarLoadout, UserProfile, DSATopic } from '../../../shared/types.js';
 
 export type ScreenState = 
@@ -96,61 +97,78 @@ const DEFAULT_PROFILE: UserProfile = {
   }
 };
 
-export const useGameStore = create<GameStore>((set) => ({
-  currentScreen: 'cinematic',
-  setScreen: (screen) => set({ currentScreen: screen }),
+export const useGameStore = create<GameStore>()(
+  persist(
+    (set) => ({
+      currentScreen: 'dashboard',
+      setScreen: (screen) => set({ currentScreen: screen }),
 
-  userProfile: DEFAULT_PROFILE,
-  updateUserProfile: (updates) => set((s) => ({ userProfile: { ...s.userProfile, ...updates } })),
-  updateAvatar: (loadout) => set((s) => ({
-    userProfile: {
-      ...s.userProfile,
-      avatar: { ...s.userProfile.avatar, ...loadout }
+      userProfile: DEFAULT_PROFILE,
+      updateUserProfile: (updates) => set((s) => ({ userProfile: { ...s.userProfile, ...updates } })),
+      updateAvatar: (loadout) => set((s) => ({
+        userProfile: {
+          ...s.userProfile,
+          avatar: { ...s.userProfile.avatar, ...loadout }
+        }
+      })),
+
+      loginUser: (username, email) => set((s) => ({
+        userProfile: {
+          ...s.userProfile,
+          username,
+          email: email || `${username.toLowerCase()}@algorithm.cyber`,
+          isGuest: false
+        }
+      })),
+
+      logoutUser: () => set((s) => ({
+        userProfile: {
+          ...DEFAULT_PROFILE,
+          id: 'guest-' + Math.random().toString(36).substring(2, 9),
+          username: 'GuestCoder_' + Math.floor(100 + Math.random() * 900),
+          isGuest: true
+        }
+      })),
+
+      activeRoom: null,
+      setActiveRoom: (room) => set({ activeRoom: room }),
+      countdown: null,
+      setCountdown: (countdown) => set({ countdown }),
+      lastSubmissionResult: null,
+      setLastSubmissionResult: (lastSubmissionResult) => set({ lastSubmissionResult }),
+
+      soloTopic: 'all',
+      setSoloTopic: (soloTopic) => set({ soloTopic }),
+      soloActiveChallenge: null,
+      setSoloActiveChallenge: (soloActiveChallenge) => set({ soloActiveChallenge }),
+      soloSolvedIds: [],
+      markSoloSolved: (id) => set((s) => ({
+        soloSolvedIds: s.soloSolvedIds.includes(id) ? s.soloSolvedIds : [...s.soloSolvedIds, id]
+      })),
+
+      is3DFallback: false,
+      toggle3DFallback: () => set((s) => ({ is3DFallback: !s.is3DFallback })),
+      sfxEnabled: true,
+      toggleSfx: () => set((s) => ({ sfxEnabled: !s.sfxEnabled })),
+
+      editorTheme: 'cyber-neon',
+      editorFontSize: 14,
+      preferredLanguage: 'python',
+      setEditorSettings: (settings) => set((s) => ({ ...s, ...settings }))
+    }),
+    {
+      name: 'clutch_player_state_v1',
+      partialize: (state) => ({
+        userProfile: state.userProfile,
+        soloSolvedIds: state.soloSolvedIds,
+        editorTheme: state.editorTheme,
+        editorFontSize: state.editorFontSize,
+        preferredLanguage: state.preferredLanguage,
+        sfxEnabled: state.sfxEnabled,
+        is3DFallback: state.is3DFallback
+      })
     }
-  })),
+  )
+);
 
-  loginUser: (username, email) => set((s) => ({
-    userProfile: {
-      ...s.userProfile,
-      username,
-      email: email || `${username.toLowerCase()}@algorithm.cyber`,
-      isGuest: false
-    }
-  })),
-
-  logoutUser: () => set((s) => ({
-    userProfile: {
-      ...DEFAULT_PROFILE,
-      id: 'guest-' + Math.random().toString(36).substring(2, 9),
-      username: 'GuestCoder_' + Math.floor(100 + Math.random() * 900),
-      isGuest: true
-    }
-  })),
-
-  activeRoom: null,
-  setActiveRoom: (room) => set({ activeRoom: room }),
-  countdown: null,
-  setCountdown: (countdown) => set({ countdown }),
-  lastSubmissionResult: null,
-  setLastSubmissionResult: (lastSubmissionResult) => set({ lastSubmissionResult }),
-
-  soloTopic: 'all',
-  setSoloTopic: (soloTopic) => set({ soloTopic }),
-  soloActiveChallenge: null,
-  setSoloActiveChallenge: (soloActiveChallenge) => set({ soloActiveChallenge }),
-  soloSolvedIds: [],
-  markSoloSolved: (id) => set((s) => ({
-    soloSolvedIds: s.soloSolvedIds.includes(id) ? s.soloSolvedIds : [...s.soloSolvedIds, id]
-  })),
-
-  is3DFallback: false,
-  toggle3DFallback: () => set((s) => ({ is3DFallback: !s.is3DFallback })),
-  sfxEnabled: true,
-  toggleSfx: () => set((s) => ({ sfxEnabled: !s.sfxEnabled })),
-
-  editorTheme: 'cyber-neon',
-  editorFontSize: 14,
-  preferredLanguage: 'python',
-  setEditorSettings: (settings) => set((s) => ({ ...s, ...settings }))
-}));
 

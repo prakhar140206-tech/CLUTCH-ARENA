@@ -1,8 +1,9 @@
 import { io, Socket } from 'socket.io-client';
 import { useGameStore } from '../store/gameStore.js';
 import confetti from 'canvas-confetti';
+import { SOCKET_URL } from '../config/api';
 
-const SERVER_URL = 'http://localhost:4000';
+const SERVER_URL = SOCKET_URL;
 
 class SocketService {
   private socket: Socket | null = null;

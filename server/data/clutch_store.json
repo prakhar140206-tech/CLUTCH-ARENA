@@ -1,0 +1,3630 @@
+{
+  "users": {
+    "user-001": {
+      "id": "user-001",
+      "username": "SigmaAlgoLord",
+      "email": "sigma@clutch.gg",
+      "ratingMMR": 2450,
+      "auraPoints": 120500,
+      "auraTitle": "Algorithm God",
+      "rankTier": "Grandmaster Apex",
+      "stats": {
+        "matchesPlayed": 240,
+        "matchesWon": 198,
+        "challengesSolved": 890,
+        "highestStreak": 24
+      },
+      "lastActive": 1793012352465
+    },
+    "user-002": {
+      "id": "user-002",
+      "username": "QuantumByte",
+      "email": "quantum@clutch.gg",
+      "ratingMMR": 2180,
+      "auraPoints": 95400,
+      "auraTitle": "Matrix Surfer",
+      "rankTier": "Master Elite",
+      "stats": {
+        "matchesPlayed": 185,
+        "matchesWon": 142,
+        "challengesSolved": 620,
+        "highestStreak": 18
+      },
+      "lastActive": 1793012352465
+    },
+    "user-003": {
+      "id": "user-003",
+      "username": "CyberNinja_42",
+      "email": "ninja@clutch.gg",
+      "ratingMMR": 1950,
+      "auraPoints": 72000,
+      "auraTitle": "Pointer Whisperer",
+      "rankTier": "Diamond Vanguard",
+      "stats": {
+        "matchesPlayed": 120,
+        "matchesWon": 85,
+        "challengesSolved": 430,
+        "highestStreak": 14
+      },
+      "lastActive": 1793012352465
+    },
+    "host-user-0": {
+      "id": "host-user-0",
+      "username": "ArenaHost_0",
+      "ratingMMR": 1275,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 3,
+        "matchesWon": 3,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652435
+    },
+    "host-user-1": {
+      "id": "host-user-1",
+      "username": "ArenaHost_1",
+      "ratingMMR": 1275,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 3,
+        "matchesWon": 3,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652449
+    },
+    "host-user-2": {
+      "id": "host-user-2",
+      "username": "ArenaHost_2",
+      "ratingMMR": 1275,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 3,
+        "matchesWon": 3,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652459
+    },
+    "host-user-3": {
+      "id": "host-user-3",
+      "username": "ArenaHost_3",
+      "ratingMMR": 1275,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 3,
+        "matchesWon": 3,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652469
+    },
+    "player-1-4": {
+      "id": "player-1-4",
+      "username": "Contender_1_4",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652628
+    },
+    "player-0-1": {
+      "id": "player-0-1",
+      "username": "Contender_0_1",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014657491
+    },
+    "player-0-2": {
+      "id": "player-0-2",
+      "username": "Contender_0_2",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652686
+    },
+    "player-0-3": {
+      "id": "player-0-3",
+      "username": "Contender_0_3",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652692
+    },
+    "player-0-4": {
+      "id": "player-0-4",
+      "username": "Contender_0_4",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652700
+    },
+    "player-0-5": {
+      "id": "player-0-5",
+      "username": "Contender_0_5",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652707
+    },
+    "player-0-6": {
+      "id": "player-0-6",
+      "username": "Contender_0_6",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652714
+    },
+    "player-0-8": {
+      "id": "player-0-8",
+      "username": "Contender_0_8",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652668
+    },
+    "player-0-7": {
+      "id": "player-0-7",
+      "username": "Contender_0_7",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652721
+    },
+    "player-0-9": {
+      "id": "player-0-9",
+      "username": "Contender_0_9",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652732
+    },
+    "player-1-1": {
+      "id": "player-1-1",
+      "username": "Contender_1_1",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652740
+    },
+    "player-1-2": {
+      "id": "player-1-2",
+      "username": "Contender_1_2",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652747
+    },
+    "player-1-3": {
+      "id": "player-1-3",
+      "username": "Contender_1_3",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652753
+    },
+    "player-1-5": {
+      "id": "player-1-5",
+      "username": "Contender_1_5",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652760
+    },
+    "player-1-6": {
+      "id": "player-1-6",
+      "username": "Contender_1_6",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652674
+    },
+    "player-1-8": {
+      "id": "player-1-8",
+      "username": "Contender_1_8",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652774
+    },
+    "player-1-7": {
+      "id": "player-1-7",
+      "username": "Contender_1_7",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652767
+    },
+    "player-2-1": {
+      "id": "player-2-1",
+      "username": "Contender_2_1",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652792
+    },
+    "player-1-9": {
+      "id": "player-1-9",
+      "username": "Contender_1_9",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652783
+    },
+    "player-2-2": {
+      "id": "player-2-2",
+      "username": "Contender_2_2",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652568
+    },
+    "player-2-3": {
+      "id": "player-2-3",
+      "username": "Contender_2_3",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652649
+    },
+    "player-2-5": {
+      "id": "player-2-5",
+      "username": "Contender_2_5",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652581
+    },
+    "player-2-4": {
+      "id": "player-2-4",
+      "username": "Contender_2_4",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652575
+    },
+    "player-2-6": {
+      "id": "player-2-6",
+      "username": "Contender_2_6",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652520
+    },
+    "player-2-7": {
+      "id": "player-2-7",
+      "username": "Contender_2_7",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652588
+    },
+    "player-2-8": {
+      "id": "player-2-8",
+      "username": "Contender_2_8",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652596
+    },
+    "player-2-9": {
+      "id": "player-2-9",
+      "username": "Contender_2_9",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652604
+    },
+    "player-3-1": {
+      "id": "player-3-1",
+      "username": "Contender_3_1",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652613
+    },
+    "player-3-3": {
+      "id": "player-3-3",
+      "username": "Contender_3_3",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652659
+    },
+    "player-3-2": {
+      "id": "player-3-2",
+      "username": "Contender_3_2",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652528
+    },
+    "player-3-4": {
+      "id": "player-3-4",
+      "username": "Contender_3_4",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652534
+    },
+    "player-3-5": {
+      "id": "player-3-5",
+      "username": "Contender_3_5",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652800
+    },
+    "player-3-6": {
+      "id": "player-3-6",
+      "username": "Contender_3_6",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652807
+    },
+    "player-3-7": {
+      "id": "player-3-7",
+      "username": "Contender_3_7",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652821
+    },
+    "player-3-9": {
+      "id": "player-3-9",
+      "username": "Contender_3_9",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652839
+    },
+    "player-3-8": {
+      "id": "player-3-8",
+      "username": "Contender_3_8",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014652831
+    },
+    "guest-s5j8w1o": {
+      "id": "guest-s5j8w1o",
+      "username": "CyberNinja_604",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793013140548
+    },
+    "host-auth-test": {
+      "id": "host-auth-test",
+      "username": "RealHost",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638323
+    },
+    "guest-impostor": {
+      "id": "guest-impostor",
+      "username": "Impostor",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638338
+    },
+    "soak-host-0": {
+      "id": "soak-host-0",
+      "username": "SoakHost_0",
+      "ratingMMR": 1225,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 1,
+        "matchesWon": 1,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638368
+    },
+    "soak-host-1": {
+      "id": "soak-host-1",
+      "username": "SoakHost_1",
+      "ratingMMR": 1225,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 1,
+        "matchesWon": 1,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638380
+    },
+    "soak-host-2": {
+      "id": "soak-host-2",
+      "username": "SoakHost_2",
+      "ratingMMR": 1225,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 1,
+        "matchesWon": 1,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638392
+    },
+    "soak-host-3": {
+      "id": "soak-host-3",
+      "username": "SoakHost_3",
+      "ratingMMR": 1225,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 1,
+        "matchesWon": 1,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638404
+    },
+    "soak-host-4": {
+      "id": "soak-host-4",
+      "username": "SoakHost_4",
+      "ratingMMR": 1225,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 1,
+        "matchesWon": 1,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638417
+    },
+    "soak-player-0-1": {
+      "id": "soak-player-0-1",
+      "username": "Soak_0_1",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638431
+    },
+    "soak-player-0-2": {
+      "id": "soak-player-0-2",
+      "username": "Soak_0_2",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638445
+    },
+    "soak-player-0-3": {
+      "id": "soak-player-0-3",
+      "username": "Soak_0_3",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638461
+    },
+    "soak-player-0-4": {
+      "id": "soak-player-0-4",
+      "username": "Soak_0_4",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638475
+    },
+    "soak-player-0-5": {
+      "id": "soak-player-0-5",
+      "username": "Soak_0_5",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638489
+    },
+    "soak-player-0-6": {
+      "id": "soak-player-0-6",
+      "username": "Soak_0_6",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638503
+    },
+    "soak-player-0-7": {
+      "id": "soak-player-0-7",
+      "username": "Soak_0_7",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638517
+    },
+    "soak-player-0-8": {
+      "id": "soak-player-0-8",
+      "username": "Soak_0_8",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638532
+    },
+    "soak-player-0-9": {
+      "id": "soak-player-0-9",
+      "username": "Soak_0_9",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638547
+    },
+    "soak-player-1-1": {
+      "id": "soak-player-1-1",
+      "username": "Soak_1_1",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638564
+    },
+    "soak-player-1-2": {
+      "id": "soak-player-1-2",
+      "username": "Soak_1_2",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638576
+    },
+    "soak-player-1-3": {
+      "id": "soak-player-1-3",
+      "username": "Soak_1_3",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638590
+    },
+    "soak-player-1-4": {
+      "id": "soak-player-1-4",
+      "username": "Soak_1_4",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638602
+    },
+    "soak-player-1-5": {
+      "id": "soak-player-1-5",
+      "username": "Soak_1_5",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638617
+    },
+    "soak-player-1-6": {
+      "id": "soak-player-1-6",
+      "username": "Soak_1_6",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638630
+    },
+    "soak-player-1-7": {
+      "id": "soak-player-1-7",
+      "username": "Soak_1_7",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638646
+    },
+    "soak-player-1-8": {
+      "id": "soak-player-1-8",
+      "username": "Soak_1_8",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638660
+    },
+    "soak-player-1-9": {
+      "id": "soak-player-1-9",
+      "username": "Soak_1_9",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638674
+    },
+    "soak-player-2-1": {
+      "id": "soak-player-2-1",
+      "username": "Soak_2_1",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638688
+    },
+    "soak-player-2-2": {
+      "id": "soak-player-2-2",
+      "username": "Soak_2_2",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638701
+    },
+    "soak-player-2-3": {
+      "id": "soak-player-2-3",
+      "username": "Soak_2_3",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638714
+    },
+    "soak-player-2-4": {
+      "id": "soak-player-2-4",
+      "username": "Soak_2_4",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638727
+    },
+    "soak-player-2-5": {
+      "id": "soak-player-2-5",
+      "username": "Soak_2_5",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638739
+    },
+    "soak-player-2-6": {
+      "id": "soak-player-2-6",
+      "username": "Soak_2_6",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638753
+    },
+    "soak-player-2-7": {
+      "id": "soak-player-2-7",
+      "username": "Soak_2_7",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638768
+    },
+    "soak-player-2-8": {
+      "id": "soak-player-2-8",
+      "username": "Soak_2_8",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638784
+    },
+    "soak-player-2-9": {
+      "id": "soak-player-2-9",
+      "username": "Soak_2_9",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638798
+    },
+    "soak-player-3-1": {
+      "id": "soak-player-3-1",
+      "username": "Soak_3_1",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638814
+    },
+    "soak-player-3-2": {
+      "id": "soak-player-3-2",
+      "username": "Soak_3_2",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638828
+    },
+    "soak-player-3-3": {
+      "id": "soak-player-3-3",
+      "username": "Soak_3_3",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638842
+    },
+    "soak-player-3-4": {
+      "id": "soak-player-3-4",
+      "username": "Soak_3_4",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638856
+    },
+    "soak-player-3-5": {
+      "id": "soak-player-3-5",
+      "username": "Soak_3_5",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638869
+    },
+    "soak-player-3-6": {
+      "id": "soak-player-3-6",
+      "username": "Soak_3_6",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638883
+    },
+    "soak-player-3-7": {
+      "id": "soak-player-3-7",
+      "username": "Soak_3_7",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638902
+    },
+    "soak-player-3-8": {
+      "id": "soak-player-3-8",
+      "username": "Soak_3_8",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638916
+    },
+    "soak-player-3-9": {
+      "id": "soak-player-3-9",
+      "username": "Soak_3_9",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638931
+    },
+    "soak-player-4-1": {
+      "id": "soak-player-4-1",
+      "username": "Soak_4_1",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638945
+    },
+    "soak-player-4-2": {
+      "id": "soak-player-4-2",
+      "username": "Soak_4_2",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638958
+    },
+    "soak-player-4-3": {
+      "id": "soak-player-4-3",
+      "username": "Soak_4_3",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638971
+    },
+    "soak-player-4-4": {
+      "id": "soak-player-4-4",
+      "username": "Soak_4_4",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014638985
+    },
+    "soak-player-4-5": {
+      "id": "soak-player-4-5",
+      "username": "Soak_4_5",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014639001
+    },
+    "soak-player-4-6": {
+      "id": "soak-player-4-6",
+      "username": "Soak_4_6",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014639016
+    },
+    "soak-player-4-7": {
+      "id": "soak-player-4-7",
+      "username": "Soak_4_7",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014639031
+    },
+    "soak-player-4-8": {
+      "id": "soak-player-4-8",
+      "username": "Soak_4_8",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014639047
+    },
+    "soak-player-4-9": {
+      "id": "soak-player-4-9",
+      "username": "Soak_4_9",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793014639061
+    },
+    "usr-36d110cf787f4c25": {
+      "id": "usr-36d110cf787f4c25",
+      "username": "Phase6Agent_3397",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793018862450,
+      "email": "phase6agent_3397@clutch.gg",
+      "passwordHash": "bca7624d4056c82f4ebe927412b22fde:cf1d422bf1f9db08e563858d8426dbddbe894213132af9854ce256a6597ec05a9311106547c5ff6bb7bd0a4809bd5d812dc9eb473642f7d2760d272260612c7e"
+    },
+    "host_1793018862756": {
+      "id": "host_1793018862756",
+      "username": "HostAgent",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793018862759
+    },
+    "guest_1793018862756": {
+      "id": "guest_1793018862756",
+      "username": "GuestAgent",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793018862882
+    },
+    "usr-33330560310f3a4a": {
+      "id": "usr-33330560310f3a4a",
+      "username": "Phase6Agent_1220",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793018942946,
+      "email": "phase6agent_1220@clutch.gg",
+      "passwordHash": "82e4deba3de9cf4f5d9422caa3e0f69f:c8c8bd8d6fea52ecb65514a4ecd4496a6139a1c449f0679591d29b9fec641b8654e81b875df5bd378652aab1c27320dca01de78543f0a50b1fbf921f28d4fc32"
+    },
+    "host_1793018943163": {
+      "id": "host_1793018943163",
+      "username": "HostAgent",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793018943164
+    },
+    "guest_1793018943163": {
+      "id": "guest_1793018943163",
+      "username": "GuestAgent",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793018943168
+    },
+    "user_concurrent_quest_1793018958573": {
+      "id": "user_concurrent_quest_1793018958573",
+      "username": "IntegrityTester",
+      "ratingMMR": 1200,
+      "auraPoints": 600,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 1,
+        "highestStreak": 0
+      },
+      "lastActive": 1793018958573
+    },
+    "user_winner_1793018958576": {
+      "id": "user_winner_1793018958576",
+      "username": "MatchChampion",
+      "ratingMMR": 1525,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 1,
+        "matchesWon": 1,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793018958576
+    },
+    "usr-b342ec89d65cdfe5": {
+      "id": "usr-b342ec89d65cdfe5",
+      "username": "Phase6Agent_3878",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793020516951,
+      "email": "phase6agent_3878@clutch.gg",
+      "passwordHash": "bf26ba6f540f7e9926e37e025dd9b737:4b4e79ce42118cd51a79cc3e9d271e8d55f9ac702d02b8e771a6642b3ea2597de59f651201170101f8f0646a410cec8910e19b45c6d65461067d1cbb0ad5176e"
+    },
+    "host_1793020517204": {
+      "id": "host_1793020517204",
+      "username": "HostAgent",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793020517206
+    },
+    "guest_1793020517204": {
+      "id": "guest_1793020517204",
+      "username": "GuestAgent",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793020517213
+    }
+  },
+  "matchHistory": [
+    {
+      "id": "match_idempotent_1793018958576",
+      "timestamp": 1793018958577,
+      "mode": "blitz_1v1",
+      "durationMs": 45000,
+      "winner": {
+        "id": "user_winner_1793018958576",
+        "username": "MatchChampion",
+        "score": 350
+      },
+      "participantsCount": 2,
+      "leaderboardSnippet": [
+        {
+          "id": "user_winner_1793018958576",
+          "username": "MatchChampion",
+          "score": 350,
+          "rank": 1
+        }
+      ]
+    },
+    {
+      "id": "8deea130-cc33-460c-a4ed-e0a5af610cc4",
+      "timestamp": 1793017069203,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "soak-host-4",
+        "username": "SoakHost_4",
+        "score": 0
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "soak-host-4",
+          "username": "SoakHost_4",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 2000,
+          "avgTimeTakenSec": 2,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "soak-player-4-1",
+          "username": "Soak_4_1",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 2025,
+          "avgTimeTakenSec": 2.02,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "soak-player-4-2",
+          "username": "Soak_4_2",
+          "score": 0,
+          "rank": 3,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 2050,
+          "avgTimeTakenSec": 2.05,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "soak-player-4-3",
+          "username": "Soak_4_3",
+          "score": 0,
+          "rank": 4,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 2075,
+          "avgTimeTakenSec": 2.08,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "soak-player-4-4",
+          "username": "Soak_4_4",
+          "score": 0,
+          "rank": 5,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 2100,
+          "avgTimeTakenSec": 2.1,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "e5b10783-67bc-4265-a7d3-9e53a7c66634",
+      "timestamp": 1793017069188,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "soak-host-3",
+        "username": "SoakHost_3",
+        "score": 150
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "soak-host-3",
+          "username": "SoakHost_3",
+          "score": 150,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1750,
+          "avgTimeTakenSec": 1.75,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "soak-player-3-1",
+          "username": "Soak_3_1",
+          "score": 150,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1775,
+          "avgTimeTakenSec": 1.77,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "soak-player-3-2",
+          "username": "Soak_3_2",
+          "score": 150,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1800,
+          "avgTimeTakenSec": 1.8,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "soak-player-3-3",
+          "username": "Soak_3_3",
+          "score": 150,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1825,
+          "avgTimeTakenSec": 1.82,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "soak-player-3-4",
+          "username": "Soak_3_4",
+          "score": 150,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1850,
+          "avgTimeTakenSec": 1.85,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "9be7f7f4-6683-4643-b62d-93ed915e50e3",
+      "timestamp": 1793017069157,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "soak-host-2",
+        "username": "SoakHost_2",
+        "score": 0
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "soak-host-2",
+          "username": "SoakHost_2",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1500,
+          "avgTimeTakenSec": 1.5,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "soak-player-2-1",
+          "username": "Soak_2_1",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1525,
+          "avgTimeTakenSec": 1.52,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "soak-player-2-2",
+          "username": "Soak_2_2",
+          "score": 0,
+          "rank": 3,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1550,
+          "avgTimeTakenSec": 1.55,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "soak-player-2-3",
+          "username": "Soak_2_3",
+          "score": 0,
+          "rank": 4,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1575,
+          "avgTimeTakenSec": 1.57,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "soak-player-2-4",
+          "username": "Soak_2_4",
+          "score": 0,
+          "rank": 5,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1600,
+          "avgTimeTakenSec": 1.6,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "0f048ed4-ae9e-4f66-8332-346de3886554",
+      "timestamp": 1793017069126,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "soak-host-1",
+        "username": "SoakHost_1",
+        "score": 150
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "soak-host-1",
+          "username": "SoakHost_1",
+          "score": 150,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1250,
+          "avgTimeTakenSec": 1.25,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "soak-player-1-1",
+          "username": "Soak_1_1",
+          "score": 150,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1275,
+          "avgTimeTakenSec": 1.27,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "soak-player-1-2",
+          "username": "Soak_1_2",
+          "score": 150,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1300,
+          "avgTimeTakenSec": 1.3,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "soak-player-1-3",
+          "username": "Soak_1_3",
+          "score": 150,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1325,
+          "avgTimeTakenSec": 1.32,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "soak-player-1-4",
+          "username": "Soak_1_4",
+          "score": 150,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1350,
+          "avgTimeTakenSec": 1.35,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "786d36ad-dba5-4fd5-87c8-bf826d34c7d8",
+      "timestamp": 1793017069064,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "soak-host-0",
+        "username": "SoakHost_0",
+        "score": 150
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "soak-host-0",
+          "username": "SoakHost_0",
+          "score": 150,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1000,
+          "avgTimeTakenSec": 1,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "soak-player-0-1",
+          "username": "Soak_0_1",
+          "score": 150,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1025,
+          "avgTimeTakenSec": 1.02,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "soak-player-0-2",
+          "username": "Soak_0_2",
+          "score": 150,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1050,
+          "avgTimeTakenSec": 1.05,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "soak-player-0-3",
+          "username": "Soak_0_3",
+          "score": 150,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1075,
+          "avgTimeTakenSec": 1.07,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "soak-player-0-4",
+          "username": "Soak_0_4",
+          "score": 150,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1100,
+          "avgTimeTakenSec": 1.1,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "f376ec22-a115-4290-9643-d13921e09c4e",
+      "timestamp": 1793014912901,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-3",
+        "username": "ArenaHost_3",
+        "score": 0
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-3",
+          "username": "ArenaHost_3",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1800,
+          "avgTimeTakenSec": 1.8,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-3-1",
+          "username": "Contender_3_1",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1820,
+          "avgTimeTakenSec": 1.82,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-3-2",
+          "username": "Contender_3_2",
+          "score": 0,
+          "rank": 3,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1840,
+          "avgTimeTakenSec": 1.84,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-3-3",
+          "username": "Contender_3_3",
+          "score": 0,
+          "rank": 4,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1860,
+          "avgTimeTakenSec": 1.86,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-3-4",
+          "username": "Contender_3_4",
+          "score": 0,
+          "rank": 5,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1880,
+          "avgTimeTakenSec": 1.88,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "35286f27-aad3-43af-9d7b-18d088ea73f0",
+      "timestamp": 1793014912870,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-2",
+        "username": "ArenaHost_2",
+        "score": 149
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-2",
+          "username": "ArenaHost_2",
+          "score": 149,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1600,
+          "avgTimeTakenSec": 1.6,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-2-1",
+          "username": "Contender_2_1",
+          "score": 149,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1620,
+          "avgTimeTakenSec": 1.62,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-2-2",
+          "username": "Contender_2_2",
+          "score": 149,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1640,
+          "avgTimeTakenSec": 1.64,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-2-3",
+          "username": "Contender_2_3",
+          "score": 149,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1660,
+          "avgTimeTakenSec": 1.66,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-2-4",
+          "username": "Contender_2_4",
+          "score": 149,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1680,
+          "avgTimeTakenSec": 1.68,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "9656a3db-5335-4260-b56c-584ff5b648bf",
+      "timestamp": 1793014912840,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-1",
+        "username": "ArenaHost_1",
+        "score": 0
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-1",
+          "username": "ArenaHost_1",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1400,
+          "avgTimeTakenSec": 1.4,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-1-1",
+          "username": "Contender_1_1",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1420,
+          "avgTimeTakenSec": 1.42,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-1-2",
+          "username": "Contender_1_2",
+          "score": 0,
+          "rank": 3,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1440,
+          "avgTimeTakenSec": 1.44,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-1-3",
+          "username": "Contender_1_3",
+          "score": 0,
+          "rank": 4,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1460,
+          "avgTimeTakenSec": 1.46,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-1-4",
+          "username": "Contender_1_4",
+          "score": 0,
+          "rank": 5,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1480,
+          "avgTimeTakenSec": 1.48,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "052d3630-9919-48cf-ac64-e288ed2b84ae",
+      "timestamp": 1793014912793,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-0",
+        "username": "ArenaHost_0",
+        "score": 0
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-0",
+          "username": "ArenaHost_0",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1200,
+          "avgTimeTakenSec": 1.2,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-0-1",
+          "username": "Contender_0_1",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1220,
+          "avgTimeTakenSec": 1.22,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-0-2",
+          "username": "Contender_0_2",
+          "score": 0,
+          "rank": 3,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1240,
+          "avgTimeTakenSec": 1.24,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-0-3",
+          "username": "Contender_0_3",
+          "score": 0,
+          "rank": 4,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1260,
+          "avgTimeTakenSec": 1.26,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-0-4",
+          "username": "Contender_0_4",
+          "score": 0,
+          "rank": 5,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1280,
+          "avgTimeTakenSec": 1.28,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "0ba1537d-4f65-4312-9892-76aabf7d5644",
+      "timestamp": 1793013976197,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-3",
+        "username": "ArenaHost_3",
+        "score": 0
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-3",
+          "username": "ArenaHost_3",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1800,
+          "avgTimeTakenSec": 1.8,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-3-1",
+          "username": "Contender_3_1",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1820,
+          "avgTimeTakenSec": 1.82,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-3-2",
+          "username": "Contender_3_2",
+          "score": 0,
+          "rank": 3,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1840,
+          "avgTimeTakenSec": 1.84,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-3-3",
+          "username": "Contender_3_3",
+          "score": 0,
+          "rank": 4,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1860,
+          "avgTimeTakenSec": 1.86,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-3-4",
+          "username": "Contender_3_4",
+          "score": 0,
+          "rank": 5,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1880,
+          "avgTimeTakenSec": 1.88,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "864d5ad3-d457-4039-a28f-f7307ae354c2",
+      "timestamp": 1793013976196,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-2",
+        "username": "ArenaHost_2",
+        "score": 149
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-2",
+          "username": "ArenaHost_2",
+          "score": 149,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1600,
+          "avgTimeTakenSec": 1.6,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-2-1",
+          "username": "Contender_2_1",
+          "score": 149,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1620,
+          "avgTimeTakenSec": 1.62,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-2-2",
+          "username": "Contender_2_2",
+          "score": 149,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1640,
+          "avgTimeTakenSec": 1.64,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-2-3",
+          "username": "Contender_2_3",
+          "score": 149,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1660,
+          "avgTimeTakenSec": 1.66,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-2-4",
+          "username": "Contender_2_4",
+          "score": 149,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1680,
+          "avgTimeTakenSec": 1.68,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "0d1df2a8-d908-4813-85fe-20f3f0354030",
+      "timestamp": 1793013976194,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-1",
+        "username": "ArenaHost_1",
+        "score": 149
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-1",
+          "username": "ArenaHost_1",
+          "score": 149,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1400,
+          "avgTimeTakenSec": 1.4,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-1-1",
+          "username": "Contender_1_1",
+          "score": 149,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1420,
+          "avgTimeTakenSec": 1.42,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-1-2",
+          "username": "Contender_1_2",
+          "score": 149,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1440,
+          "avgTimeTakenSec": 1.44,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-1-3",
+          "username": "Contender_1_3",
+          "score": 149,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1460,
+          "avgTimeTakenSec": 1.46,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-1-4",
+          "username": "Contender_1_4",
+          "score": 149,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1480,
+          "avgTimeTakenSec": 1.48,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "23f26968-dd9d-48b2-9b92-83210c973ce2",
+      "timestamp": 1793013976192,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-0",
+        "username": "ArenaHost_0",
+        "score": 150
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-0",
+          "username": "ArenaHost_0",
+          "score": 150,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1200,
+          "avgTimeTakenSec": 1.2,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-0-1",
+          "username": "Contender_0_1",
+          "score": 149,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1220,
+          "avgTimeTakenSec": 1.22,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-0-2",
+          "username": "Contender_0_2",
+          "score": 149,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1240,
+          "avgTimeTakenSec": 1.24,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-0-3",
+          "username": "Contender_0_3",
+          "score": 149,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1260,
+          "avgTimeTakenSec": 1.26,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-0-4",
+          "username": "Contender_0_4",
+          "score": 149,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1280,
+          "avgTimeTakenSec": 1.28,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "0b8d5f8e-f958-48c7-9d0b-77d37802cabb",
+      "timestamp": 1793012833860,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-3",
+        "username": "ArenaHost_3",
+        "score": 149
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-3",
+          "username": "ArenaHost_3",
+          "score": 149,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1800,
+          "avgTimeTakenSec": 1.8,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-3-1",
+          "username": "Contender_3_1",
+          "score": 149,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1820,
+          "avgTimeTakenSec": 1.82,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-3-2",
+          "username": "Contender_3_2",
+          "score": 149,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1840,
+          "avgTimeTakenSec": 1.84,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-3-3",
+          "username": "Contender_3_3",
+          "score": 149,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1860,
+          "avgTimeTakenSec": 1.86,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-3-4",
+          "username": "Contender_3_4",
+          "score": 149,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1880,
+          "avgTimeTakenSec": 1.88,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "fe528501-c0df-4be5-8967-3d92e67f6264",
+      "timestamp": 1793012833857,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-2",
+        "username": "ArenaHost_2",
+        "score": 0
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-2",
+          "username": "ArenaHost_2",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1600,
+          "avgTimeTakenSec": 1.6,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-2-1",
+          "username": "Contender_2_1",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1620,
+          "avgTimeTakenSec": 1.62,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-2-2",
+          "username": "Contender_2_2",
+          "score": 0,
+          "rank": 3,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1640,
+          "avgTimeTakenSec": 1.64,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-2-3",
+          "username": "Contender_2_3",
+          "score": 0,
+          "rank": 4,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1660,
+          "avgTimeTakenSec": 1.66,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-2-4",
+          "username": "Contender_2_4",
+          "score": 0,
+          "rank": 5,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 1680,
+          "avgTimeTakenSec": 1.68,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "79481f51-5022-478b-b63b-c299ddf785eb",
+      "timestamp": 1793012833723,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-1",
+        "username": "ArenaHost_1",
+        "score": 149
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-1",
+          "username": "ArenaHost_1",
+          "score": 149,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1400,
+          "avgTimeTakenSec": 1.4,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-1-1",
+          "username": "Contender_1_1",
+          "score": 149,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1420,
+          "avgTimeTakenSec": 1.42,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-1-2",
+          "username": "Contender_1_2",
+          "score": 149,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1440,
+          "avgTimeTakenSec": 1.44,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-1-3",
+          "username": "Contender_1_3",
+          "score": 149,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1460,
+          "avgTimeTakenSec": 1.46,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-1-4",
+          "username": "Contender_1_4",
+          "score": 149,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1480,
+          "avgTimeTakenSec": 1.48,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    },
+    {
+      "id": "92f4d6c5-234f-4a34-b58c-9d7d4ffca21d",
+      "timestamp": 1793012833680,
+      "mode": "duel_1v1",
+      "durationMs": 0,
+      "winner": {
+        "id": "host-user-0",
+        "username": "ArenaHost_0",
+        "score": 150
+      },
+      "participantsCount": 10,
+      "leaderboardSnippet": [
+        {
+          "id": "host-user-0",
+          "username": "ArenaHost_0",
+          "score": 150,
+          "rank": 1,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1200,
+          "avgTimeTakenSec": 1.2,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "player-0-1",
+          "username": "Contender_0_1",
+          "score": 149,
+          "rank": 2,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1220,
+          "avgTimeTakenSec": 1.22,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        },
+        {
+          "id": "player-0-2",
+          "username": "Contender_0_2",
+          "score": 149,
+          "rank": 3,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1240,
+          "avgTimeTakenSec": 1.24,
+          "rewardCoins": 7500,
+          "rewardBadge": "🥉 Apex Solver"
+        },
+        {
+          "id": "player-0-3",
+          "username": "Contender_0_3",
+          "score": 149,
+          "rank": 4,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1260,
+          "avgTimeTakenSec": 1.26,
+          "rewardCoins": 4000,
+          "rewardBadge": "⚡ Blitz Veteran"
+        },
+        {
+          "id": "player-0-4",
+          "username": "Contender_0_4",
+          "score": 149,
+          "rank": 5,
+          "combo": 1,
+          "isEliminated": false,
+          "correctCount": 1,
+          "totalTimeTakenMs": 1280,
+          "avgTimeTakenSec": 1.28,
+          "rewardCoins": 3500,
+          "rewardBadge": "⚡ Blitz Veteran"
+        }
+      ]
+    }
+  ],
+  "globalLeaderboard": [
+    {
+      "id": "user-001",
+      "username": "SigmaAlgoLord",
+      "ratingMMR": 2450,
+      "rankTier": "Grandmaster Apex"
+    },
+    {
+      "id": "user-002",
+      "username": "QuantumByte",
+      "ratingMMR": 2180,
+      "rankTier": "Master Elite"
+    },
+    {
+      "id": "user-003",
+      "username": "CyberNinja_42",
+      "ratingMMR": 1950,
+      "rankTier": "Diamond Vanguard"
+    },
+    {
+      "id": "user_winner_1793018958576",
+      "username": "MatchChampion",
+      "ratingMMR": 1525,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "host-user-0",
+      "username": "ArenaHost_0",
+      "ratingMMR": 1275,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "host-user-1",
+      "username": "ArenaHost_1",
+      "ratingMMR": 1275,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "host-user-2",
+      "username": "ArenaHost_2",
+      "ratingMMR": 1275,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "host-user-3",
+      "username": "ArenaHost_3",
+      "ratingMMR": 1275,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-host-0",
+      "username": "SoakHost_0",
+      "ratingMMR": 1225,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-host-1",
+      "username": "SoakHost_1",
+      "ratingMMR": 1225,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-host-2",
+      "username": "SoakHost_2",
+      "ratingMMR": 1225,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-host-3",
+      "username": "SoakHost_3",
+      "ratingMMR": 1225,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-host-4",
+      "username": "SoakHost_4",
+      "ratingMMR": 1225,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-1-4",
+      "username": "Contender_1_4",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-0-1",
+      "username": "Contender_0_1",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-0-2",
+      "username": "Contender_0_2",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-0-3",
+      "username": "Contender_0_3",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-0-4",
+      "username": "Contender_0_4",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-0-5",
+      "username": "Contender_0_5",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-0-6",
+      "username": "Contender_0_6",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-0-8",
+      "username": "Contender_0_8",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-0-7",
+      "username": "Contender_0_7",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-0-9",
+      "username": "Contender_0_9",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-1-1",
+      "username": "Contender_1_1",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-1-2",
+      "username": "Contender_1_2",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-1-3",
+      "username": "Contender_1_3",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-1-5",
+      "username": "Contender_1_5",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-1-6",
+      "username": "Contender_1_6",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-1-8",
+      "username": "Contender_1_8",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-1-7",
+      "username": "Contender_1_7",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-2-1",
+      "username": "Contender_2_1",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-1-9",
+      "username": "Contender_1_9",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-2-2",
+      "username": "Contender_2_2",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-2-3",
+      "username": "Contender_2_3",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-2-5",
+      "username": "Contender_2_5",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-2-4",
+      "username": "Contender_2_4",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-2-6",
+      "username": "Contender_2_6",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-2-7",
+      "username": "Contender_2_7",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-2-8",
+      "username": "Contender_2_8",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-2-9",
+      "username": "Contender_2_9",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-3-1",
+      "username": "Contender_3_1",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-3-3",
+      "username": "Contender_3_3",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-3-2",
+      "username": "Contender_3_2",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-3-4",
+      "username": "Contender_3_4",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-3-5",
+      "username": "Contender_3_5",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-3-6",
+      "username": "Contender_3_6",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-3-7",
+      "username": "Contender_3_7",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-3-9",
+      "username": "Contender_3_9",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-3-8",
+      "username": "Contender_3_8",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "guest-s5j8w1o",
+      "username": "CyberNinja_604",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "host-auth-test",
+      "username": "RealHost",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "guest-impostor",
+      "username": "Impostor",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-0-1",
+      "username": "Soak_0_1",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-0-2",
+      "username": "Soak_0_2",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-0-3",
+      "username": "Soak_0_3",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-0-4",
+      "username": "Soak_0_4",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-0-5",
+      "username": "Soak_0_5",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-0-6",
+      "username": "Soak_0_6",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-0-7",
+      "username": "Soak_0_7",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-0-8",
+      "username": "Soak_0_8",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-0-9",
+      "username": "Soak_0_9",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-1-1",
+      "username": "Soak_1_1",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-1-2",
+      "username": "Soak_1_2",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-1-3",
+      "username": "Soak_1_3",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-1-4",
+      "username": "Soak_1_4",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-1-5",
+      "username": "Soak_1_5",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-1-6",
+      "username": "Soak_1_6",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-1-7",
+      "username": "Soak_1_7",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-1-8",
+      "username": "Soak_1_8",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-1-9",
+      "username": "Soak_1_9",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-2-1",
+      "username": "Soak_2_1",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-2-2",
+      "username": "Soak_2_2",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-2-3",
+      "username": "Soak_2_3",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-2-4",
+      "username": "Soak_2_4",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-2-5",
+      "username": "Soak_2_5",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-2-6",
+      "username": "Soak_2_6",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-2-7",
+      "username": "Soak_2_7",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-2-8",
+      "username": "Soak_2_8",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-2-9",
+      "username": "Soak_2_9",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-3-1",
+      "username": "Soak_3_1",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-3-2",
+      "username": "Soak_3_2",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-3-3",
+      "username": "Soak_3_3",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-3-4",
+      "username": "Soak_3_4",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-3-5",
+      "username": "Soak_3_5",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-3-6",
+      "username": "Soak_3_6",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-3-7",
+      "username": "Soak_3_7",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-3-8",
+      "username": "Soak_3_8",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-3-9",
+      "username": "Soak_3_9",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-4-1",
+      "username": "Soak_4_1",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-4-2",
+      "username": "Soak_4_2",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-4-3",
+      "username": "Soak_4_3",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-4-4",
+      "username": "Soak_4_4",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-4-5",
+      "username": "Soak_4_5",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-4-6",
+      "username": "Soak_4_6",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-4-7",
+      "username": "Soak_4_7",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-4-8",
+      "username": "Soak_4_8",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "soak-player-4-9",
+      "username": "Soak_4_9",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "usr-36d110cf787f4c25",
+      "username": "Phase6Agent_3397",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "host_1793018862756",
+      "username": "HostAgent",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "guest_1793018862756",
+      "username": "GuestAgent",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "usr-33330560310f3a4a",
+      "username": "Phase6Agent_1220",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "host_1793018943163",
+      "username": "HostAgent",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "guest_1793018943163",
+      "username": "GuestAgent",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "user_concurrent_quest_1793018958573",
+      "username": "IntegrityTester",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "usr-b342ec89d65cdfe5",
+      "username": "Phase6Agent_3878",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "host_1793020517204",
+      "username": "HostAgent",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "guest_1793020517204",
+      "username": "GuestAgent",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    }
+  ],
+  "questCompletions": {
+    "user_concurrent_quest_1793018958573_challenge_bfs_traversal": true
+  }
+}

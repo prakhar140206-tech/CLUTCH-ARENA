@@ -7,18 +7,37 @@ export default {
   theme: {
     extend: {
       colors: {
+        clutch: {
+          bg: '#060713',
+          surface: '#0c0f24',
+          'surface-light': '#121634',
+          'surface-elevated': '#171c42',
+          border: '#1e2552',
+          'border-focus': '#7c3aed',
+          violet: '#7c3aed',
+          'violet-light': '#8b5cf6',
+          lavender: '#c4b5fd',
+          'lavender-muted': '#a78bfa',
+          text: '#f8fafc',
+          muted: '#94a3b8',
+          subtle: '#64748b',
+          emerald: '#10b981',
+          amber: '#f59e0b',
+          rose: '#ef4444',
+          cyan: '#06b6d4'
+        },
         cyber: {
-          dark: '#080811',
-          violet: '#8B5CF6',
-          cyan: '#06B6D4',
-          lime: '#84CC16',
-          magenta: '#EC4899'
+          dark: '#060713',
+          violet: '#7c3aed',
+          cyan: '#06b6d4',
+          lime: '#10b981',
+          magenta: '#ec4899'
         }
       },
       fontFamily: {
-        cyber: ['Orbitron', 'Outfit', 'sans-serif'],
+        cyber: ['Orbitron', 'Space Grotesk', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
-        sans: ['Outfit', 'sans-serif']
+        sans: ['Outfit', 'Space Grotesk', 'sans-serif']
       }
     },
   },

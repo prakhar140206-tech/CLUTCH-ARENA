@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ClientChallenge } from '../../../../shared/types.js';
-import { GitBranch, CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
+import { GitBranch, CheckCircle2, XCircle, ArrowRight, Send } from 'lucide-react';
 
 interface VisualPuzzleWorkspaceProps {
   challenge: ClientChallenge;
@@ -22,16 +22,16 @@ export const VisualPuzzleWorkspace: React.FC<VisualPuzzleWorkspaceProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-950/70 border border-violet-500/30 rounded-lg p-5 overflow-y-auto">
-      <div className="flex items-center gap-2 mb-3 text-cyan-400 font-cyber font-bold text-sm tracking-wide">
+    <div className="flex flex-col h-full clutch-panel rounded-2xl overflow-y-auto p-5 sm:p-6 font-sans border border-clutch-border">
+      <div className="flex items-center gap-2 mb-3 text-clutch-lavender font-cyber font-bold text-xs sm:text-sm tracking-wide">
         <GitBranch className="w-4 h-4" />
         <span>INTERACTIVE DATA STRUCTURE MATRIX</span>
       </div>
 
-      <div className="text-slate-300 text-sm mb-4 bg-slate-900/60 p-3 rounded border border-slate-800">
+      <div className="text-slate-200 text-xs sm:text-sm mb-4 bg-clutch-surface-light p-3.5 rounded-xl border border-clutch-border">
         <div className="font-semibold text-white mb-1">{challenge.prompt}</div>
         {visualData && (
-          <div className="text-xs text-cyan-300 font-mono mt-1">
+          <div className="text-xs text-clutch-lavender font-mono mt-1">
             Goal: {visualData.instruction}
           </div>
         )}
@@ -39,33 +39,33 @@ export const VisualPuzzleWorkspace: React.FC<VisualPuzzleWorkspaceProps> = ({
 
       {/* Visual Workspace Canvas */}
       {visualData?.puzzleType === 'bst_insert' && (
-        <div className="my-auto py-6 flex flex-col items-center justify-center bg-slate-900/40 rounded-lg border border-cyan-500/20 relative">
-          <div className="text-xs font-mono text-slate-400 mb-4">
-            Candidate to Insert: <span className="text-amber-400 font-bold text-base px-2 py-0.5 bg-amber-400/10 rounded border border-amber-400/40">[{visualData.initialState.candidateToInsert}]</span>
+        <div className="my-auto py-8 flex flex-col items-center justify-center bg-clutch-bg rounded-xl border border-clutch-border relative">
+          <div className="text-xs font-mono text-clutch-muted mb-6">
+            Candidate to Insert: <span className="text-clutch-amber font-bold text-sm px-2.5 py-1 bg-clutch-amber/10 rounded-lg border border-clutch-amber/30">[{visualData.initialState.candidateToInsert}]</span>
           </div>
 
           {/* Tree Node Hierarchy */}
           <div className="flex flex-col items-center gap-6">
             {/* Root */}
-            <div className="w-12 h-12 rounded-full bg-violet-600/30 border-2 border-violet-400 flex items-center justify-center text-white font-bold font-mono shadow-lg shadow-violet-500/20">
+            <div className="w-12 h-12 rounded-xl bg-clutch-violet/30 border-2 border-clutch-violet flex items-center justify-center text-white font-bold font-mono shadow-lg">
               {visualData.initialState.root}
             </div>
 
             {/* Level 1 */}
-            <div className="flex gap-20">
+            <div className="flex gap-16 sm:gap-24">
               <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-cyan-600/30 border-2 border-cyan-400 flex items-center justify-center text-white font-bold font-mono">
+                <div className="w-10 h-10 rounded-lg bg-clutch-surface-elevated border-2 border-clutch-violet/50 flex items-center justify-center text-white font-bold font-mono">
                   10
                 </div>
                 {/* Potential Insertion Slots */}
-                <div className="flex gap-6 mt-4">
+                <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => setSelectedOp('left_of_5')}
                     disabled={disabled}
-                    className={`px-2 py-1 text-xs font-mono rounded border transition-all ${
+                    className={`px-2.5 py-1.5 text-xs font-mono rounded-lg border transition-all ${
                       selectedOp === 'left_of_5'
-                        ? 'bg-cyan-500 text-slate-950 font-bold border-cyan-300 scale-105'
-                        : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-cyan-400'
+                        ? 'bg-clutch-violet text-white font-bold border-clutch-lavender shadow'
+                        : 'bg-clutch-surface-light text-clutch-muted border-clutch-border hover:border-clutch-violet'
                     }`}
                   >
                     + Left of 5
@@ -73,10 +73,10 @@ export const VisualPuzzleWorkspace: React.FC<VisualPuzzleWorkspaceProps> = ({
                   <button
                     onClick={() => setSelectedOp('right_of_10')}
                     disabled={disabled}
-                    className={`px-2 py-1 text-xs font-mono rounded border transition-all ${
+                    className={`px-2.5 py-1.5 text-xs font-mono rounded-lg border transition-all ${
                       selectedOp === 'right_of_10'
-                        ? 'bg-cyan-500 text-slate-950 font-bold border-cyan-300 scale-105'
-                        : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-cyan-400'
+                        ? 'bg-clutch-violet text-white font-bold border-clutch-lavender shadow'
+                        : 'bg-clutch-surface-light text-clutch-muted border-clutch-border hover:border-clutch-violet'
                     }`}
                   >
                     + Right of 10
@@ -85,31 +85,31 @@ export const VisualPuzzleWorkspace: React.FC<VisualPuzzleWorkspaceProps> = ({
               </div>
 
               <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-violet-600/30 border-2 border-violet-400 flex items-center justify-center text-white font-bold font-mono">
+                <div className="w-10 h-10 rounded-lg bg-clutch-surface-elevated border-2 border-clutch-violet/50 flex items-center justify-center text-white font-bold font-mono">
                   30
                 </div>
-                <div className="flex gap-6 mt-4">
+                <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => setSelectedOp('left_of_30')}
                     disabled={disabled}
-                    className={`px-2 py-1 text-xs font-mono rounded border transition-all ${
+                    className={`px-2.5 py-1.5 text-xs font-mono rounded-lg border transition-all ${
                       selectedOp === 'left_of_30'
-                        ? 'bg-cyan-500 text-slate-950 font-bold border-cyan-300 scale-105'
-                        : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-cyan-400'
+                        ? 'bg-clutch-violet text-white font-bold border-clutch-lavender shadow'
+                        : 'bg-clutch-surface-light text-clutch-muted border-clutch-border hover:border-clutch-violet'
                     }`}
                   >
                     + Left of 30
                   </button>
                   <button
-                    onClick={() => setSelectedOp('right_of_40')}
+                    onClick={() => setSelectedOp('right_of_30')}
                     disabled={disabled}
-                    className={`px-2 py-1 text-xs font-mono rounded border transition-all ${
-                      selectedOp === 'right_of_40'
-                        ? 'bg-cyan-500 text-slate-950 font-bold border-cyan-300 scale-105'
-                        : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-cyan-400'
+                    className={`px-2.5 py-1.5 text-xs font-mono rounded-lg border transition-all ${
+                      selectedOp === 'right_of_30'
+                        ? 'bg-clutch-violet text-white font-bold border-clutch-lavender shadow'
+                        : 'bg-clutch-surface-light text-clutch-muted border-clutch-border hover:border-clutch-violet'
                     }`}
                   >
-                    + Right of 40
+                    + Right of 30
                   </button>
                 </div>
               </div>
@@ -118,47 +118,38 @@ export const VisualPuzzleWorkspace: React.FC<VisualPuzzleWorkspaceProps> = ({
         </div>
       )}
 
-      {visualData?.puzzleType === 'linked_list_pointer' && (
-        <div className="my-auto py-8 flex flex-col items-center justify-center bg-slate-900/40 rounded-lg border border-cyan-500/20">
-          <div className="flex items-center gap-3 font-mono text-base font-bold text-slate-200 mb-6">
-            <span className="px-3 py-1.5 bg-violet-900/50 border border-violet-500 rounded">Node [A]</span>
-            <ArrowRight className="text-cyan-400" />
-            <span className="px-3 py-1.5 bg-cyan-900/50 border border-cyan-400 rounded ring-2 ring-cyan-400/50">Node [B] (curr)</span>
-            <ArrowRight className="text-cyan-400" />
-            <span className="px-3 py-1.5 bg-violet-900/50 border border-violet-500 rounded">Node [C]</span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 w-full max-w-md">
-            {challenge.options?.map((opt) => (
-              <button
-                key={opt}
-                onClick={() => setSelectedOp(opt)}
-                disabled={disabled}
-                className={`p-3 text-xs font-mono rounded border transition-all text-left flex items-center justify-between ${
-                  selectedOp === opt
-                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-200'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700'
-                }`}
-              >
-                <span>{opt}</span>
-                {selectedOp === opt && <CheckCircle2 className="w-4 h-4 text-cyan-400" />}
-              </button>
-            ))}
-          </div>
+      {/* Allowed Operations Fallback if other puzzle type */}
+      {visualData?.puzzleType !== 'bst_insert' && visualData?.allowedOperations && (
+        <div className="space-y-2.5 my-auto">
+          {visualData.allowedOperations.map((op) => (
+            <button
+              key={op}
+              onClick={() => setSelectedOp(op)}
+              disabled={disabled}
+              className={`w-full p-3 rounded-xl border text-left text-xs font-mono transition-all ${
+                selectedOp === op
+                  ? 'bg-clutch-violet/20 border-clutch-violet text-white font-bold'
+                  : 'bg-clutch-surface-light border-clutch-border text-clutch-muted hover:border-clutch-violet'
+              }`}
+            >
+              {op}
+            </button>
+          ))}
         </div>
       )}
 
-      {/* Submit Button */}
-      <div className="mt-4 flex items-center justify-between border-t border-slate-800 pt-4">
-        <span className="text-xs text-slate-400 font-mono">
-          Selected Operation: <strong className="text-cyan-300">{selectedOp || 'None'}</strong>
+      {/* Bottom Submit */}
+      <div className="mt-5 pt-4 border-t border-clutch-border flex items-center justify-between">
+        <span className="text-xs text-clutch-subtle font-mono">
+          Slot: <strong className="text-white">{selectedOp || 'None selected'}</strong>
         </span>
         <button
           onClick={handleSubmit}
           disabled={!selectedOp || disabled}
-          className="cyber-btn cyber-btn-cyan px-6 py-2 text-xs"
+          className="clutch-btn-primary px-6 py-2.5 text-xs flex items-center gap-1.5"
         >
-          EXECUTE IN ARENA
+          <Send className="w-3.5 h-3.5" />
+          <span>Commit Pointer</span>
         </button>
       </div>
     </div>

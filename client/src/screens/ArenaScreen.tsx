@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useGameStore } from '../store/gameStore.js';
 import { socketService } from '../services/socketService.js';
 import { ArenaCanvas } from '../components/arena3d/ArenaCanvas.js';
@@ -10,216 +10,294 @@ import { VisualPuzzleWorkspace } from '../components/challenges/VisualPuzzleWork
 import { McqChallengeWorkspace } from '../components/challenges/McqChallengeWorkspace.js';
 import { HypeReactionStream } from '../components/arena/HypeReactionStream.js';
 import { soundSynth } from '../services/soundSynth.js';
-import { Swords, Bot, Users } from 'lucide-react';
+import { Swords, Bot, Users, Play, CheckCircle2, Award, Clock, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 
 export const ArenaScreen: React.FC = () => {
   const activeRoom = useGameStore((s) => s.activeRoom);
   const userProfile = useGameStore((s) => s.userProfile);
   const countdown = useGameStore((s) => s.countdown);
+  const setScreen = useGameStore((s) => s.setScreen);
 
-  const [activeBuff, setActiveBuff] = React.useState<string | null>(null);
+  // Mobile View Switcher: 'workspace' | 'arena3d' | 'standings'
+  const [mobileTab, setMobileTab] = useState<'workspace' | 'arena3d' | 'standings'>('workspace');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  if (!activeRoom) return null;
+  const roundStartTimeRef = useRef<number>(Date.now());
+
+  useEffect(() => {
+    if (activeRoom?.status === 'in_round') {
+      roundStartTimeRef.current = Date.now();
+      setMobileTab('workspace'); // default to workspace when round starts
+    }
+  }, [activeRoom?.currentRound, activeRoom?.status]);
+
+  if (!activeRoom) {
+    return (
+      <div className="w-screen h-screen flex flex-col items-center justify-center bg-clutch-bg text-white p-6">
+        <div className="w-16 h-16 rounded-2xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender mb-4">
+          <Swords className="w-8 h-8" />
+        </div>
+        <h2 className="font-cyber font-bold text-xl mb-2">NO ACTIVE ARENA MATCH</h2>
+        <p className="text-xs font-mono text-clutch-muted mb-6">You are not connected to an arena room session.</p>
+        <button
+          onClick={() => setScreen('lobby')}
+          className="clutch-btn-primary px-6 py-2.5 text-xs"
+        >
+          Return to Lobby
+        </button>
+      </div>
+    );
+  }
 
   const isHost = activeRoom.hostId === userProfile.id;
   const participant = activeRoom.participants[userProfile.id];
   const challenge = activeRoom.activeChallenge;
 
   const handleStartMatch = async () => {
+    soundSynth.levelUp();
     await socketService.startMatch(activeRoom.id, userProfile.id);
   };
 
   const handleAddBot = async (diff: any) => {
+    soundSynth.click();
     await socketService.addBot(activeRoom.id, diff);
   };
 
   const handleToggleReady = () => {
     if (participant) {
+      soundSynth.click();
       socketService.setReady(activeRoom.id, userProfile.id, !participant.isReady);
     }
   };
 
-  const handleTriggerPowerUp = (type: 'uno_reverse' | 'sigma_shield' | 'brain_freeze' | 'gigachad_focus') => {
-    setActiveBuff(type);
-    if (type === 'gigachad_focus') {
-      soundSynth.speakHype('GigaChad mode activated! 2.5x points on the line!', 'hype');
-    } else if (type === 'sigma_shield') {
-      soundSynth.speakHype('Sigma shield deployed! Zero cap damage!', 'sigma');
-    } else if (type === 'uno_reverse') {
-      soundSynth.speakHype('Uno reverse! Turning the tables!', 'hype');
-    }
-    setTimeout(() => {
-      setActiveBuff(null);
-    }, 12000);
-  };
-
-  const roundStartTimeRef = React.useRef<number>(Date.now());
-
-  React.useEffect(() => {
-    if (activeRoom.status === 'in_round') {
-      roundStartTimeRef.current = Date.now();
-    }
-  }, [activeRoom.currentRound, activeRoom.status]);
-
   const handleSubmit = async (answer: any, language?: any) => {
-    if (!challenge) return;
-    const timeTakenMs = Math.max(300, Date.now() - roundStartTimeRef.current);
-    await socketService.submitAnswer({
-      roomId: activeRoom.id,
-      challengeId: challenge.id,
-      roundIndex: activeRoom.currentRound,
-      answer,
-      language,
-      userId: userProfile.id,
-      idempotencyKey: `sub-${userProfile.id}-${activeRoom.currentRound}-${Date.now()}`,
-      timeTakenMs
-    });
+    if (!challenge || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const timeTakenMs = Math.max(300, Date.now() - roundStartTimeRef.current);
+      await socketService.submitAnswer({
+        roomId: activeRoom.id,
+        challengeId: challenge.id,
+        roundIndex: activeRoom.currentRound,
+        answer,
+        language,
+        userId: userProfile.id,
+        idempotencyKey: `sub-${userProfile.id}-${activeRoom.currentRound}-${Date.now()}`,
+        timeTakenMs
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-[#080811] overflow-hidden relative">
-      {/* Top Arena Header */}
+    <div className="w-screen h-screen flex flex-col bg-clutch-bg text-clutch-text overflow-hidden relative font-sans">
+      {/* Top Arena Telemetry Header */}
       <ArenaHeader />
 
-      {/* Main Game Arena Container */}
+      {/* Mobile Segmented Navigation (Only during in_round state) */}
+      {activeRoom.status === 'in_round' && (
+        <div className="md:hidden flex bg-clutch-surface border-b border-clutch-border p-1 z-20 shrink-0">
+          <button
+            onClick={() => setMobileTab('workspace')}
+            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
+              mobileTab === 'workspace' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
+            }`}
+          >
+            Challenge Code
+          </button>
+          <button
+            onClick={() => setMobileTab('arena3d')}
+            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
+              mobileTab === 'arena3d' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
+            }`}
+          >
+            3D Arena
+          </button>
+          <button
+            onClick={() => setMobileTab('standings')}
+            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
+              mobileTab === 'standings' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
+            }`}
+          >
+            Standings
+          </button>
+        </div>
+      )}
+
+      {/* Main Container */}
       <div className="flex-1 relative flex flex-col md:flex-row overflow-hidden">
-        {/* 3D Arena Viewport (Left / Top) */}
-        <div className={`relative transition-all duration-300 ${
-          activeRoom.status === 'in_round' ? 'w-full md:w-1/2 h-1/2 md:h-full' : 'w-full h-full'
-        }`}>
-          <ArenaCanvas />
+        
+        {/* =========================================================
+            LOBBY WAITING STAGING STATE
+            ========================================================= */}
+        {activeRoom.status === 'lobby' && (
+          <div className="absolute inset-0 bg-clutch-bg/90 backdrop-blur-md flex items-center justify-center p-4 z-20 overflow-y-auto">
+            <div className="w-full max-w-xl clutch-panel-elevated rounded-2xl p-6 sm:p-8 flex flex-col items-center text-center shadow-2xl">
+              <div className="w-14 h-14 rounded-2xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender mb-4 shadow">
+                <Users className="w-7 h-7" />
+              </div>
 
-          {/* Standings Overlay */}
-          <div className="absolute top-4 right-4 z-20">
-            <LiveLeaderboardPanel />
-          </div>
+              <h2 className="font-cyber font-bold text-xl text-white mb-1">ARENA STAGING LOBBY</h2>
+              <div className="text-xs font-mono text-clutch-muted mb-6">
+                Room Code: <strong className="text-white text-sm tracking-widest px-2 py-0.5 rounded bg-clutch-surface-light border border-clutch-border">{activeRoom.code}</strong>
+              </div>
 
-          {/* Lobby Waiting Overlay */}
-          {activeRoom.status === 'lobby' && (
-            <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-20">
-              <div className="w-full max-w-md bg-slate-900/90 border border-violet-500/40 rounded-xl p-6 shadow-2xl flex flex-col items-center text-center">
-                <div className="flex items-center gap-2 mb-2 text-cyan-400 font-cyber font-extrabold text-lg">
-                  <Users className="w-5 h-5" />
-                  <span>ARENA STAGING LOBBY</span>
+              {/* Combatants List */}
+              <div className="w-full mb-6 text-left">
+                <div className="flex items-center justify-between text-xs font-mono text-clutch-muted mb-2">
+                  <span>COMBATANTS ({Object.keys(activeRoom.participants).length}/{activeRoom.settings.maxPlayers})</span>
+                  <span>STATUS</span>
                 </div>
-
-                <div className="text-slate-400 text-xs mb-6 font-mono">
-                  Room Code: <strong className="text-white text-base tracking-widest">{activeRoom.code}</strong>
-                </div>
-
-                {/* Combatants Grid */}
-                <div className="w-full grid grid-cols-2 gap-2 mb-6 max-h-48 overflow-y-auto pr-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
                   {Object.values(activeRoom.participants).map((p) => (
                     <div
                       key={p.id}
-                      className="p-2 rounded bg-slate-950/70 border border-slate-800 flex items-center justify-between text-xs"
+                      className="p-3 rounded-xl bg-clutch-surface-light border border-clutch-border flex items-center justify-between text-xs"
                     >
-                      <div className="flex items-center gap-2 truncate">
+                      <div className="flex items-center gap-2.5 min-w-0">
                         <div
-                          className="w-2.5 h-2.5 rounded-full"
-                          style={{ backgroundColor: p.loadout?.color || '#8B5CF6' }}
+                          className="w-3.5 h-3.5 rounded-full shrink-0 border border-white/20"
+                          style={{ backgroundColor: p.loadout?.color || '#7c3aed' }}
                         />
-                        <span className="truncate">{p.username}</span>
+                        <span className="font-medium text-white truncate">{p.username}</span>
+                        {p.isHost && (
+                          <span className="px-1.5 py-0.2 rounded bg-clutch-violet/30 text-clutch-lavender text-[9px] font-mono">
+                            HOST
+                          </span>
+                        )}
+                        {p.isBot && (
+                          <span className="px-1.5 py-0.2 rounded bg-clutch-surface text-clutch-subtle text-[9px] font-mono">
+                            BOT
+                          </span>
+                        )}
                       </div>
-                      {p.isReady ? (
-                        <span className="text-[10px] text-emerald-400 font-mono">READY</span>
-                      ) : (
-                        <span className="text-[10px] text-slate-500 font-mono">WAITING</span>
-                      )}
+
+                      <span className={`text-[10px] font-mono font-bold ${p.isReady ? 'text-clutch-emerald' : 'text-clutch-subtle'}`}>
+                        {p.isReady ? 'READY' : 'WAITING'}
+                      </span>
                     </div>
                   ))}
                 </div>
+              </div>
 
-                {/* Host Controls vs Player Ready */}
-                <div className="w-full flex flex-col gap-3">
-                  {isHost ? (
-                    <>
-                      <button
-                        onClick={handleStartMatch}
-                        className="w-full cyber-btn cyber-btn-cyan py-3 text-xs flex items-center justify-center gap-2"
-                      >
-                        <Swords className="w-4 h-4" />
-                        <span>ENGAGE MATCH</span>
-                      </button>
-
-                      {/* Add AI Bot Options */}
-                      <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-800">
-                        <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                          <Bot className="w-3.5 h-3.5 text-amber-400" /> Add Bot:
-                        </span>
-                        {(['balanced', 'speedrunner', 'strategist', 'adaptive'] as const).map((diff) => (
-                          <button
-                            key={diff}
-                            onClick={() => handleAddBot(diff)}
-                            className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:text-cyan-300 hover:bg-slate-700 font-mono capitalize"
-                          >
-                            +{diff}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
+              {/* Host vs Player Ready Controls */}
+              <div className="w-full flex flex-col sm:flex-row gap-3">
+                {isHost ? (
+                  <>
                     <button
-                      onClick={handleToggleReady}
-                      className={`w-full cyber-btn py-3 text-xs ${
-                        participant?.isReady ? 'cyber-btn-outline' : 'cyber-btn-violet'
-                      }`}
+                      onClick={handleStartMatch}
+                      className="flex-1 clutch-btn-primary py-3 text-xs flex items-center justify-center gap-2"
                     >
-                      {participant?.isReady ? 'CANCEL READY' : 'SET READY'}
+                      <Play className="w-4 h-4 fill-current" />
+                      <span>Start Arena Match</span>
                     </button>
-                  )}
-                </div>
+
+                    <button
+                      onClick={() => handleAddBot('balanced')}
+                      className="clutch-btn-secondary py-3 px-4 text-xs flex items-center justify-center gap-1.5"
+                    >
+                      <Bot className="w-4 h-4 text-clutch-lavender" />
+                      <span>Add AI Bot</span>
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={handleToggleReady}
+                    className={`w-full py-3 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${
+                      participant?.isReady
+                        ? 'bg-clutch-surface-light border border-clutch-emerald text-clutch-emerald'
+                        : 'clutch-btn-primary'
+                    }`}
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>{participant?.isReady ? 'Ready for Battle ✔' : 'Set Ready'}</span>
+                  </button>
+                )}
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Countdown Overlay */}
-          {countdown !== null && (
-            <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center z-40">
-              <span className="text-cyan-400 font-cyber font-bold text-lg mb-2">ARENA INITIALIZING</span>
-              <div className="font-cyber font-black text-8xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500 animate-ping">
-                {countdown === 0 ? 'START!' : countdown}
-              </div>
+        {/* =========================================================
+            ROUND COUNTDOWN OVERLAY
+            ========================================================= */}
+        {countdown !== null && countdown > 0 && (
+          <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center z-30 pointer-events-none">
+            <span className="font-cyber font-black text-7xl sm:text-9xl text-white drop-shadow-[0_0_40px_rgba(124,58,237,0.8)] animate-ping">
+              {countdown}
+            </span>
+            <span className="font-cyber font-bold text-sm sm:text-base text-clutch-lavender tracking-widest mt-6 uppercase">
+              PREPARE FOR BATTLE • LOCK IN
+            </span>
+          </div>
+        )}
+
+        {/* =========================================================
+            LEFT COLUMN: 3D ARENA & LEADERBOARD (DESKTOP)
+            ========================================================= */}
+        <div
+          className={`relative transition-all duration-300 ${
+            activeRoom.status === 'in_round'
+              ? 'w-full md:w-5/12 h-full'
+              : 'w-full h-full'
+          } ${mobileTab !== 'arena3d' && activeRoom.status === 'in_round' ? 'hidden md:block' : ''}`}
+        >
+          <ArenaCanvas />
+
+          {/* Standings Overlay on Desktop */}
+          <div className="absolute top-4 right-4 z-20 hidden md:block">
+            <LiveLeaderboardPanel />
+          </div>
+
+          {/* Mobile Standings View */}
+          {mobileTab === 'standings' && (
+            <div className="absolute inset-0 bg-clutch-bg/95 p-4 z-20 md:hidden overflow-y-auto">
+              <LiveLeaderboardPanel />
             </div>
           )}
         </div>
 
-        {/* Challenge Interactive Workspace (Right / Bottom) */}
+        {/* =========================================================
+            RIGHT COLUMN: CHALLENGE WORKSPACE (DESKTOP & MOBILE ACTIVE)
+            ========================================================= */}
         {activeRoom.status === 'in_round' && challenge && (
-          <div className="w-full md:w-1/2 h-1/2 md:h-full p-4 overflow-hidden flex flex-col">
-            {challenge.type === 'code_sprint' ? (
+          <div
+            className={`w-full md:w-7/12 h-full flex flex-col p-3 sm:p-5 overflow-hidden z-10 border-l border-clutch-border bg-clutch-bg ${
+              mobileTab !== 'workspace' ? 'hidden md:flex' : 'flex'
+            }`}
+          >
+            {challenge.type === 'code_sprint' || challenge.type === 'bug_hunter' ? (
               <CodeSprintEditor
                 challenge={challenge}
                 onSubmit={handleSubmit}
-                disabled={participant?.currentStatus === 'solved' || participant?.currentStatus === 'failed'}
+                disabled={isSubmitting}
               />
             ) : challenge.type === 'visual_puzzle' ? (
               <VisualPuzzleWorkspace
                 challenge={challenge}
                 onSolve={handleSubmit}
-                disabled={participant?.currentStatus === 'solved' || participant?.currentStatus === 'failed'}
+                disabled={isSubmitting}
               />
             ) : (
               <McqChallengeWorkspace
                 challenge={challenge}
                 onSubmit={handleSubmit}
-                disabled={participant?.currentStatus === 'solved' || participant?.currentStatus === 'failed'}
+                disabled={isSubmitting}
               />
             )}
           </div>
         )}
+
+        {/* Round Review / Match Ended Overlays */}
+        {(activeRoom.status === 'round_review' || activeRoom.status === 'match_ended') && (
+          <RoundReviewOverlay />
+        )}
+
+        {/* Hype Reaction Stream */}
+        <HypeReactionStream />
+
       </div>
-
-      {/* Round & Match Review Overlay */}
-      <RoundReviewOverlay />
-
-      {/* Floating Twitch/TikTok Reaction Stream & Power-Up Bar */}
-      <HypeReactionStream
-        onTriggerPowerUp={handleTriggerPowerUp}
-        activePowerUp={activeBuff}
-      />
     </div>
   );
 };
-

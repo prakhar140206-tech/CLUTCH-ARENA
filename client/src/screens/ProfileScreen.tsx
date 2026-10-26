@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore.js';
 import { soundSynth } from '../services/soundSynth.js';
-import { CyberNavBar } from '../components/navigation/CyberNavBar.js';
+import { AppShell } from '../components/navigation/AppShell.js';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { CyberAvatar } from '../components/arena3d/CyberAvatar.js';
@@ -17,7 +17,9 @@ import {
   Zap,
   Code2,
   Trophy,
-  Share2
+  Share2,
+  TrendingUp,
+  CheckCircle2
 } from 'lucide-react';
 
 export const ProfileScreen: React.FC = () => {
@@ -55,190 +57,193 @@ export const ProfileScreen: React.FC = () => {
 
   const achievements = [
     { title: 'GigaChad O(1) Solver', desc: 'Solved a problem in under 5 seconds', icon: '⚡', unlocked: true },
-    { title: 'Sigma Grindset', desc: 'Achieved a 7x or greater combo streak', icon: '🗿', unlocked: true },
+    { title: 'Sigma Grindset', desc: 'Achieved a 5x or greater streak', icon: '🗿', unlocked: true },
     { title: 'No Cap Detector', desc: 'Swiped 10 consecutive truth assertions in Shorts', icon: '🧢', unlocked: true },
-    { title: 'Algo Architect', desc: 'Completed all Binary Search Tree visual puzzles', icon: '🌲', unlocked: true },
+    { title: 'Tree Architect', desc: 'Completed all Binary Search Tree visual puzzles', icon: '🌲', unlocked: true },
     { title: 'Grandmaster Turing', desc: 'Reached 50,000+ Aura Points', icon: '👑', unlocked: (userProfile.auraPoints || 0) >= 50000 },
-    { title: '100-Player Survivor', desc: 'Placed Top 3 in a 100-Player Mega Arena', icon: '🏆', unlocked: true }
+    { title: 'Arena Contender', desc: 'Competed in competitive multiplayer arenas', icon: '🏆', unlocked: true }
   ];
 
+  const winRate = userProfile.stats?.matchesPlayed
+    ? Math.round(((userProfile.stats?.matchesWon || 0) / userProfile.stats.matchesPlayed) * 100)
+    : 64;
+
   return (
-    <div className="w-screen h-screen flex flex-col bg-[#040409] text-slate-100 overflow-y-auto select-none relative">
-      <CyberNavBar activeTab="profile" />
-
-      {/* 3D Perspective Ground Grid */}
-      <div className="cyber-grid-floor" />
-
-      {/* Cyber Background Glow */}
-      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-violet-600/15 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-[450px] h-[450px] bg-cyan-500/15 rounded-full blur-[140px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1 flex flex-col gap-6 z-10">
-        {/* Split Hero: 3D Stage on Left, Profile Details on Right */}
+    <AppShell activeScreen="profile">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
+        
+        {/* Top Header Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* 3D Avatar Interactive Stage (5 Columns) */}
-          <div className="lg:col-span-5 h-[360px] sm:h-[420px] rounded-2xl bg-slate-900/80 border-2 border-violet-500/30 overflow-hidden relative shadow-2xl backdrop-blur-xl">
-            <Canvas camera={{ position: [0, 1.4, 4.2], fov: 42 }}>
-              <ambientLight intensity={0.7} />
-              <directionalLight position={[5, 8, 5]} intensity={1.5} />
-              <pointLight position={[0, 2, 2]} intensity={2.0} color={userProfile.avatar.visorGlow} />
-
-              <mesh position={[0, -0.7, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                <circleGeometry args={[2.5, 32]} />
-                <meshStandardMaterial color="#0f172a" roughness={0.4} />
-              </mesh>
-              <mesh position={[0, -0.69, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                <ringGeometry args={[2.4, 2.5, 32]} />
-                <meshBasicMaterial color={userProfile.avatar.visorGlow} />
-              </mesh>
-
-              <CyberAvatar participant={previewParticipant} isCurrentPlayer={true} />
-              <OrbitControls enablePan={false} minDistance={2.5} maxDistance={6.5} autoRotate autoRotateSpeed={1.2} />
-            </Canvas>
-
-            {/* Customizer Overlay Button */}
-            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-              <span className="text-[10px] font-mono text-slate-400 bg-slate-950/80 px-2 py-1 rounded border border-slate-800">
-                Drag to rotate 3D Avatar
+          {/* 3D Avatar Interactive Stage (5 cols) */}
+          <div className="lg:col-span-5 h-[340px] sm:h-[380px] rounded-2xl clutch-panel-elevated overflow-hidden relative shadow-2xl flex flex-col justify-between p-4">
+            <div className="flex items-center justify-between z-10">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-clutch-violet/20 text-clutch-lavender border border-clutch-violet/40 font-bold">
+                SPATIAL 3D AVATAR
               </span>
+              <span className="text-[10px] font-mono text-clutch-subtle">Drag to rotate</span>
+            </div>
+
+            <div className="absolute inset-0">
+              <Canvas camera={{ position: [0, 1.4, 4.2], fov: 42 }}>
+                <ambientLight intensity={0.7} />
+                <directionalLight position={[5, 8, 5]} intensity={1.5} />
+                <pointLight position={[0, 2, 2]} intensity={2.0} color={userProfile.avatar.visorGlow || '#8b5cf6'} />
+
+                <mesh position={[0, -0.7, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <circleGeometry args={[2.5, 32]} />
+                  <meshStandardMaterial color="#0c0f24" roughness={0.4} />
+                </mesh>
+                <mesh position={[0, -0.69, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[2.4, 2.5, 32]} />
+                  <meshBasicMaterial color={userProfile.avatar.visorGlow || '#8b5cf6'} />
+                </mesh>
+
+                <CyberAvatar participant={previewParticipant} isCurrentPlayer={true} />
+                <OrbitControls enablePan={false} minDistance={2.5} maxDistance={6.5} autoRotate autoRotateSpeed={1.0} />
+              </Canvas>
+            </div>
+
+            <div className="z-10 mt-auto pt-3">
               <button
                 onClick={() => setScreen('avatar_customizer')}
-                className="cyber-btn cyber-btn-cyan px-3.5 py-1.5 text-xs flex items-center gap-1.5 shadow-lg"
+                className="w-full clutch-btn-primary py-2 text-xs flex items-center justify-center gap-2 shadow-lg"
               >
                 <Palette className="w-3.5 h-3.5" />
-                <span>LOADOUT STUDIO</span>
+                <span>Customize 3D Loadout</span>
               </button>
             </div>
           </div>
 
-          {/* Profile Identity & Stats (7 Columns) */}
-          <div className="lg:col-span-7 p-6 rounded-2xl bg-slate-900/80 border-2 border-violet-500/30 backdrop-blur-xl flex flex-col justify-between shadow-2xl">
+          {/* Profile Identity & Details (7 cols) */}
+          <div className="lg:col-span-7 clutch-panel rounded-2xl p-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-start justify-between gap-4 mb-4">
+              <div className="flex items-start justify-between gap-4 mb-4 pb-4 border-b border-clutch-border">
                 <div>
-                  {isEditing ? (
-                    <div className="space-y-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    {isEditing ? (
                       <input
                         type="text"
                         value={usernameInput}
                         onChange={(e) => setUsernameInput(e.target.value)}
-                        className="bg-slate-950 border border-cyan-400 text-white font-cyber font-bold text-lg px-3 py-1 rounded w-full focus:outline-none"
+                        className="bg-clutch-surface-light border border-clutch-border text-white text-base font-cyber font-bold px-3 py-1 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
                       />
-                      <textarea
-                        value={bioInput}
-                        onChange={(e) => setBioInput(e.target.value)}
-                        className="bg-slate-950 border border-slate-700 text-slate-300 font-mono text-xs p-2 rounded w-full focus:outline-none h-16"
-                      />
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h1 className="font-cyber font-black text-2xl sm:text-3xl text-white tracking-wide">
-                          {userProfile.username}
-                        </h1>
-                        <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[10px] font-mono font-bold">
-                          {userProfile.rankTier}
-                        </span>
-                      </div>
-                      <div className="text-xs font-cyber font-bold text-amber-300 mb-2">
-                        {userProfile.equippedTitle || 'Dijkstra’s Favorite Child 👑'}
-                      </div>
-                      <p className="text-slate-400 text-xs font-mono leading-relaxed max-w-lg">
-                        "{userProfile.bio || 'Grinding O(1) space algorithms. Bro never gets cooked.'}"
-                      </p>
-                    </>
-                  )}
+                    ) : (
+                      <h1 className="font-cyber font-bold text-2xl text-white">
+                        {userProfile.username}
+                      </h1>
+                    )}
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-clutch-violet/20 text-clutch-lavender border border-clutch-violet/30 font-bold">
+                      {userProfile.rankTier}
+                    </span>
+                  </div>
+                  <div className="text-xs font-mono text-clutch-lavender mt-1">
+                    {userProfile.equippedTitle || 'Algorithm Rizzler 👑'}
+                  </div>
                 </div>
 
-                <button
-                  onClick={() => {
-                    if (isEditing) handleSaveBio();
-                    else setIsEditing(true);
-                  }}
-                  className="p-2 rounded-lg bg-slate-950 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-cyan-400 transition-colors text-xs font-cyber flex items-center gap-1.5 shrink-0"
-                >
-                  {isEditing ? <Check className="w-3.5 h-3.5" /> : <Edit3 className="w-3.5 h-3.5" />}
-                  <span>{isEditing ? 'SAVE' : 'EDIT'}</span>
-                </button>
+                {isEditing ? (
+                  <button
+                    onClick={handleSaveBio}
+                    className="clutch-btn-primary px-3 py-1.5 text-xs flex items-center gap-1.5"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Save</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="clutch-btn-ghost px-3 py-1.5 text-xs flex items-center gap-1.5"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>Edit Profile</span>
+                  </button>
+                )}
               </div>
 
-              {/* Badges and Tags Bar */}
-              <div className="flex flex-wrap items-center gap-2 mb-6">
-                <span className="px-2.5 py-1 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-cyber font-bold flex items-center gap-1">
-                  <Flame className="w-3.5 h-3.5 fill-current" />
-                  <span>{(userProfile.auraPoints || 48500).toLocaleString()} AURA</span>
-                </span>
-                <span className="px-2.5 py-1 rounded bg-violet-600/20 border border-violet-500/40 text-violet-300 text-xs font-mono flex items-center gap-1">
-                  <Code2 className="w-3.5 h-3.5" />
-                  <span>PREFERRED: {(userProfile.preferredLanguage || 'python').toUpperCase()}</span>
-                </span>
-                <span className="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 text-xs font-mono">
-                  {userProfile.isGuest ? 'GUEST COMBATANT' : 'VERIFIED ACCOUNT'}
-                </span>
+              {/* Bio */}
+              <div className="mb-6">
+                <span className="text-[10px] font-mono text-clutch-subtle block mb-1">CALLSIGN BIO</span>
+                {isEditing ? (
+                  <textarea
+                    value={bioInput}
+                    onChange={(e) => setBioInput(e.target.value)}
+                    rows={2}
+                    className="w-full bg-clutch-surface-light border border-clutch-border text-white text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
+                  />
+                ) : (
+                  <p className="text-xs text-clutch-muted leading-relaxed font-mono">
+                    "{userProfile.bio || 'Grinding O(1) space algorithms. Bro never gets cooked.'}"
+                  </p>
+                )}
+              </div>
+
+              {/* Verified Metrics Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3 rounded-xl bg-clutch-surface-light border border-clutch-border">
+                  <span className="text-[10px] font-mono text-clutch-subtle block">RATING MMR</span>
+                  <span className="font-cyber font-bold text-lg text-white">{userProfile.ratingMMR}</span>
+                </div>
+                <div className="p-3 rounded-xl bg-clutch-surface-light border border-clutch-border">
+                  <span className="text-[10px] font-mono text-clutch-subtle block">AURA POINTS</span>
+                  <span className="font-cyber font-bold text-lg text-clutch-amber">
+                    {(userProfile.auraPoints || 48500).toLocaleString()}
+                  </span>
+                </div>
+                <div className="p-3 rounded-xl bg-clutch-surface-light border border-clutch-border">
+                  <span className="text-[10px] font-mono text-clutch-subtle block">WIN RATE</span>
+                  <span className="font-cyber font-bold text-lg text-clutch-emerald">{winRate}%</span>
+                </div>
+                <div className="p-3 rounded-xl bg-clutch-surface-light border border-clutch-border">
+                  <span className="text-[10px] font-mono text-clutch-subtle block">MAX STREAK</span>
+                  <span className="font-cyber font-bold text-lg text-clutch-lavender">
+                    {userProfile.stats?.highestStreak || 7}x
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Lifetime Combat Statistics */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-xl bg-slate-950/70 border border-slate-800 text-center font-mono">
-              <div>
-                <div className="text-lg sm:text-xl font-cyber font-black text-white">
-                  {userProfile.stats?.matchesPlayed || 14}
-                </div>
-                <div className="text-[10px] text-slate-400">Total Matches</div>
-              </div>
-              <div>
-                <div className="text-lg sm:text-xl font-cyber font-black text-emerald-400">
-                  {userProfile.stats?.matchesWon || 9}
-                </div>
-                <div className="text-[10px] text-slate-400">Victories</div>
-              </div>
-              <div>
-                <div className="text-lg sm:text-xl font-cyber font-black text-cyan-400">
-                  {userProfile.stats?.challengesSolved || 38}
-                </div>
-                <div className="text-[10px] text-slate-400">Solved Invariants</div>
-              </div>
-              <div>
-                <div className="text-lg sm:text-xl font-cyber font-black text-rose-400">
-                  {userProfile.stats?.highestStreak || 7}x
-                </div>
-                <div className="text-[10px] text-slate-400">Peak Streak</div>
-              </div>
+            <div className="pt-4 border-t border-clutch-border flex items-center justify-between text-[11px] font-mono text-clutch-subtle mt-4">
+              <span>Account Status: {userProfile.isGuest ? 'Guest Pilot' : 'Authenticated Pilot'}</span>
+              <span>Preferred Language: {userProfile.preferredLanguage || 'Python 3'}</span>
             </div>
           </div>
         </div>
 
-        {/* Achievements Cabinet */}
-        <div className="p-6 rounded-2xl bg-slate-900/80 border border-violet-500/25 backdrop-blur-xl">
-          <div className="flex items-center gap-2 mb-4">
-            <Trophy className="w-4 h-4 text-amber-400" />
-            <h3 className="font-cyber font-bold text-sm text-white tracking-wider">
-              TROPHY & ACHIEVEMENT CABINET
-            </h3>
+        {/* Achievements Section */}
+        <div className="clutch-panel rounded-2xl p-6">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-clutch-border">
+            <div className="flex items-center gap-2">
+              <Award className="w-5 h-5 text-clutch-lavender" />
+              <h2 className="font-cyber font-bold text-base text-white">ACHIEVEMENTS & BADGES</h2>
+            </div>
+            <span className="text-xs font-mono text-clutch-muted">
+              {achievements.filter(a => a.unlocked).length}/{achievements.length} Unlocked
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {achievements.map((ach) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+            {achievements.map((a) => (
               <div
-                key={ach.title}
+                key={a.title}
                 className={`p-3.5 rounded-xl border flex items-center gap-3.5 transition-all ${
-                  ach.unlocked
-                    ? 'bg-slate-950/80 border-slate-800 hover:border-amber-500/40'
-                    : 'bg-slate-950/30 border-slate-900 opacity-40 grayscale'
+                  a.unlocked
+                    ? 'bg-clutch-surface-light border-clutch-border text-white'
+                    : 'bg-clutch-surface/40 border-clutch-border/30 text-clutch-subtle opacity-50'
                 }`}
               >
-                <div className="text-2xl w-10 h-10 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0">
-                  {ach.icon}
+                <div className="w-10 h-10 rounded-xl bg-clutch-surface-elevated border border-clutch-border flex items-center justify-center text-xl shrink-0">
+                  {a.icon}
                 </div>
-                <div>
-                  <div className="font-cyber font-bold text-xs text-slate-200">{ach.title}</div>
-                  <div className="text-[10px] text-slate-400 font-mono leading-tight">{ach.desc}</div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-cyber font-bold text-xs truncate">{a.title}</h3>
+                  <p className="text-[11px] text-clutch-muted truncate mt-0.5">{a.desc}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
+
       </div>
-    </div>
+    </AppShell>
   );
 };

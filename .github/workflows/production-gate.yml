@@ -1,0 +1,150 @@
+name: CLUTCH Production Deployment & End-to-End Verification Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: production-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ----------------------------------------------------------------------------
+  # Job 1: Compilation, Unit, Adversarial & Concurrency Integrity Gates
+  # ----------------------------------------------------------------------------
+  local-verification:
+    name: Local Build & Concurrency Integrity
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
+
+      - name: Setup Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          npm --prefix server ci
+          npm --prefix client ci
+
+      - name: Production Bundling & TypeScript Verification
+        run: |
+          npm --prefix server run build
+          npm --prefix client run build
+
+      - name: Run Concurrency & Data Integrity Suite
+        run: |
+          npx --prefix server tsx test/concurrencyIntegrityTest.ts
+
+      - name: Run Adversarial Security Suite
+        run: |
+          npx --prefix server tsx test/adversarialRunnerTest.ts
+
+  # ----------------------------------------------------------------------------
+  # Job 2: Real Linux, Docker Container Sandbox & PostgreSQL Verification Gate
+  # ----------------------------------------------------------------------------
+  linux-docker-and-postgres-gate:
+    name: Linux Docker Isolation & PostgreSQL Deployment Gate
+    runs-on: ubuntu-22.04
+    needs: local-verification
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Dedicated Runner Container Image
+        run: |
+          docker build -t clutch-sandbox-runner:latest -f server/Dockerfile.runner .
+          docker image inspect clutch-sandbox-runner:latest --format '{{.Config.User}}'
+
+      - name: Launch PostgreSQL & API Stack via Docker Compose
+        run: |
+          docker compose up -d postgres clutch-runner clutch-api clutch-client
+
+      - name: Wait for PostgreSQL Healthcheck
+        run: |
+          echo "Waiting for postgres healthcheck..."
+          for i in {1..30}; do
+            STATUS=$(docker inspect --format='{{json .State.Health.Status}}' clutch-postgres 2>/dev/null || echo '"starting"')
+            if [ "$STATUS" = '"healthy"' ]; then
+              echo "PostgreSQL is healthy!"
+              break
+            fi
+            echo "Waiting for healthy database (status: $STATUS)... ($i/30)"
+            sleep 2
+          done
+
+      - name: Wait for API Server Healthcheck
+        run: |
+          echo "Waiting for clutch-api healthcheck..."
+          for i in {1..30}; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000/api/health || echo "000")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "CLUTCH API is operational!"
+              break
+            fi
+            echo "Waiting for API (status code: $HTTP_CODE)... ($i/30)"
+            sleep 2
+          done
+
+      - name: Run Authoritative PostgreSQL Migration
+        run: |
+          docker compose exec -T clutch-api node dist/storage/migrateJsonToPostgres.js
+
+      - name: Verify Live Endpoints & Production Readiness
+        run: |
+          echo "Testing /api/health..."
+          curl -f http://localhost:4000/api/health
+          echo -e "\nTesting /api/ready (must be 200 with PostgreSQL and container sandbox active)..."
+          curl -f http://localhost:4000/api/ready
+
+      - name: Setup Node.js 22 for Host-based Live Verification
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install Test Runner Dependencies
+        run: |
+          npm --prefix server ci
+
+      - name: Execute Live Infrastructure Verification Suite (Strict CI Mode)
+        env:
+          DATABASE_URL: postgres://clutch_admin:clutch_secure_db_password_2026@localhost:5432/clutch_db
+          FAIL_ON_BLOCKED: "true"
+        run: |
+          npx --prefix server tsx test/liveInfrastructureGateTest.ts
+
+      - name: Verify Fail-Closed Gate (Stop PostgreSQL & Check 503)
+        run: |
+          echo "Stopping PostgreSQL to test fail-closed behavior..."
+          docker compose stop postgres
+          READY_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000/api/ready)
+          echo "Readiness response code with database stopped: $READY_STATUS"
+          if [ "$READY_STATUS" != "503" ]; then
+            echo "FAILED: Production API must return 503 when PostgreSQL is down!"
+            exit 1
+          fi
+          echo "PASSED: Production API strictly failed closed (503)."
+
+      - name: Teardown Services
+        if: always()
+        run: |
+          docker compose down -v

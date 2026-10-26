@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '../store/gameStore.js';
 import { ClientChallenge, Difficulty } from '../../../shared/types.js';
+import { API_BASE_URL } from '../config/api';
 import { CodeSprintEditor } from '../components/challenges/CodeSprintEditor.js';
 import { VisualPuzzleWorkspace } from '../components/challenges/VisualPuzzleWorkspace.js';
 import { McqChallengeWorkspace } from '../components/challenges/McqChallengeWorkspace.js';
-import { HypeReactionStream } from '../components/arena/HypeReactionStream.js';
+import { AppShell } from '../components/navigation/AppShell.js';
 import { soundSynth } from '../services/soundSynth.js';
+import confetti from 'canvas-confetti';
 import {
   Compass,
-  ArrowLeft,
   CheckCircle2,
   Sparkles,
   HelpCircle,
@@ -17,7 +18,10 @@ import {
   Clock,
   Zap,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  RotateCcw,
+  ChevronRight,
+  Filter
 } from 'lucide-react';
 
 export const SoloQuestScreen: React.FC = () => {
@@ -27,18 +31,10 @@ export const SoloQuestScreen: React.FC = () => {
   const userProfile = useGameStore((s) => s.userProfile);
   const updateUserProfile = useGameStore((s) => s.updateUserProfile);
 
-
-  const [challenges, setChallenges] = useState<ClientChallenge[]>([]);
   const [selectedChallenge, setSelectedChallenge] = useState<ClientChallenge | null>(null);
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string; explanation?: string } | null>(null);
   const [hintUsed, setHintUsed] = useState<boolean>(false);
-
-  // Helper to format MM:SS
-  const formatTime = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
+  const [selectedTopic, setSelectedTopic] = useState<string>('all');
 
   // Dynamic Level & Adaptive Scaling State
   const [currentLevel, setCurrentLevel] = useState<number>(1);
@@ -52,17 +48,27 @@ export const SoloQuestScreen: React.FC = () => {
   const [isGeneratingAI, setIsGeneratingAI] = useState<boolean>(false);
   const startTimeRef = useRef<number>(Date.now());
 
-  // Function to dynamically generate a brand new unique question from AI
-  const fetchNextAIChallenge = async (diff: Difficulty, duration: number) => {
+  const formatTime = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Function to dynamically generate a brand new unique question from AI or static bank
+  const fetchNextAIChallenge = async (diff: Difficulty, duration: number, topicChoice?: string) => {
     setIsGeneratingAI(true);
+    setFeedback(null);
+    setHintUsed(false);
+
     try {
-      const topics: any[] = ['arrays_and_strings', 'trees_and_bst', 'graphs', 'complexity_analysis', 'dynamic_programming'];
-      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-      const res = await fetch('http://localhost:4000/api/generate-ai-challenge', {
+      const topics = ['arrays_and_strings', 'trees_and_bst', 'graphs', 'complexity_analysis', 'dynamic_programming'];
+      const chosen = topicChoice && topicChoice !== 'all' ? topicChoice : topics[Math.floor(Math.random() * topics.length)];
+
+      const res = await fetch(`${API_BASE_URL}/api/generate-ai-challenge`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          topic: randomTopic,
+          topic: chosen,
           difficulty: diff,
           timeLimitSeconds: duration
         })
@@ -70,9 +76,6 @@ export const SoloQuestScreen: React.FC = () => {
       const data = await res.json();
       if (data.challenge) {
         setSelectedChallenge(data.challenge);
-        setChallenges((prev) => [data.challenge, ...prev.filter(c => c.id !== data.challenge.id)]);
-        setFeedback(null);
-        setHintUsed(false);
         setTimeLeft(duration);
       }
     } catch (err) {
@@ -82,9 +85,8 @@ export const SoloQuestScreen: React.FC = () => {
     }
   };
 
-  // On initial mount, fetch the first dynamic AI challenge with Max 10 min (600s)
   useEffect(() => {
-    fetchNextAIChallenge('beginner', 600);
+    fetchNextAIChallenge('beginner', 600, selectedTopic);
   }, []);
 
   // Timer Tick Interval
@@ -110,97 +112,18 @@ export const SoloQuestScreen: React.FC = () => {
 
   const handleTimeExpired = () => {
     setStreak(0);
+    soundSynth.vineBoom();
     setFeedback({
       isCorrect: false,
-      message: '⏰ TIME EXPIRED! The clock reached 0. Take a deep breath and retry the level.'
+      message: '⏰ Time Expired! The clock reached 0. Take a moment to review the explanation and try again.'
     });
   };
 
-  const handleSelectChallenge = (c: ClientChallenge) => {
-    setSelectedChallenge(c);
-    setFeedback(null);
-    setHintUsed(false);
-    setTimeLeft(baseTime);
-  };
+  const handleSubmission = async (answer: any, language?: any) => {
+    if (!selectedChallenge) return;
 
-  const advanceLevelAdaptively = (solveTimeSeconds: number) => {
-    const nextLevel = currentLevel + 1;
-    setCurrentLevel(nextLevel);
-    const newStreak = streak + 1;
-    setStreak(newStreak);
-
-    // Adaptive difficulty progression based on solve speed and accuracy:
-    // If solved quickly (< 50% of available time) and building streak, level up difficulty tier!
-    let nextDifficulty: Difficulty = adaptiveDifficulty;
-    const isSuperFast = solveTimeSeconds <= (baseTime / 2);
-
-    if (nextLevel === 2) {
-      nextDifficulty = isSuperFast ? 'intermediate' : 'beginner';
-    } else if (nextLevel === 3) {
-      nextDifficulty = isSuperFast || newStreak >= 2 ? 'advanced' : 'intermediate';
-    } else if (nextLevel >= 4) {
-      nextDifficulty = isSuperFast || newStreak >= 3 ? 'expert' : 'advanced';
-    }
-    setAdaptiveDifficulty(nextDifficulty);
-
-    const nextDuration = Math.max(360, 600 - nextLevel * 60);
-
-    // Fetch brand new unique AI challenge for the next level
-    setTimeout(() => {
-      fetchNextAIChallenge(nextDifficulty, nextDuration);
-    }, 1800);
-  };
-
-  const handleSoloSubmit = async (answer: any, language?: any) => {
-    if (!selectedChallenge || timeLeft <= 0) return;
-
-    const timeSpent = Math.max(1, baseTime - timeLeft);
-    const nextDuration = Math.max(360, 600 - currentLevel * 60);
-
-    if (selectedChallenge.type === 'code_sprint') {
-      try {
-        const res = await fetch('http://localhost:4000/api/run-code', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: language || 'python',
-            code: String(answer),
-            testCases: selectedChallenge.testCases
-          })
-        });
-        const data = await res.json();
-        if (data.allPassed) {
-          soundSynth.auraGlow();
-          soundSynth.speakHype('SHEESH! All test cases passed! Absolute GigaChad energy!', 'hype');
-          const nextAura = (userProfile.auraPoints || 48500) + 1500;
-          updateUserProfile({ auraPoints: nextAura });
-
-          markSoloSolved(selectedChallenge.id);
-          setFeedback({
-            isCorrect: true,
-            message: `⚡ LEVEL ${currentLevel} CLEARED in ${formatTime(timeSpent)}! (+1,500 AURA) Next round time: ${formatTime(nextDuration)} (${Math.floor(nextDuration / 60)} min)`,
-            explanation: selectedChallenge.explanation
-          });
-          advanceLevelAdaptively(timeSpent);
-        } else {
-          soundSynth.vineBoom();
-          soundSynth.speakHype('Skill issue! Bro is cooked on hidden test cases!', 'roast');
-          setStreak(0);
-          setFeedback({
-            isCorrect: false,
-            message: `Failed ${data.totalTests - data.passedTests} of ${data.totalTests} test cases. Review edge cases and try again!`
-          });
-        }
-      } catch (err: any) {
-        soundSynth.vineBoom();
-        setFeedback({ isCorrect: false, message: `Execution error: ${err.message}` });
-      }
-      return;
-    }
-
-    // Dynamic verification through server authoritative verify-answer endpoint
     try {
-      const res = await fetch('http://localhost:4000/api/verify-answer', {
+      const res = await fetch(`${API_BASE_URL}/api/verify-answer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -211,255 +134,204 @@ export const SoloQuestScreen: React.FC = () => {
       const data = await res.json();
 
       if (data.isCorrect) {
-        soundSynth.auraGlow();
-        soundSynth.speakHype('NO CAP! Invariant locked in!', 'hype');
-        const nextAura = (userProfile.auraPoints || 48500) + 1200;
-        updateUserProfile({ auraPoints: nextAura });
-
+        soundSynth.levelUp();
+        confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
         markSoloSolved(selectedChallenge.id);
+
+        const nextStreak = streak + 1;
+        setStreak(nextStreak);
+        const reward = 1200 + nextStreak * 250;
+        updateUserProfile({
+          auraPoints: (userProfile.auraPoints || 48500) + reward,
+          stats: {
+            ...userProfile.stats,
+            challengesSolved: (userProfile.stats?.challengesSolved || 38) + 1,
+            highestStreak: Math.max(userProfile.stats?.highestStreak || 0, nextStreak)
+          }
+        });
+
         setFeedback({
           isCorrect: true,
-          message: `⚡ LEVEL ${currentLevel} CLEARED in ${formatTime(timeSpent)}! (+1,200 AURA) Next round time: ${formatTime(nextDuration)} (${Math.floor(nextDuration / 60)} min)`,
+          message: `Correct! +${reward.toLocaleString()} Aura Awarded. Streak: ${nextStreak}x!`,
           explanation: data.explanation || selectedChallenge.explanation
         });
-        advanceLevelAdaptively(timeSpent);
       } else {
         soundSynth.vineBoom();
-        soundSynth.speakHype('Bro guessed wrong... Emotional damage!', 'roast');
         setStreak(0);
         setFeedback({
           isCorrect: false,
-          message: 'Incorrect solution. Re-examine the algorithmic invariants and try again.'
+          message: 'Incorrect answer. Review the problem statement carefully and retry.',
+          explanation: data.explanation || selectedChallenge.explanation
         });
       }
-    } catch (err: any) {
-      soundSynth.vineBoom();
-      setFeedback({ isCorrect: false, message: `Verification error: ${err.message}` });
+    } catch (err) {
+      console.error('Error verifying answer:', err);
     }
   };
 
+  const handleNextChallenge = () => {
+    const nextLvl = currentLevel + 1;
+    setCurrentLevel(nextLvl);
+    const diffs: Difficulty[] = ['beginner', 'intermediate', 'advanced', 'expert'];
+    const nextDiff = diffs[Math.min(diffs.length - 1, Math.floor(nextLvl / 2))];
+    setAdaptiveDifficulty(nextDiff);
+    const nextDuration = Math.max(360, 600 - (nextLvl - 1) * 60);
+    fetchNextAIChallenge(nextDiff, nextDuration, selectedTopic);
+  };
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-[#040409] text-slate-100 overflow-hidden select-none relative">
-      {/* 3D Perspective Ground Grid */}
-      <div className="cyber-grid-floor" />
-
-      {/* Top Header */}
-      <div className="flex items-center justify-between px-6 py-3 bg-[#040409]/90 border-b border-violet-500/30 z-20">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setScreen('lobby')}
-            className="p-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-1.5 text-xs font-cyber"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>LOBBY</span>
-          </button>
-          <div className="h-4 w-px bg-slate-800" />
-          <div className="flex items-center gap-2 text-emerald-400 font-cyber font-bold text-sm">
-            <Compass className="w-4 h-4" />
-            <span>ADAPTIVE SOLO QUEST: SPEED & DIFFICULTY PROGRESSION</span>
-          </div>
-        </div>
-
-        {/* Dynamic Timer & Adaptive Level HUD */}
-        <div className="flex items-center gap-4 text-xs font-mono">
-          {/* Current Level */}
-          <div className="px-3 py-1 bg-violet-950/60 border border-violet-500/50 rounded-lg text-violet-300 flex items-center gap-1.5 font-bold">
-            <Zap className="w-3.5 h-3.5 text-amber-400" />
-            <span>LEVEL {currentLevel}</span>
-          </div>
-
-          {/* Adaptive Difficulty Pill */}
-          <div className="px-3 py-1 bg-slate-900 border border-cyan-500/40 rounded-lg text-cyan-300 flex items-center gap-1.5 uppercase font-bold">
-            <TrendingUp className="w-3.5 h-3.5" />
-            <span>{adaptiveDifficulty}</span>
-          </div>
-
-          {/* Dynamic Decreasing Countdown Timer (Min 6 min / Max 10 min) */}
-          <div className={`px-3 py-1 rounded-lg border flex items-center gap-1.5 font-bold ${
-            timeLeft <= 30
-              ? 'bg-rose-950/80 border-rose-500 text-rose-300 animate-bounce'
-              : 'bg-slate-900 border-amber-500/50 text-amber-300'
-          }`}>
-            <Clock className="w-3.5 h-3.5" />
-            <span>{formatTime(timeLeft)} / {formatTime(baseTime)}</span>
-          </div>
-
-          {/* Solved Badge */}
-          <div className="px-3 py-1 bg-emerald-950/50 border border-emerald-500/40 rounded-lg text-emerald-300 flex items-center gap-1.5">
-            <Award className="w-3.5 h-3.5" />
-            <span>Solved: {soloSolvedIds.length}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Dynamic Timer Progress Bar */}
-      <div className="w-full bg-slate-900 h-1 relative overflow-hidden">
-        <div
-          className={`h-full transition-all duration-1000 ${
-            timeLeft <= 5 ? 'bg-rose-500' : 'bg-gradient-to-r from-cyan-400 via-violet-500 to-amber-400'
-          }`}
-          style={{ width: `${(timeLeft / baseTime) * 100}%` }}
-        />
-      </div>
-
-      {/* Main Container: Split Quest Map List & Active Workspace */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left: Quest Roadmap Navigation */}
-        <div className="w-80 bg-slate-950/60 border-r border-violet-500/20 p-4 flex flex-col overflow-y-auto">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-cyber tracking-wider text-slate-400 uppercase font-bold">
-              CHALLENGE MATRIX
-            </span>
-            <span className="text-[10px] text-cyan-400 font-mono">
-              Timer: {formatTime(baseTime)} ({Math.floor(baseTime / 60)} min)
-            </span>
-          </div>
-
-          <div className="space-y-2 flex-1">
-            {challenges.map((c, idx) => {
-              const isSolved = soloSolvedIds.includes(c.id);
-              const isSelected = selectedChallenge?.id === c.id;
-
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => handleSelectChallenge(c)}
-                  className={`w-full p-3 rounded-lg border text-left transition-all flex items-center justify-between ${
-                    isSelected
-                      ? 'bg-violet-600/25 border-cyan-400 text-white shadow-lg shadow-violet-950/50 scale-[1.01]'
-                      : isSolved
-                      ? 'bg-slate-900/40 border-emerald-500/30 text-slate-300 hover:border-emerald-500/50'
-                      : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 truncate">
-                    <span className="w-5 text-[11px] font-mono font-bold text-slate-500">
-                      {(idx + 1).toString().padStart(2, '0')}
-                    </span>
-                    <div className="truncate">
-                      <div className="text-xs font-medium text-white truncate">{c.title}</div>
-                      <div className="text-[10px] text-cyan-400/80 font-mono capitalize">
-                        {c.topic.replace(/_/g, ' ')}
-                      </div>
-                    </div>
-                  </div>
-
-                  {isSolved ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  ) : (
-                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded uppercase shrink-0 ${
-                      c.difficulty === 'beginner' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' :
-                      c.difficulty === 'intermediate' ? 'bg-cyan-950 text-cyan-300 border border-cyan-800' :
-                      c.difficulty === 'advanced' ? 'bg-purple-950 text-purple-300 border border-purple-800' :
-                      'bg-rose-950 text-rose-300 border border-rose-800'
-                    }`}>
-                      {c.difficulty}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Right: Challenge Interactive Workspace */}
-        <div className="flex-1 flex flex-col p-6 overflow-y-auto">
-          {selectedChallenge ? (
-            <div className="w-full max-w-4xl mx-auto flex-1 flex flex-col">
-              {/* Dynamic Scaling Info Banner with AI Generation Trigger */}
-              <div className="mb-3 px-3 py-2 bg-slate-900/70 border border-violet-500/30 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono">
-                <div className="flex items-center gap-2 text-slate-300">
-                  <span className="text-amber-400 font-bold">Level {currentLevel}:</span>
-                  <span>Allowed Time: <strong className="text-cyan-300">{formatTime(baseTime)}</strong> ({Math.floor(baseTime / 60)} min — Min 6 min / Max 10 min)</span>
-                  <span className="text-slate-500">•</span>
-                  <span>Target: <strong className="text-violet-300 uppercase">{adaptiveDifficulty}</strong></span>
-                </div>
-                <button
-                  onClick={() => fetchNextAIChallenge(adaptiveDifficulty, baseTime)}
-                  disabled={isGeneratingAI}
-                  className="cyber-btn cyber-btn-cyan px-3 py-1 text-[11px] flex items-center gap-1.5 shrink-0"
-                  title="Generate a completely brand new unique question from AI on the fly"
-                >
-                  <Sparkles className={`w-3.5 h-3.5 ${isGeneratingAI ? 'animate-spin' : ''}`} />
-                  <span>{isGeneratingAI ? 'SYNTHESIZING AI...' : 'GENERATE NEW AI QUESTION'}</span>
-                </button>
+    <AppShell activeScreen="solo_quest">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
+        {/* Top Control Bar */}
+        <div className="clutch-panel rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender">
+              <Compass className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="font-cyber font-bold text-lg text-white">SOLO QUEST ODYSSEY</h1>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-clutch-violet/20 text-clutch-lavender border border-clutch-violet/30 font-bold uppercase">
+                  LEVEL {currentLevel} • {adaptiveDifficulty}
+                </span>
               </div>
+              <p className="text-xs font-mono text-clutch-muted">
+                Adaptive practice with authoritative sandbox verification
+              </p>
+            </div>
+          </div>
 
-              {/* Challenge Workspace Component */}
-              <div className="flex-1 min-h-[460px] mb-4">
-                {selectedChallenge.type === 'code_sprint' ? (
+          {/* Right Metrics: Timer & Streak */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-clutch-surface-light border border-clutch-border text-xs font-mono font-bold text-clutch-amber">
+              <Zap className="w-3.5 h-3.5" />
+              <span>{streak}x Streak</span>
+            </div>
+
+            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono font-bold text-xs border ${
+              timeLeft <= 60 && timeLeft > 0
+                ? 'bg-clutch-rose/20 border-clutch-rose text-clutch-rose animate-pulse'
+                : 'bg-clutch-surface-elevated border-clutch-violet/40 text-clutch-lavender'
+            }`}>
+              <Clock className="w-3.5 h-3.5" />
+              <span>{formatTime(timeLeft)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Topic Filter Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          {[
+            { id: 'all', label: 'All Topics' },
+            { id: 'arrays_and_strings', label: 'Arrays & Strings' },
+            { id: 'trees_and_bst', label: 'Trees & BST' },
+            { id: 'graphs', label: 'Graphs' },
+            { id: 'dynamic_programming', label: 'Dynamic Programming' },
+            { id: 'complexity_analysis', label: 'Complexity' },
+          ].map((t) => (
+            <button
+              key={t.id}
+              onClick={() => {
+                setSelectedTopic(t.id);
+                fetchNextAIChallenge(adaptiveDifficulty, baseTime, t.id);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono whitespace-nowrap transition-all ${
+                selectedTopic === t.id
+                  ? 'bg-clutch-violet text-white font-bold shadow-md'
+                  : 'bg-clutch-surface-light border border-clutch-border text-clutch-muted hover:text-white'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Main Workspace Area */}
+        <div className="min-h-[500px] flex flex-col">
+          {isGeneratingAI ? (
+            <div className="flex-1 clutch-panel rounded-2xl flex flex-col items-center justify-center p-12 text-center">
+              <div className="w-12 h-12 rounded-xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender mb-4 animate-spin">
+                <Compass className="w-6 h-6" />
+              </div>
+              <h3 className="font-cyber font-bold text-base text-white mb-1">
+                GENERATING ADAPTIVE CHALLENGE
+              </h3>
+              <p className="text-xs font-mono text-clutch-muted">
+                Synthesizing algorithmic test cases for Level {currentLevel}...
+              </p>
+            </div>
+          ) : selectedChallenge ? (
+            <div className="flex-1 flex flex-col gap-4">
+              <div className="flex-1 min-h-[460px]">
+                {selectedChallenge.type === 'code_sprint' || selectedChallenge.type === 'bug_hunter' ? (
                   <CodeSprintEditor
                     challenge={selectedChallenge}
-                    onSubmit={handleSoloSubmit}
-                    disabled={timeLeft <= 0}
+                    onSubmit={handleSubmission}
+                    disabled={feedback?.isCorrect === true}
                   />
                 ) : selectedChallenge.type === 'visual_puzzle' ? (
                   <VisualPuzzleWorkspace
                     challenge={selectedChallenge}
-                    onSolve={handleSoloSubmit}
-                    disabled={timeLeft <= 0}
+                    onSolve={handleSubmission}
+                    disabled={feedback?.isCorrect === true}
                   />
                 ) : (
                   <McqChallengeWorkspace
                     challenge={selectedChallenge}
-                    onSubmit={handleSoloSubmit}
-                    disabled={timeLeft <= 0}
+                    onSubmit={handleSubmission}
+                    disabled={feedback?.isCorrect === true}
                   />
                 )}
               </div>
 
-              {/* Feedback and Learning Explanation Banner */}
+              {/* Feedback and Next Level Banner */}
               {feedback && (
-                <div className={`p-4 rounded-xl border mb-4 text-xs font-mono animate-in fade-in ${
+                <div className={`p-4 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono text-xs ${
                   feedback.isCorrect
-                    ? 'bg-emerald-950/50 border-emerald-500/50 text-emerald-200'
-                    : 'bg-rose-950/50 border-rose-500/50 text-rose-200'
+                    ? 'bg-clutch-emerald/15 border-clutch-emerald/40 text-emerald-200'
+                    : 'bg-clutch-rose/15 border-clutch-rose/40 text-rose-200'
                 }`}>
-                  <div className="font-bold mb-1 flex items-center gap-1.5">
-                    {feedback.isCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <HelpCircle className="w-4 h-4 text-rose-400" />}
-                    <span>{feedback.message}</span>
-                  </div>
-                  {feedback.explanation && (
-                    <div className="mt-2 text-slate-300 font-sans leading-relaxed bg-slate-950/50 p-3 rounded border border-emerald-500/30">
-                      <strong className="text-emerald-400 block mb-1">Algorithmic Invariants & Proof:</strong>
-                      {feedback.explanation}
+                  <div className="flex items-center gap-3">
+                    {feedback.isCorrect ? (
+                      <CheckCircle2 className="w-5 h-5 text-clutch-emerald shrink-0" />
+                    ) : (
+                      <AlertTriangle className="w-5 h-5 text-clutch-rose shrink-0" />
+                    )}
+                    <div>
+                      <div className="font-bold text-white mb-0.5">{feedback.message}</div>
+                      {feedback.explanation && (
+                        <div className="text-[11px] opacity-85">{feedback.explanation}</div>
+                      )}
                     </div>
+                  </div>
+
+                  {feedback.isCorrect ? (
+                    <button
+                      onClick={handleNextChallenge}
+                      className="clutch-btn-primary px-5 py-2 text-xs flex items-center gap-1.5 whitespace-nowrap self-end sm:self-center"
+                    >
+                      <span>Next Level ({currentLevel + 1})</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => fetchNextAIChallenge(adaptiveDifficulty, baseTime, selectedTopic)}
+                      className="clutch-btn-secondary px-4 py-2 text-xs flex items-center gap-1.5 whitespace-nowrap self-end sm:self-center"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Retry Question</span>
+                    </button>
                   )}
-                </div>
-              )}
-
-              {/* AI Hint Expander */}
-              <div className="flex items-center justify-between text-xs text-slate-400 bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                <div className="flex items-center gap-2">
-                  <Lightbulb className="w-4 h-4 text-amber-400" />
-                  <span>Stuck on this algorithmic invariant?</span>
-                </div>
-                <button
-                  onClick={() => setHintUsed(!hintUsed)}
-                  className="text-cyan-400 hover:text-cyan-300 font-mono text-xs underline"
-                >
-                  {hintUsed ? 'Hide Hint' : 'Reveal AI Hint'}
-                </button>
-              </div>
-
-              {hintUsed && (
-                <div className="mt-2 p-3 rounded-lg bg-amber-950/30 border border-amber-500/40 text-amber-200 text-xs font-mono leading-relaxed">
-                  💡 Hint: Consider time/space trade-offs. Check boundary conditions when pointers meet or indices cross.
                 </div>
               )}
             </div>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-slate-500 font-mono text-xs">
-              Select a chapter from the quest roadmap to begin.
+            <div className="flex-1 clutch-panel rounded-2xl flex flex-col items-center justify-center p-8 text-center text-clutch-muted">
+              No challenge selected. Choose a topic above to begin.
             </div>
           )}
         </div>
       </div>
-
-      {/* Floating Reaction Stream & Hype Voice Caster */}
-      <HypeReactionStream />
-    </div>
+    </AppShell>
   );
 };
-

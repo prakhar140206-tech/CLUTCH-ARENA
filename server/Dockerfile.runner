@@ -1,0 +1,37 @@
+# ============================================================================
+# CLUTCH ISOLATED CODE EXECUTION WORKER CONTAINER
+# Contains genuine compilers & interpreters for Python, JavaScript, C++, and Java
+# Configured for execution under unprivileged user, read-only rootfs, and no network
+# ============================================================================
+
+FROM debian:bookworm-slim
+
+# Install genuine compilers and runtimes:
+# - python3
+# - nodejs & npm
+# - g++ (build-essential) for C++17
+# - default-jdk-headless (OpenJDK 17) for Java 17+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python-is-python3 \
+    nodejs \
+    npm \
+    build-essential \
+    g++ \
+    default-jdk-headless \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create unprivileged sandbox user (UID 1000)
+RUN groupadd -g 1000 sandbox && \
+    useradd -u 1000 -g sandbox -m -s /bin/false sandbox
+
+# Setup restricted working directory
+WORKDIR /app/workspace
+RUN chown -R sandbox:sandbox /app
+
+# Switch to unprivileged user by default
+USER sandbox:sandbox
+
+# Container entrypoint
+ENTRYPOINT ["/bin/sh", "-c"]
+CMD ["echo 'CLUTCH Sandbox Execution Worker Ready'"]

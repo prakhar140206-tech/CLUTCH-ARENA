@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ClientChallenge } from '../../../../shared/types.js';
-import { Code2, Play, Send, Terminal, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { Code2, Play, Send, Terminal, CheckCircle2, XCircle, Clock, Sparkles } from 'lucide-react';
+import { API_BASE_URL } from '../../config/api';
 
 interface CodeSprintEditorProps {
   challenge: ClientChallenge;
@@ -19,12 +20,23 @@ export const CodeSprintEditor: React.FC<CodeSprintEditorProps> = ({
   const [isRunningLocal, setIsRunningLocal] = useState<boolean>(false);
   const [localTestResults, setLocalTestResults] = useState<any[] | null>(null);
 
+  const [languageStatus, setLanguageStatus] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/languages`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.languages) setLanguageStatus(data.languages);
+      })
+      .catch(() => {});
+  }, []);
+
   // Initialize starter code when challenge or language changes
   useEffect(() => {
     if (challenge.starterCode && challenge.starterCode[language]) {
       setCode(challenge.starterCode[language]);
     } else {
-      setCode(language === 'python' ? '# Write your solution here\n' : '// Write your solution here\n');
+      setCode(language === 'python' ? '# Write your algorithmic solution here\n' : '// Write your algorithmic solution here\n');
     }
   }, [challenge, language]);
 
@@ -33,8 +45,7 @@ export const CodeSprintEditor: React.FC<CodeSprintEditorProps> = ({
     setActiveTab('tests');
 
     try {
-      // Call server standalone runner endpoint
-      const res = await fetch('http://localhost:4000/api/run-code', {
+      const res = await fetch(`${API_BASE_URL}/api/run-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -57,141 +68,152 @@ export const CodeSprintEditor: React.FC<CodeSprintEditorProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-950/80 border border-violet-500/30 rounded-lg overflow-hidden">
+    <div className="flex flex-col h-full clutch-panel rounded-2xl overflow-hidden border border-clutch-border font-sans">
       {/* Top Bar: Language Selector & Tabs */}
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-900/90 border-b border-violet-500/20">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-clutch-surface/90 border-b border-clutch-border shrink-0">
         <div className="flex items-center gap-2">
-          <Code2 className="w-4 h-4 text-cyan-400" />
-          <span className="font-cyber text-xs font-bold text-slate-200">CODE SPRINT SANDBOX</span>
+          <Code2 className="w-4 h-4 text-clutch-lavender" />
+          <span className="font-cyber text-xs font-bold text-white hidden sm:inline">ALGORITHM SANDBOX</span>
           
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value as any)}
-            className="ml-3 bg-slate-800 text-cyan-300 text-xs px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-cyan-400"
+            className="ml-2 bg-clutch-surface-light text-clutch-lavender text-xs px-2.5 py-1 rounded-lg border border-clutch-border focus:outline-none focus:border-clutch-violet font-mono"
           >
-            <option value="python">Python 3</option>
-            <option value="javascript">JavaScript (Node)</option>
-            <option value="cpp">C++ (G++17)</option>
-            <option value="java">Java 21</option>
+            <option value="python">Python 3 (Native Sandbox)</option>
+            <option value="javascript">JavaScript (Node.js Sandbox)</option>
+            <option value="cpp">
+              C++ {languageStatus.cpp?.available ? '(G++ Native)' : '(Requires G++ / Judge0)'}
+            </option>
+            <option value="java">
+              Java {languageStatus.java?.available ? '(JDK Native)' : '(Requires JDK / Judge0)'}
+            </option>
           </select>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => setActiveTab('editor')}
-            className={`px-3 py-1 text-xs font-mono rounded transition-colors ${
+            className={`px-3 py-1 text-xs font-mono rounded-lg transition-colors ${
               activeTab === 'editor'
-                ? 'bg-violet-600/30 text-violet-300 border border-violet-500/40'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-clutch-violet/25 text-white border border-clutch-violet/40 font-bold'
+                : 'text-clutch-muted hover:text-white'
             }`}
           >
-            Editor
+            Code
           </button>
           <button
             onClick={() => setActiveTab('tests')}
-            className={`px-3 py-1 text-xs font-mono rounded transition-colors flex items-center gap-1 ${
+            className={`px-3 py-1 text-xs font-mono rounded-lg transition-colors ${
               activeTab === 'tests'
-                ? 'bg-violet-600/30 text-violet-300 border border-violet-500/40'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-clutch-violet/25 text-white border border-clutch-violet/40 font-bold'
+                : 'text-clutch-muted hover:text-white'
             }`}
           >
-            <Terminal className="w-3.5 h-3.5" />
-            <span>Test Cases ({challenge.testCases?.length || 0})</span>
+            Test Output {localTestResults && `(${localTestResults.filter(r => r.passed).length}/${localTestResults.length})`}
           </button>
         </div>
       </div>
 
-      {/* Editor & Tests Container */}
-      <div className="flex-1 relative flex flex-col min-h-0">
-        {activeTab === 'editor' ? (
-          <div className="flex-1 flex overflow-hidden">
-            {/* Line numbers simulation */}
-            <div className="w-10 bg-slate-900/50 text-slate-600 font-mono text-xs text-right pr-2 pt-3 select-none border-r border-slate-800">
-              {code.split('\n').map((_, i) => (
-                <div key={i}>{i + 1}</div>
-              ))}
-            </div>
-            {/* Monospace Code Textarea */}
-            <textarea
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              disabled={disabled}
-              spellCheck={false}
-              className="flex-1 bg-transparent text-cyan-200 font-mono text-xs p-3 leading-relaxed focus:outline-none resize-none overflow-y-auto"
-            />
-          </div>
-        ) : (
-          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-900/40">
-            <div className="text-xs font-cyber text-slate-300 mb-2">VALIDATION TEST SUITE</div>
-            {challenge.testCases?.map((tc, idx) => {
-              const res = localTestResults?.find((r) => r.id === tc.id);
-              return (
-                <div
-                  key={tc.id}
-                  className="p-3 bg-slate-950/70 border border-slate-800 rounded-lg text-xs font-mono space-y-1.5"
-                >
-                  <div className="flex items-center justify-between text-slate-400">
-                    <span className="font-bold text-white">Test Case #{idx + 1}</span>
-                    {tc.isHidden ? (
-                      <span className="text-[10px] bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded border border-purple-700">
-                        🔒 Hidden Arena Test
-                      </span>
-                    ) : (
-                      <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">
-                        Sample Test
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <span className="text-slate-500">Input: </span>
-                    <span className="text-cyan-300">{tc.input}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500">Expected: </span>
-                    <span className="text-emerald-400">{tc.expectedOutput}</span>
-                  </div>
+      {/* Challenge Title & Prompt Bar */}
+      <div className="px-4 py-2.5 bg-clutch-surface-light/70 border-b border-clutch-border shrink-0">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="font-cyber font-bold text-xs sm:text-sm text-white truncate">
+            {challenge.title}
+          </h3>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-clutch-violet/20 text-clutch-lavender border border-clutch-violet/30 uppercase">
+            {challenge.difficulty}
+          </span>
+        </div>
+        <p className="text-xs text-clutch-muted line-clamp-2 leading-relaxed">
+          {challenge.prompt}
+        </p>
+      </div>
 
-                  {res && (
-                    <div className="mt-2 pt-2 border-t border-slate-800/80 flex items-center justify-between">
-                      <span className="text-slate-400">
-                        Actual: <strong className="text-white">{res.actualOutput || 'None'}</strong>
+      {/* Center Viewport: Code Textarea or Test Results */}
+      <div className="flex-1 min-h-0 relative bg-clutch-bg">
+        {activeTab === 'editor' ? (
+          <textarea
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            disabled={disabled}
+            placeholder="# Write your solution here..."
+            className="w-full h-full p-4 bg-transparent text-slate-100 font-mono text-xs sm:text-sm leading-relaxed resize-none focus:outline-none focus:ring-0 selection:bg-clutch-violet/30"
+            spellCheck={false}
+          />
+        ) : (
+          <div className="w-full h-full p-4 overflow-y-auto space-y-3 font-mono text-xs">
+            <div className="flex items-center gap-2 text-clutch-lavender pb-2 border-b border-clutch-border text-xs font-bold">
+              <Terminal className="w-4 h-4" />
+              <span>ISOLATED SANDBOX EXECUTION RESULTS</span>
+            </div>
+
+            {isRunningLocal ? (
+              <div className="py-8 text-center text-clutch-muted flex items-center justify-center gap-2">
+                <Clock className="w-4 h-4 animate-spin text-clutch-lavender" />
+                <span>Running test cases in isolated sandbox...</span>
+              </div>
+            ) : localTestResults ? (
+              <div className="space-y-2">
+                {localTestResults.map((r, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-3 rounded-xl border ${
+                      r.passed
+                        ? 'bg-clutch-emerald/10 border-clutch-emerald/30 text-emerald-200'
+                        : 'bg-clutch-rose/10 border-clutch-rose/30 text-rose-200'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2">
+                        {r.passed ? (
+                          <CheckCircle2 className="w-4 h-4 text-clutch-emerald" />
+                        ) : (
+                          <XCircle className="w-4 h-4 text-clutch-rose" />
+                        )}
+                        <span className="font-bold">Test Case #{idx + 1}</span>
+                      </div>
+                      <span className="text-[10px] opacity-75 font-mono">
+                        {r.passed ? 'PASSED' : 'FAILED'}
                       </span>
-                      {res.passed ? (
-                        <span className="flex items-center gap-1 text-emerald-400">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> PASSED
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-rose-400">
-                          <XCircle className="w-3.5 h-3.5" /> {res.status || 'FAILED'}
-                        </span>
-                      )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+
+                    <div className="text-[11px] space-y-0.5 opacity-90 pl-6">
+                      <div>Input: <code className="bg-black/30 px-1 py-0.5 rounded">{r.input}</code></div>
+                      <div>Expected: <code className="bg-black/30 px-1 py-0.5 rounded">{r.expectedOutput}</code></div>
+                      <div>Output: <code className="bg-black/30 px-1 py-0.5 rounded">{r.actualOutput || 'None'}</code></div>
+                      {r.error && <div className="text-clutch-rose mt-1">Error: {r.error}</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-clutch-subtle">
+                Click "Run Sample Tests" below to compile your solution against visible test cases.
+              </div>
+            )}
           </div>
         )}
       </div>
 
       {/* Bottom Action Footer */}
-      <div className="flex items-center justify-between px-4 py-3 bg-slate-900/90 border-t border-violet-500/20">
+      <div className="px-4 py-3 bg-clutch-surface/90 border-t border-clutch-border flex items-center justify-between gap-3 shrink-0">
         <button
           onClick={handleRunSampleTests}
           disabled={isRunningLocal || disabled}
-          className="cyber-btn cyber-btn-outline px-4 py-1.5 text-xs flex items-center gap-1.5"
+          className="clutch-btn-secondary py-2 px-4 text-xs flex items-center gap-1.5"
         >
-          {isRunningLocal ? <Clock className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 text-cyan-400" />}
-          <span>Run Sample Tests</span>
+          <Play className="w-3.5 h-3.5 fill-current text-clutch-lavender" />
+          <span>{isRunningLocal ? 'Testing...' : 'Run Sample Tests'}</span>
         </button>
 
         <button
           onClick={handleFinalSubmit}
-          disabled={disabled}
-          className="cyber-btn cyber-btn-cyan px-6 py-1.5 text-xs flex items-center gap-1.5"
+          disabled={disabled || !code.trim()}
+          className="clutch-btn-primary py-2 px-5 text-xs flex items-center gap-1.5"
         >
           <Send className="w-3.5 h-3.5" />
-          <span>SUBMIT CODE TO ARENA</span>
+          <span>Submit Solution</span>
         </button>
       </div>
     </div>

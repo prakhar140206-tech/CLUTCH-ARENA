@@ -13,6 +13,7 @@ import { ScoringEngine } from '../game/scoringEngine.js';
 import { BotEngine, BOT_PROFILES } from '../bots/botEngine.js';
 import { executeCodeInIsolatedSandbox } from '../execution/codeRunner.js';
 import { generateAIChallenge } from '../ai/challengeGenerator.js';
+import { persistenceStore } from '../storage/db.js';
 
 export class RoomManager {
   private io: Server;
@@ -27,6 +28,10 @@ export class RoomManager {
   private processedSubmissions: Set<string> = new Set();
   // Submissions per room per round: Map<roomId_roundIndex_participantId, boolean>
   private roundSubmissions: Map<string, boolean> = new Map();
+  // Active socket ID to user/room tracking for resilient disconnects & reconnects
+  private socketToUser: Map<string, { userId: string; roomId: string }> = new Map();
+  // Disconnect grace timers per user
+  private disconnectGraceTimers: Map<string, NodeJS.Timeout> = new Map();
 
   constructor(io: Server) {
     this.io = io;
@@ -101,6 +106,8 @@ export class RoomManager {
 
     this.rooms.set(roomId, room);
     this.codeToRoomId.set(code, roomId);
+    this.socketToUser.set(hostSocket.id, { userId: hostUser.id, roomId });
+    persistenceStore.upsertUser({ id: hostUser.id, username: hostUser.username });
 
     hostSocket.join(roomId);
     this.syncRoomState(roomId);
@@ -129,6 +136,18 @@ export class RoomManager {
         return null;
       }
     }
+
+    this.socketToUser.set(socket.id, { userId: user.id, roomId });
+    persistenceStore.upsertUser({ id: user.id, username: user.username });
+
+    // Cancel pending disconnect grace timer if reconnecting
+    const pendingTimer = this.disconnectGraceTimers.get(user.id);
+    if (pendingTimer) {
+      clearTimeout(pendingTimer);
+      this.disconnectGraceTimers.delete(user.id);
+    }
+
+    const isReconnecting = !!room.participants[user.id];
 
     if (!room.participants[user.id]) {
       // Calculate 3D spawn position spread around arena perimeter
@@ -160,6 +179,9 @@ export class RoomManager {
           z: Math.sin(angle) * radius
         }
       };
+    } else {
+      room.participants[user.id].currentStatus = 'idle';
+      this.io.to(roomId).emit('player_reconnected', { playerId: user.id });
     }
 
     socket.join(roomId);
@@ -213,12 +235,22 @@ export class RoomManager {
     return true;
   }
 
-  public leaveRoom(socket: Socket, roomId: string, userId: string): void {
+  public leaveRoom(socket: Socket | null, roomId: string, userId: string): void {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
+    if (socket && socket.id) {
+      this.socketToUser.delete(socket.id);
+      socket.leave(roomId);
+    }
+
+    const pending = this.disconnectGraceTimers.get(userId);
+    if (pending) {
+      clearTimeout(pending);
+      this.disconnectGraceTimers.delete(userId);
+    }
+
     delete room.participants[userId];
-    socket.leave(roomId);
 
     // If host left, assign new host or delete room if empty
     const remainingIds = Object.keys(room.participants);
@@ -235,6 +267,45 @@ export class RoomManager {
       this.syncRoomState(roomId);
       this.io.to(roomId).emit('player_left', { playerId: userId });
     }
+  }
+
+  public handleSocketDisconnect(socketId: string): void {
+    const mapping = this.socketToUser.get(socketId);
+    if (!mapping) return;
+    this.socketToUser.delete(socketId);
+
+    const { userId, roomId } = mapping;
+    const room = this.rooms.get(roomId);
+    if (!room || !room.participants[userId]) return;
+
+    // Mark participant offline and notify room
+    room.participants[userId].currentStatus = 'offline';
+    this.syncRoomState(roomId);
+    this.io.to(roomId).emit('player_disconnected', { playerId: userId });
+
+    // Schedule 15-second grace window for reconnects
+    const graceTimer = setTimeout(() => {
+      this.disconnectGraceTimers.delete(userId);
+      const currentRoom = this.rooms.get(roomId);
+      if (!currentRoom) return;
+
+      if (currentRoom.participants[userId]?.currentStatus === 'offline') {
+        if (currentRoom.status === 'lobby') {
+          this.leaveRoom(null, roomId, userId);
+        }
+      }
+
+      // Check if room is completely abandoned by humans
+      const nonBots = Object.values(currentRoom.participants).filter(p => !p.isBot);
+      const allOffline = nonBots.every(p => p.currentStatus === 'offline');
+      if (nonBots.length === 0 || allOffline) {
+        this.clearRoomTimers(roomId);
+        this.codeToRoomId.delete(currentRoom.code);
+        this.rooms.delete(roomId);
+      }
+    }, 15000);
+
+    this.disconnectGraceTimers.set(userId, graceTimer);
   }
 
   public setReady(roomId: string, userId: string, isReady: boolean): void {
@@ -570,6 +641,22 @@ export class RoomManager {
     this.syncRoomState(roomId);
 
     const winner = room.leaderboard[0];
+
+    // Persist completed match record and rankings to disk
+    try {
+      persistenceStore.recordMatch({
+        id: uuidv4(),
+        timestamp: Date.now(),
+        mode: room.settings.mode,
+        durationMs: 0,
+        winner: winner ? { id: winner.id, username: winner.username, score: winner.score } : { id: '', username: 'Nobody', score: 0 },
+        participantsCount: Object.keys(room.participants).length,
+        leaderboardSnippet: room.leaderboard.slice(0, 5)
+      });
+    } catch (err: any) {
+      console.warn('[Storage] Failed to record match to persistent store:', err.message);
+    }
+
     this.io.to(roomId).emit('match_finished', {
       winner,
       leaderboard: room.leaderboard

@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-[#080811] text-slate-100 flex flex-col overflow-hidden">
+    <div className="w-screen h-screen bg-clutch-bg text-clutch-text flex flex-col overflow-hidden">
       {(currentScreen === 'home' || currentScreen === 'cinematic') && <HomeScreen />}
       {currentScreen === 'dashboard' && <DashboardScreen />}
       {currentScreen === 'profile' && <ProfileScreen />}

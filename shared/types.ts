@@ -91,7 +91,7 @@ export interface Participant {
   teamId?: string; // 'violet' | 'cyan' for team clash
   loadout: AvatarLoadout;
   position3D?: { x: number; y: number; z: number };
-  currentStatus?: 'idle' | 'coding' | 'submitted' | 'solved' | 'failed' | 'eliminated';
+  currentStatus?: 'idle' | 'coding' | 'submitted' | 'solved' | 'failed' | 'eliminated' | 'offline';
   pingMs?: number;
   auraPoints?: number;
   equippedTitle?: string;
