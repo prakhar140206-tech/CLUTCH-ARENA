@@ -135,7 +135,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   };
 
   return (
-    <div className="w-screen h-screen flex bg-[#090d10] text-slate-100 overflow-hidden select-none relative font-sans">
+    <div className="w-full max-w-full h-screen h-[100dvh] flex bg-[#090d10] text-slate-100 overflow-hidden select-none relative font-sans">
       {/* Background Perspective Grid Floor */}
       <div className="cyber-grid-floor opacity-60" />
 

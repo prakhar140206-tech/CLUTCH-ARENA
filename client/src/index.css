@@ -28,16 +28,22 @@
   padding: 0;
 }
 
-html, body {
+html, body, #root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden !important;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: 'Outfit', 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  overflow-x: hidden;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+  position: relative;
 }
 
 button, a, input, select {
@@ -54,18 +60,21 @@ button, a, input, select {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Restrained Cyber Ambient Grid Floor */
+/* Restrained Cyber Ambient Grid Floor - Constrained strictly to 100% width to prevent mobile horizontal blow-out */
 .cyber-grid-floor {
   position: absolute;
   bottom: 0;
-  left: -50%;
-  width: 200%;
-  height: 45vh;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100vw;
+  height: 40vh;
+  overflow: hidden;
   background-image: 
     linear-gradient(rgba(34, 197, 94, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(34, 197, 94, 0.08) 1px, transparent 1px);
-  background-size: 48px 48px;
-  transform: perspective(600px) rotateX(65deg);
+  background-size: 40px 40px;
+  transform: perspective(400px) rotateX(60deg);
   transform-origin: bottom center;
   mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 80%);
   -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 80%);

@@ -37,16 +37,16 @@ export const App: React.FC = () => {
 
       {/* Primary Viewport Router */}
       {(currentScreen === 'home' || currentScreen === 'cinematic') ? (
-        <div className="w-screen h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-hidden">
+        <div className="w-full max-w-full h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-x-hidden overflow-y-auto">
           <HomeScreen />
         </div>
       ) : userProfile.isGuest ? (
-        <div className="w-screen h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-hidden">
+        <div className="w-full max-w-full h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-x-hidden overflow-y-auto">
           <AuthScreen />
           <DSAOnboardingModal />
         </div>
       ) : (
-        <div className="w-screen h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-hidden">
+        <div className="w-full max-w-full h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-x-hidden overflow-y-hidden">
           {currentScreen === 'dashboard' && <DashboardScreen />}
           {currentScreen === 'profile' && <ProfileScreen />}
           {currentScreen === 'settings' && <SettingsScreen />}

@@ -82,7 +82,7 @@ export const AuthScreen: React.FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center bg-[#090d10] text-slate-100 p-4 select-none relative font-sans overflow-y-auto">
+    <div className="w-full max-w-full min-h-screen min-h-[100dvh] flex flex-col items-center justify-center bg-[#090d10] text-slate-100 p-4 select-none relative font-sans overflow-y-auto overflow-x-hidden">
       {/* Background Perspective Ground Grid */}
       <div className="cyber-grid-floor opacity-50" />
 

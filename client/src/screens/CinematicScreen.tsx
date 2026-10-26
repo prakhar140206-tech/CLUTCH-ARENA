@@ -8,7 +8,7 @@ export const CinematicScreen: React.FC = () => {
   const userProfile = useGameStore((s) => s.userProfile);
 
   return (
-    <div className="relative w-screen h-screen flex flex-col items-center justify-center bg-[#080811] overflow-hidden select-none px-4">
+    <div className="relative w-full max-w-full min-h-screen min-h-[100dvh] flex flex-col items-center justify-center bg-[#080811] overflow-hidden select-none px-4">
       {/* Background Cyber Glow Gradients */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-600/15 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-cyan-500/15 rounded-full blur-[120px] pointer-events-none" />
