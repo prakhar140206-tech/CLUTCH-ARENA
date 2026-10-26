@@ -203,6 +203,7 @@ async function runLiveInfrastructureGateSuite() {
 
   // 6. Real PostgreSQL Database Integration Check
   await testStep('6. Live PostgreSQL Database: Integration test or strict blocker documentation', async () => {
+    let connected = false;
     const connStr = process.env.DATABASE_URL;
     if (connStr) {
       const sanitizedConnStr = connStr.replace(/:([^:@]+)@/, ':***@');
@@ -275,7 +276,7 @@ async function runLiveInfrastructureGateSuite() {
       const netCheck = spawnSync('docker', [
         'run', '--rm', '--network', 'none',
         'clutch-sandbox-runner:latest',
-        'python3', '-c', 'import urllib.request; urllib.request.urlopen("http://1.1.1.1", timeout=1)'
+        'python3 -c "import urllib.request; urllib.request.urlopen(\'http://1.1.1.1\', timeout=1)"'
       ], { encoding: 'utf-8', timeout: 5000 });
       assert.notStrictEqual(netCheck.status, 0, 'Network request must fail under network isolation');
       console.log('     ✅ Container Network Isolation Verified: Outbound access is blocked (--network none).');
