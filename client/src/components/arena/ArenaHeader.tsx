@@ -3,6 +3,7 @@ import { useGameStore } from '../../store/gameStore.js';
 import { socketService } from '../../services/socketService.js';
 import { Clock, Copy, Check, Eye, LogOut, Flame, Shield, Volume2, VolumeX } from 'lucide-react';
 import { soundSynth } from '../../services/soundSynth.js';
+import { CLUTCH_LOGO } from '../../config/assets.js';
 
 export const ArenaHeader: React.FC = () => {
   const activeRoom = useGameStore((s) => s.activeRoom);
@@ -67,7 +68,7 @@ export const ArenaHeader: React.FC = () => {
       <div className="flex items-center gap-3">
         <button onClick={handleLeave} title="Exit Arena" className="hover:opacity-80 transition-opacity">
           <img
-            src="/logo.png"
+            src={CLUTCH_LOGO}
             alt="CLUTCH"
             className="w-7 h-7 object-contain"
           />

@@ -3,6 +3,7 @@ import { useGameStore } from '../store/gameStore.js';
 import { soundSynth } from '../services/soundSynth.js';
 import { AppShell } from '../components/navigation/AppShell.js';
 import { API_BASE_URL } from '../config/api';
+import { CLUTCH_LOGO } from '../config/assets.js';
 import {
   ShieldCheck,
   Lock,
@@ -136,7 +137,7 @@ export const AuthScreen: React.FC = () => {
           {/* Header */}
           <div className="text-center mb-6">
             <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center p-2 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
-              <img src="/logo.png" alt="CLUTCH" className="w-full h-full object-contain" />
+              <img src={CLUTCH_LOGO} alt="CLUTCH" className="w-full h-full object-contain" />
             </div>
             <h2 className="font-cyber font-black text-2xl text-white tracking-wide">
               AUTHENTICATE PILOT

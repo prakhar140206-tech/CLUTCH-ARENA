@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useGameStore, ScreenState } from '../../store/gameStore.js';
 import { soundSynth } from '../../services/soundSynth.js';
+import { CLUTCH_LOGO } from '../../config/assets.js';
 import {
   LayoutDashboard,
   Swords,
@@ -105,7 +106,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             >
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-clutch-violet/30 to-clutch-surface-elevated border border-clutch-violet/40 flex items-center justify-center shrink-0 p-1.5 shadow-[0_0_15px_rgba(124,58,237,0.3)] group-hover:border-clutch-violet transition-colors">
                 <img
-                  src="/logo.png"
+                  src={CLUTCH_LOGO}
                   alt="CLUTCH"
                   className="w-full h-full object-contain"
                 />
@@ -205,7 +206,7 @@ export const AppShell: React.FC<AppShellProps> = ({
               onClick={() => handleNav('home')}
               className="flex items-center gap-2"
             >
-              <img src="/logo.png" alt="CLUTCH" className="w-8 h-8 object-contain" />
+              <img src={CLUTCH_LOGO} alt="CLUTCH" className="w-8 h-8 object-contain" />
               <span className="font-cyber font-black text-sm text-white">CLUTCH</span>
             </button>
           </div>

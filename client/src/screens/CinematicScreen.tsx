@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore.js';
+import { CLUTCH_LOGO } from '../config/assets.js';
 import { Swords, Compass, ShieldAlert, Cpu, Sparkles, ChevronRight, UserPlus } from 'lucide-react';
 
 export const CinematicScreen: React.FC = () => {
@@ -25,7 +26,7 @@ export const CinematicScreen: React.FC = () => {
       <div className="relative mb-3 group">
         <div className="absolute inset-0 bg-violet-600/40 rounded-full blur-2xl group-hover:bg-violet-500/60 transition-all scale-125" />
         <img
-          src="/logo.png"
+          src={CLUTCH_LOGO}
           alt="Clutch Platform Logo"
           className="w-24 h-24 sm:w-32 sm:h-32 object-contain drop-shadow-[0_0_35px_rgba(168,85,247,0.8)] relative z-10 transition-transform duration-300 group-hover:scale-105"
         />

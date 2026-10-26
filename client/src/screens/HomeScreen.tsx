@@ -2,6 +2,7 @@ import React from 'react';
 import { useGameStore } from '../store/gameStore.js';
 import { soundSynth } from '../services/soundSynth.js';
 import { ArenaHero3D } from '../components/arena3d/ArenaHero3D.js';
+import { CLUTCH_LOGO } from '../config/assets.js';
 import {
   Swords,
   Compass,
@@ -38,7 +39,7 @@ export const HomeScreen: React.FC = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-clutch-violet/30 to-clutch-surface-elevated border border-clutch-violet/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(124,58,237,0.3)]">
-              <img src="/logo.png" alt="CLUTCH Logo" className="w-full h-full object-contain" />
+              <img src={CLUTCH_LOGO} alt="CLUTCH Logo" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="font-cyber font-black text-sm tracking-wider text-white flex items-center gap-1.5">
@@ -200,7 +201,7 @@ export const HomeScreen: React.FC = () => {
       <footer className="w-full bg-clutch-surface/90 border-t border-clutch-border py-8 px-4 sm:px-8 z-10 text-xs font-mono text-clutch-subtle mt-auto">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="CLUTCH" className="w-6 h-6 object-contain" />
+            <img src={CLUTCH_LOGO} alt="CLUTCH" className="w-6 h-6 object-contain" />
             <span className="text-white font-cyber font-bold">CLUTCH ARENA</span>
             <span>• Online DSA Puzzle & Gaming Platform</span>
           </div>

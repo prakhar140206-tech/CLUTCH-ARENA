@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useGameStore, ScreenState } from '../../store/gameStore.js';
 import { soundSynth } from '../../services/soundSynth.js';
+import { CLUTCH_LOGO } from '../../config/assets.js';
 import {
   Swords,
   LayoutDashboard,
@@ -63,7 +64,7 @@ export const CyberNavBar: React.FC<{ activeTab?: ScreenState }> = ({ activeTab }
             <div className="relative flex items-center justify-center group-hover:scale-105 transition-transform">
               <div className="absolute inset-0 bg-violet-500/30 rounded-full blur-md group-hover:bg-violet-400/60 transition-colors" />
               <img
-                src="/logo.png"
+                src={CLUTCH_LOGO}
                 alt="Clutch Logo"
                 className="w-9 h-9 object-contain drop-shadow-[0_0_12px_rgba(168,85,247,0.7)] relative z-10"
               />

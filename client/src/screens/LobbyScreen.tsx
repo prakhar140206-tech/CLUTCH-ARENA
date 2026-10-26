@@ -3,6 +3,7 @@ import { useGameStore } from '../store/gameStore.js';
 import { socketService } from '../services/socketService.js';
 import { soundSynth } from '../services/soundSynth.js';
 import { AppShell } from '../components/navigation/AppShell.js';
+import { CLUTCH_LOGO } from '../config/assets.js';
 import { DSAOnboardingModal } from '../components/onboarding/DSAOnboardingModal.js';
 import { MatchDurationMinutes, PerQuestionSeconds } from '../../../shared/types.js';
 import {
@@ -184,7 +185,7 @@ export const LobbyScreen: React.FC = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
             <div className="flex items-center gap-5">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-clutch-amber/20 to-clutch-surface-elevated border border-clutch-amber/40 flex items-center justify-center p-3 shadow-lg shrink-0">
-                <img src="/logo.png" alt="CLUTCH" className="w-full h-full object-contain" />
+                <img src={CLUTCH_LOGO} alt="CLUTCH" className="w-full h-full object-contain" />
               </div>
 
               <div>
