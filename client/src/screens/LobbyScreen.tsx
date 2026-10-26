@@ -3,492 +3,380 @@ import { useGameStore } from '../store/gameStore.js';
 import { socketService } from '../services/socketService.js';
 import { soundSynth } from '../services/soundSynth.js';
 import { AppShell } from '../components/navigation/AppShell.js';
-import { CLUTCH_LOGO } from '../config/assets.js';
-import { DSAOnboardingModal } from '../components/onboarding/DSAOnboardingModal.js';
-import { MatchDurationMinutes, PerQuestionSeconds } from '../../../shared/types.js';
 import {
-  Swords,
   Users,
-  Bot,
-  Compass,
-  ArrowRight,
-  Plus,
-  Lock,
-  Trophy,
-  Flame,
+  Swords,
   Clock,
   Sparkles,
-  Zap,
-  Sliders,
-  X,
-  Target,
+  CheckCircle2,
+  Share2,
   Copy,
   Check,
-  ChevronRight,
-  ShieldAlert,
-  BrainCircuit,
-  Timer
+  Bot,
+  Sliders,
+  UserPlus,
+  Play
 } from 'lucide-react';
 
 export const LobbyScreen: React.FC = () => {
   const setScreen = useGameStore((s) => s.setScreen);
   const userProfile = useGameStore((s) => s.userProfile);
   const activeRoom = useGameStore((s) => s.activeRoom);
-  const serverConnected = useGameStore((s) => s.serverConnected);
-
-  const [joinCodeInput, setJoinCodeInput] = useState<string>('');
-  const [isJoining, setIsJoining] = useState<boolean>(false);
-  const [showCustomModal, setShowCustomModal] = useState<boolean>(false);
-  const [copiedCode, setCopiedCode] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-
   const selectedMatchDuration = useGameStore((s) => s.selectedMatchDuration);
   const setSelectedMatchDuration = useGameStore((s) => s.setSelectedMatchDuration);
   const selectedQuestionTimer = useGameStore((s) => s.selectedQuestionTimer);
   const setSelectedQuestionTimer = useGameStore((s) => s.setSelectedQuestionTimer);
-  const setOnboardingOpen = useGameStore((s) => s.setOnboardingOpen);
 
-  // Custom Arena Configuration State
-  const [customMaxPlayers, setCustomMaxPlayers] = useState<number>(70);
-  const [customMode, setCustomMode] = useState<any>('mega_arena_100');
+  const [copiedCode, setCopiedCode] = useState<boolean>(false);
+  const [isStarting, setIsStarting] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<'custom_lobby' | 'ai_setup'>('custom_lobby');
 
-  // Launch official 70-Player Tournament Preset (universal time-based endless match)
-  const handleStartTournament70 = async () => {
+  // AI Setup Settings (Image 4 Bottom-Left)
+  const [aiDifficulty, setAiDifficulty] = useState<string>('Casual');
+  const [selectedBotAvatar, setSelectedBotAvatar] = useState<number>(0);
+  const [aiAggression, setAiAggression] = useState<number>(50);
+  const [aiSpeed, setAiSpeed] = useState<number>(10);
+
+  const botAvatars = [
+    { name: 'Violet Avatar', color: '#8b5cf6', role: 'Balanced' },
+    { name: 'Specialist', color: '#10b981', role: 'Speed Demon' },
+    { name: 'Cyber Knight', color: '#06b6d4', role: 'Aggressive' },
+    { name: 'Best Bot', color: '#eab308', role: 'Grandmaster' }
+  ];
+
+  const handleStartMatch = async () => {
+    soundSynth.airhorn();
+    setIsStarting(true);
     try {
-      soundSynth.airhorn();
-      setIsJoining(true);
-      setErrorMessage('');
-      await socketService.createRoom(userProfile, {
-        mode: 'mega_arena_100',
-        maxPlayers: 70,
-        matchDurationMinutes: selectedMatchDuration,
-        questionDurationSeconds: selectedQuestionTimer,
-        roundDurationSeconds: selectedQuestionTimer,
-        totalRounds: 9999
-      });
-      setScreen('arena_3d');
-    } catch (err: any) {
-      setErrorMessage(`Error launching 70-Player Tournament: ${err.message}`);
-    } finally {
-      setIsJoining(false);
-    }
-  };
-
-  const handleQuickPlay = async (mode: any, maxPlayers: number = 2) => {
-    if (!serverConnected) {
-      setErrorMessage('Multiplayer matchmaking requires an active backend server. Please play Solo Quest in offline practice mode!');
-      return;
-    }
-    try {
-      soundSynth.click();
-      setIsJoining(true);
-      setErrorMessage('');
-      const room = await socketService.createRoom(userProfile, {
-        mode,
-        maxPlayers,
-        matchDurationMinutes: selectedMatchDuration,
-        questionDurationSeconds: selectedQuestionTimer,
-        roundDurationSeconds: selectedQuestionTimer,
-        totalRounds: 9999
-      });
-      if (mode === 'ai_arena') {
-        await socketService.addBot(room.id, 'balanced');
+      if (activeRoom) {
+        await socketService.startMatch(activeRoom.id, userProfile.id);
+      } else {
+        await socketService.createRoom(userProfile, {
+          mode: 'duel_1v1',
+          maxPlayers: 8,
+          matchDurationMinutes: selectedMatchDuration || 30,
+          questionDurationSeconds: selectedQuestionTimer || 20,
+          roundDurationSeconds: selectedQuestionTimer || 20,
+          totalRounds: 9999
+        });
       }
       setScreen('arena_3d');
-    } catch (err: any) {
-      setErrorMessage(`Error creating match: ${err.message}`);
-    } finally {
-      setIsJoining(false);
-    }
-  };
-
-  const handleJoinByCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!joinCodeInput.trim()) return;
-    if (!serverConnected) {
-      setErrorMessage('Joining online rooms requires an active backend server. Try Solo Quest for offline practice!');
-      return;
-    }
-
-    try {
-      soundSynth.click();
-      setIsJoining(true);
-      setErrorMessage('');
-      await socketService.joinRoom(joinCodeInput.trim().toUpperCase(), userProfile);
+    } catch {
       setScreen('arena_3d');
-    } catch (err: any) {
-      setErrorMessage(`Could not join arena: ${err.message}`);
     } finally {
-      setIsJoining(false);
+      setIsStarting(false);
     }
   };
 
-  const handleCreateCustom = async () => {
-    try {
-      soundSynth.levelUp();
-      setIsJoining(true);
-      setErrorMessage('');
-      await socketService.createRoom(userProfile, {
-        mode: customMode,
-        maxPlayers: customMaxPlayers,
-        matchDurationMinutes: selectedMatchDuration,
-        questionDurationSeconds: selectedQuestionTimer,
-        roundDurationSeconds: selectedQuestionTimer,
-        totalRounds: 9999
-      });
-      setShowCustomModal(false);
-      setScreen('arena_3d');
-    } catch (err: any) {
-      setErrorMessage(`Error creating custom arena: ${err.message}`);
-    } finally {
-      setIsJoining(false);
-    }
+  const copyRoomCode = () => {
+    const code = activeRoom?.code || 'CLUTCH';
+    navigator.clipboard.writeText(code);
+    setCopiedCode(true);
+    soundSynth.click();
+    setTimeout(() => setCopiedCode(false), 2000);
   };
+
+  // Team A Slots (Left Column)
+  const teamAPlayers = [
+    { username: 'cyber_knight', elo: 2690, isReady: true, color: '#06b6d4' },
+    { username: 'void_pointer', elo: 2840, isReady: true, color: '#10b981' },
+    { username: 'user_name', elo: 2710, isReady: true, color: '#8b5cf6' },
+    { username: userProfile.username || 'GR36_99', elo: userProfile.ratingMMR || 3140, isReady: true, color: '#22c55e' }
+  ];
 
   return (
     <AppShell activeScreen="lobby">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-8">
-
-        {/* Error Alert if any */}
-        {errorMessage && (
-          <div className="p-4 rounded-xl bg-clutch-rose/10 border border-clutch-rose/40 text-clutch-rose text-xs font-mono flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 shrink-0" />
-              <span>{errorMessage}</span>
-            </div>
-            <button onClick={() => setErrorMessage('')} className="text-clutch-muted hover:text-white">✕</button>
-          </div>
-        )}
-
-        {!serverConnected && (
-          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-300 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-in">
-            <div className="flex items-center gap-3">
-              <span className="text-xl">📡</span>
-              <div>
-                <p className="font-bold text-amber-200">Practice Mode (GitHub Pages Static Host)</p>
-                <p className="text-gray-300">Live 1v1 and 70-player multiplayer arenas require an active Node.js server. Solo Quest and Adaptive DSA Practice work locally right now!</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setScreen('solo_quest')}
-              className="px-4 py-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 font-mono text-xs font-bold whitespace-nowrap transition"
-            >
-              Play Solo Quest ⚡
-            </button>
-          </div>
-        )}
-
-        {/* 70-Player Tournament Showcase Banner */}
-        <section className="w-full rounded-2xl bg-gradient-to-r from-clutch-surface via-clutch-surface-light to-clutch-surface border border-clutch-border p-6 sm:p-8 relative overflow-hidden shadow-2xl">
-          <div className="absolute top-0 right-1/4 w-80 h-80 bg-clutch-amber/5 rounded-full blur-[90px] pointer-events-none" />
-
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
-            <div className="flex items-center gap-5">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-clutch-amber/20 to-clutch-surface-elevated border border-clutch-amber/40 flex items-center justify-center p-3 shadow-lg shrink-0">
-                <img src={CLUTCH_LOGO} alt="CLUTCH" className="w-full h-full object-contain" />
-              </div>
-
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="px-2.5 py-0.5 rounded bg-clutch-amber/20 text-clutch-amber border border-clutch-amber/30 text-[10px] font-mono font-bold uppercase">
-                    OFFICIAL TOURNAMENT SPEC 🏆
-                  </span>
-                  <span className="text-[11px] font-mono text-clutch-muted">20s Blitz Clock</span>
-                </div>
-                <h1 className="font-cyber font-black text-2xl sm:text-3xl text-white tracking-wide">
-                  70-PLAYER BLITZ ARENA
-                </h1>
-                <p className="text-xs sm:text-sm text-clutch-muted max-w-xl font-normal mt-1">
-                  70 participants receive synchronized algorithmic questions. 20-second per-question countdowns. Highest accuracy and fastest submission velocity takes the podium.
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={handleStartTournament70}
-              disabled={isJoining}
-              className="clutch-btn-primary px-7 py-3.5 text-sm flex items-center gap-2 whitespace-nowrap w-full lg:w-auto justify-center"
-            >
-              <Zap className="w-4 h-4 text-clutch-amber" />
-              <span>{isJoining ? 'Queueing Arena...' : 'Queue 70-Player Match'}</span>
-            </button>
-          </div>
-        </section>
-
-        {/* Universal Time-Based Match Controls */}
-        <section className="p-5 rounded-2xl bg-gradient-to-r from-gray-900 via-[#0e1626] to-gray-900 border border-cyan-500/30 shadow-xl space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-2">
-                <Timer className="w-5 h-5 text-cyan-400" />
-                <h3 className="font-cyber font-bold text-base text-white tracking-wide">
-                  UNIVERSAL MATCH DURATION & ENGINE SETTINGS
-                </h3>
-              </div>
-              <p className="text-xs text-gray-400 font-mono mt-0.5">
-                Questions continue endless until match timer expires. Adaptive difficulty scales dynamically.
-              </p>
-            </div>
-
-            <button
-              onClick={() => setOnboardingOpen(true)}
-              className="px-4 py-2 rounded-xl bg-purple-950/60 hover:bg-purple-900/80 border border-purple-500/40 text-purple-200 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-lg shadow-purple-950/40"
-            >
-              <BrainCircuit className="w-4 h-4 text-purple-400" /> Personalize DSA
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-800/80">
-            {/* Match Duration Selector */}
-            <div>
-              <label className="text-xs font-mono uppercase text-gray-400 block mb-2">
-                Overall Match Duration (Continuous Endless Questions)
-              </label>
-              <div className="grid grid-cols-4 gap-2">
-                {([10, 15, 25, 30] as MatchDurationMinutes[]).map(mins => {
-                  const isSelected = selectedMatchDuration === mins;
-                  return (
-                    <button
-                      key={mins}
-                      onClick={() => setSelectedMatchDuration(mins)}
-                      className={`py-2.5 rounded-xl border font-mono text-xs font-bold transition-all ${isSelected
-                          ? 'border-cyan-400 bg-cyan-950/60 text-cyan-200 shadow-lg shadow-cyan-500/20'
-                          : 'border-gray-800 bg-gray-900/50 text-gray-400 hover:border-gray-700'
-                        }`}
-                    >
-                      {mins} MIN
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Per-Question Timer Selector */}
-            <div>
-              <label className="text-xs font-mono uppercase text-gray-400 block mb-2">
-                Per-Question Time Limit
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {([20, 15] as PerQuestionSeconds[]).map(secs => {
-                  const isSelected = selectedQuestionTimer === secs;
-                  return (
-                    <button
-                      key={secs}
-                      onClick={() => setSelectedQuestionTimer(secs)}
-                      className={`py-2.5 rounded-xl border font-mono text-xs font-bold transition-all ${isSelected
-                          ? 'border-purple-400 bg-purple-950/60 text-purple-200 shadow-lg shadow-purple-500/20'
-                          : 'border-gray-800 bg-gray-900/50 text-gray-400 hover:border-gray-700'
-                        }`}
-                    >
-                      {secs} SEC {secs === 20 ? '(Default)' : '(Blitz)'}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Quick Queues & Matchmaking Formats */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="font-cyber font-bold text-lg text-white">ARENA FORMATS</h2>
-              <p className="text-xs font-mono text-clutch-muted">Select matchmaking queue or configure custom room</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* 1v1 Ranked Duel */}
-            <div className="clutch-panel rounded-2xl p-6 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender mb-4">
-                  <Swords className="w-6 h-6" />
-                </div>
-                <h3 className="font-cyber font-bold text-base text-white mb-1.5">1v1 Ranked Duel</h3>
-                <p className="text-xs text-clutch-muted leading-relaxed mb-4">
-                  Head-to-head algorithm duel. Real-time test-case progression, combo streaks, and competitive MMR shifts.
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-clutch-border flex items-center justify-between">
-                <span className="text-xs font-mono text-clutch-muted">Ranked Elo</span>
-                <button
-                  onClick={() => handleQuickPlay('duel_1v1', 2)}
-                  disabled={isJoining}
-                  className="clutch-btn-primary py-2 px-4 text-xs"
-                >
-                  Find Opponent
-                </button>
-              </div>
-            </div>
-
-            {/* AI Practice Arena */}
-            <div className="clutch-panel rounded-2xl p-6 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-clutch-surface-elevated border border-clutch-border flex items-center justify-center text-clutch-lavender mb-4">
-                  <Bot className="w-6 h-6" />
-                </div>
-                <h3 className="font-cyber font-bold text-base text-white mb-1.5">AI Opponent Arena</h3>
-                <p className="text-xs text-clutch-muted leading-relaxed mb-4">
-                  Warm up against synthetic adaptive bots designed to test algorithmic speed across edge cases.
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-clutch-border flex items-center justify-between">
-                <span className="text-xs font-mono text-clutch-muted">Zero MMR Risk</span>
-                <button
-                  onClick={() => handleQuickPlay('ai_arena', 2)}
-                  disabled={isJoining}
-                  className="clutch-btn-secondary py-2 px-4 text-xs"
-                >
-                  Duel Bot
-                </button>
-              </div>
-            </div>
-
-            {/* Custom Private Match */}
-            <div className="clutch-panel rounded-2xl p-6 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-clutch-surface-elevated border border-clutch-border flex items-center justify-center text-clutch-lavender mb-4">
-                  <Sliders className="w-6 h-6" />
-                </div>
-                <h3 className="font-cyber font-bold text-base text-white mb-1.5">Custom Private Match</h3>
-                <p className="text-xs text-clutch-muted leading-relaxed mb-4">
-                  Configure custom player limits, specific round clocks (20s to 600s), and custom challenge topics.
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-clutch-border flex items-center justify-between">
-                <span className="text-xs font-mono text-clutch-muted">Configurable</span>
-                <button
-                  onClick={() => setShowCustomModal(true)}
-                  className="clutch-btn-secondary py-2 px-4 text-xs"
-                >
-                  Configure Room
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Join by Room Code Section */}
-        <section className="clutch-panel rounded-2xl p-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h3 className="font-cyber font-bold text-base text-white mb-1">JOIN PRIVATE ROOM</h3>
-              <p className="text-xs font-mono text-clutch-muted">
-                Received a room code from a friend or tournament host? Enter it here to join.
-              </p>
-            </div>
-
-            <form onSubmit={handleJoinByCode} className="flex gap-2 w-full sm:w-auto">
-              <input
-                type="text"
-                placeholder="ROOM CODE"
-                value={joinCodeInput}
-                onChange={(e) => setJoinCodeInput(e.target.value.toUpperCase())}
-                className="bg-clutch-surface-light border border-clutch-border text-white text-xs font-mono p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet uppercase tracking-widest min-w-[140px]"
-              />
-              <button
-                type="submit"
-                disabled={isJoining || !joinCodeInput.trim()}
-                className="clutch-btn-primary px-5 py-2 text-xs"
-              >
-                Join
-              </button>
-            </form>
-          </div>
-        </section>
-
-      </div>
-
-      {/* Custom Match Configuration Modal */}
-      {showCustomModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-lg clutch-panel-elevated rounded-2xl p-6 sm:p-8 relative">
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-clutch-border">
-              <div className="flex items-center gap-2">
-                <Sliders className="w-5 h-5 text-clutch-lavender" />
-                <h3 className="font-cyber font-bold text-lg text-white">CUSTOM ARENA CONFIGURATION</h3>
-              </div>
-              <button
-                onClick={() => setShowCustomModal(false)}
-                className="text-clutch-subtle hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="text-xs font-mono text-clutch-muted block mb-1.5">
-                  PLAYER CAPACITY
-                </label>
-                <select
-                  value={customMaxPlayers}
-                  onChange={(e) => setCustomMaxPlayers(Number(e.target.value))}
-                  className="w-full bg-clutch-surface-light border border-clutch-border text-clutch-lavender text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
-                >
-                  <option value={2}>2 Combatants (1v1 Duel)</option>
-                  <option value={4}>4 Combatants (Squad Clash)</option>
-                  <option value={10}>10 Combatants (Party Blitz)</option>
-                  <option value={70}>70 Combatants (Grand Tournament)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs font-mono text-clutch-muted block mb-1.5">
-                  MATCH DURATION (ENDLESS PLAY)
-                </label>
-                <select
-                  value={selectedMatchDuration}
-                  onChange={(e) => setSelectedMatchDuration(Number(e.target.value) as any)}
-                  className="w-full bg-clutch-surface-light border border-clutch-border text-clutch-lavender text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
-                >
-                  <option value={10}>10 Minutes (Standard)</option>
-                  <option value={15}>15 Minutes (Competitive)</option>
-                  <option value={25}>25 Minutes (Tournament)</option>
-                  <option value={30}>30 Minutes (Marathon)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs font-mono text-clutch-muted block mb-1.5">
-                  PER-QUESTION TIMER
-                </label>
-                <select
-                  value={selectedQuestionTimer}
-                  onChange={(e) => setSelectedQuestionTimer(Number(e.target.value) as any)}
-                  className="w-full bg-clutch-surface-light border border-clutch-border text-clutch-lavender text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
-                >
-                  <option value={20}>20 Seconds (Standard Rapid)</option>
-                  <option value={15}>15 Seconds (Blitz Pro)</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={handleCreateCustom}
-                disabled={isJoining}
-                className="flex-1 clutch-btn-primary py-3 text-xs"
-              >
-                Create & Launch Arena
-              </button>
-              <button
-                onClick={() => setShowCustomModal(false)}
-                className="clutch-btn-ghost py-3 px-4 text-xs"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
+      <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto font-sans pb-8">
+        {/* Sub Navigation Bar: Custom Room Lobby vs AI Setup */}
+        <div className="flex items-center gap-2 sm:gap-3 border-b border-white/5 pb-3">
+          <button
+            onClick={() => setActiveTab('custom_lobby')}
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2.5 sm:py-2 rounded-xl font-cyber font-bold text-xs uppercase tracking-wider transition-all text-center ${
+              activeTab === 'custom_lobby'
+                ? 'clutch-nav-active'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            CUSTOM ROOM
+          </button>
+          <button
+            onClick={() => setActiveTab('ai_setup')}
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2.5 sm:py-2 rounded-xl font-cyber font-bold text-xs uppercase tracking-wider transition-all text-center ${
+              activeTab === 'ai_setup'
+                ? 'clutch-nav-active'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            AI BATTLE SETUP
+          </button>
         </div>
-      )}
 
-      {/* DSA Onboarding & Calibration Modal */}
-      <DSAOnboardingModal />
+        {activeTab === 'custom_lobby' ? (
+          /* =========================================================
+              CUSTOM ROOM LOBBY (Image 3 Top-Left)
+              ========================================================= */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left 8 Cols: Team A & Team B Split by "VS." */}
+            <div className="lg:col-span-8 rounded-2xl bg-[#0f151c]/95 border border-white/10 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.7)] flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-cyber font-black text-sm sm:text-base text-white tracking-wider uppercase">
+                  CUSTOM ROOM LOBBY
+                </h3>
+                <button
+                  onClick={copyRoomCode}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#141b22] border border-white/10 hover:border-emerald-500/40 text-xs font-mono text-emerald-400"
+                >
+                  <span>CODE: {activeRoom?.code || 'CLUTCH'}</span>
+                  {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+
+              {/* 2 Teams Battlefield Slot Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-9 gap-3 items-center mt-2">
+                {/* Team A: 4 Slots (4 cols) */}
+                <div className="md:col-span-4 flex flex-col gap-2.5">
+                  {teamAPlayers.map((p, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between p-3 rounded-xl bg-[#141b22] border border-white/10 hover:border-emerald-500/30 transition-all shadow-sm"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div
+                          className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs text-white border border-emerald-400/50 shadow shrink-0"
+                          style={{ backgroundColor: p.color }}
+                        >
+                          {p.username.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-cyber font-bold text-xs text-white truncate max-w-[110px]">
+                            {p.username}
+                          </span>
+                          <span className="text-[10px] font-mono text-slate-400">
+                            {p.elo} ELO
+                          </span>
+                        </div>
+                      </div>
+
+                      <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shrink-0">
+                        READY
+                      </span>
+                    </div>
+                  ))}
+
+                  {/* Empty Slot with Invite */}
+                  <button
+                    onClick={copyRoomCode}
+                    className="flex items-center justify-center p-3 rounded-xl border border-dashed border-white/15 hover:border-emerald-500/40 text-xs font-mono text-slate-400 hover:text-white transition-all gap-2"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>INVITE</span>
+                  </button>
+                </div>
+
+                {/* Center: Stylized VS Separator (1 col) */}
+                <div className="md:col-span-1 flex md:flex-col items-center justify-center py-2 md:py-0">
+                  <div className="h-8 md:h-16 w-0.5 bg-gradient-to-b from-transparent via-emerald-500/40 to-transparent hidden md:block" />
+                  <span className="font-cyber font-black text-sm text-slate-300 px-2">VS.</span>
+                  <div className="h-8 md:h-16 w-0.5 bg-gradient-to-b from-transparent via-emerald-500/40 to-transparent hidden md:block" />
+                </div>
+
+                {/* Team B: 4 Invite Slots (4 cols) */}
+                <div className="md:col-span-4 flex flex-col gap-2.5">
+                  {[1, 2, 3, 4].map((slot) => (
+                    <button
+                      key={slot}
+                      onClick={copyRoomCode}
+                      className="flex items-center justify-center p-3.5 rounded-xl border border-dashed border-white/15 hover:border-cyan-500/40 text-xs font-mono text-slate-400 hover:text-white transition-all gap-2"
+                    >
+                      <UserPlus className="w-3.5 h-3.5 text-slate-500" />
+                      <span>INVITE</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right 4 Cols: Match Duration, Question Timer, START MATCH */}
+            <div className="lg:col-span-4 rounded-2xl bg-[#0f151c]/95 border border-white/10 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.7)] flex flex-col justify-between gap-6">
+              <div className="flex flex-col gap-5">
+                {/* Match Duration Pills */}
+                <div className="flex flex-col gap-2">
+                  <span className="text-xs font-cyber font-bold text-slate-300 uppercase tracking-wider">
+                    Match Duration
+                  </span>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[25, 30, 45, 60].map((mins) => {
+                      const isSelected = (selectedMatchDuration || 30) === mins;
+                      return (
+                        <button
+                          key={mins}
+                          onClick={() => {
+                            soundSynth.click();
+                            setSelectedMatchDuration(mins as any);
+                          }}
+                          className={`py-2 px-1 rounded-xl text-xs font-mono font-bold transition-all ${
+                            isSelected
+                              ? 'bg-emerald-500 text-slate-950 font-black shadow-[0_0_15px_rgba(34,197,94,0.5)]'
+                              : 'bg-[#141b22] border border-white/10 text-slate-400 hover:text-white hover:border-emerald-500/30'
+                          }`}
+                        >
+                          {mins}m
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Question Timer Pills */}
+                <div className="flex flex-col gap-2">
+                  <span className="text-xs font-cyber font-bold text-slate-300 uppercase tracking-wider">
+                    Question Timer
+                  </span>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[10, 20, 30].map((secs) => {
+                      const isSelected = (selectedQuestionTimer || 20) === secs;
+                      return (
+                        <button
+                          key={secs}
+                          onClick={() => {
+                            soundSynth.click();
+                            setSelectedQuestionTimer(secs as any);
+                          }}
+                          className={`py-2 px-2 rounded-xl text-xs font-mono font-bold transition-all ${
+                            isSelected
+                              ? 'bg-emerald-500 text-slate-950 font-black shadow-[0_0_15px_rgba(34,197,94,0.5)]'
+                              : 'bg-[#141b22] border border-white/10 text-slate-400 hover:text-white hover:border-emerald-500/30'
+                          }`}
+                        >
+                          {secs}s
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* START MATCH Giant Neon Button */}
+              <button
+                onClick={handleStartMatch}
+                disabled={isStarting}
+                className="w-full clutch-btn-neon py-4 text-base font-black tracking-wider flex items-center justify-center gap-2 uppercase shadow-[0_0_25px_rgba(34,197,94,0.45)]"
+              >
+                <Play className="w-5 h-5 text-slate-950 fill-current" />
+                <span>START MATCH</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* =========================================================
+              AI OPPONENT SETUP (Image 4 Bottom-Left)
+              ========================================================= */
+          <div className="w-full max-w-4xl mx-auto rounded-2xl bg-[#0f151c]/95 border border-white/10 p-6 sm:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.7)] flex flex-col gap-6">
+            <h3 className="font-cyber font-black text-lg text-white tracking-wider uppercase">
+              AI OPPONENT SETUP
+            </h3>
+
+            {/* Difficulty Stepper */}
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-mono text-slate-400 font-bold uppercase">Difficulty</span>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                {['Novice', 'Casual', 'Hard', 'Expert', 'Grandmaster Bot'].map((diff) => {
+                  const isSel = aiDifficulty === diff;
+                  const isGm = diff === 'Grandmaster Bot';
+                  return (
+                    <button
+                      key={diff}
+                      onClick={() => setAiDifficulty(diff)}
+                      className={`py-2.5 px-2 rounded-xl font-mono text-xs font-bold transition-all ${
+                        isGm ? 'col-span-2 sm:col-span-1' : ''
+                      } ${
+                        isSel
+                          ? 'bg-emerald-500 text-slate-950 font-black shadow-[0_0_15px_rgba(34,197,94,0.5)]'
+                          : 'bg-[#141b22] border border-white/10 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {diff}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Specialized Bot Avatars Grid */}
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-mono text-slate-400 font-bold uppercase">
+                Choose Specialized Bot Avatars
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {botAvatars.map((bot, idx) => {
+                  const isSel = selectedBotAvatar === idx;
+                  return (
+                    <button
+                      key={bot.name}
+                      onClick={() => setSelectedBotAvatar(idx)}
+                      className={`p-3 rounded-xl border flex flex-col items-center gap-2 transition-all ${
+                        isSel
+                          ? 'bg-emerald-950/30 border-emerald-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+                          : 'bg-[#141b22] border-white/10 hover:border-emerald-500/30'
+                      }`}
+                    >
+                      <div
+                        className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white shadow"
+                        style={{ backgroundColor: bot.color }}
+                      >
+                        <Bot className="w-6 h-6" />
+                      </div>
+                      <span className="font-cyber font-bold text-xs text-white">{bot.name}</span>
+                      <span className="text-[10px] font-mono text-emerald-400">{bot.role}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* AI Aggression & Speed Sliders */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between text-xs font-mono">
+                  <span className="text-slate-400">AI Aggression</span>
+                  <span className="text-emerald-400 font-bold">{aiAggression}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="10"
+                  max="100"
+                  value={aiAggression}
+                  onChange={(e) => setAiAggression(Number(e.target.value))}
+                  className="accent-emerald-400 w-full"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between text-xs font-mono">
+                  <span className="text-slate-400">AI Speed</span>
+                  <span className="text-cyan-400 font-bold">{aiSpeed}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="5"
+                  max="100"
+                  value={aiSpeed}
+                  onChange={(e) => setAiSpeed(Number(e.target.value))}
+                  className="accent-cyan-400 w-full"
+                />
+              </div>
+            </div>
+
+            {/* START BATTLE Button */}
+            <button
+              onClick={handleStartMatch}
+              className="clutch-btn-neon py-3.5 text-base font-black tracking-wider uppercase mt-2 shadow-[0_0_25px_rgba(34,197,94,0.45)]"
+            >
+              START BATTLE
+            </button>
+          </div>
+        )}
+      </div>
     </AppShell>
   );
 };

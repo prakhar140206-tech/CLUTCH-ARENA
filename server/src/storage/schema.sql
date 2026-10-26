@@ -97,3 +97,16 @@ CREATE TABLE IF NOT EXISTS user_concept_mastery (
 
 CREATE INDEX IF NOT EXISTS idx_concept_mastery_user ON user_concept_mastery (user_id);
 
+-- 8. Google Sheets Outbox Queue (Reliable, Transactional, Durable Synchronization)
+CREATE TABLE IF NOT EXISTS google_sheets_outbox (
+    id VARCHAR(128) PRIMARY KEY,
+    worksheet VARCHAR(64) NOT NULL,
+    row_data JSONB NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'pending', -- 'pending' | 'processing' | 'synced' | 'failed'
+    retry_count INT NOT NULL DEFAULT 0,
+    last_error TEXT,
+    created_at BIGINT NOT NULL,
+    updated_at BIGINT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_sheets_outbox_status_created ON google_sheets_outbox (status, created_at ASC);

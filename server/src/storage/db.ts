@@ -135,6 +135,17 @@ export interface FriendRequest {
   createdAt: number;
 }
 
+export interface SheetsOutboxRecord {
+  id: string;
+  worksheet: string;
+  rowData: Record<string, any>;
+  status: 'pending' | 'processing' | 'synced' | 'failed';
+  retryCount: number;
+  lastError?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface DatabaseSchema {
   users: Record<string, StoredUserProfile>;
   matchHistory: MatchRecord[];
@@ -144,6 +155,7 @@ export interface DatabaseSchema {
   conceptMastery?: Record<string, Record<string, ConceptMasteryRecord>>;
   friends?: Record<string, string[]>; // userId -> array of friend userIds
   friendRequests?: FriendRequest[];
+  sheetsOutbox?: SheetsOutboxRecord[];
 }
 
 const DEFAULT_SEEDS: DatabaseSchema = {
@@ -154,7 +166,8 @@ const DEFAULT_SEEDS: DatabaseSchema = {
   dsaPreferences: {},
   conceptMastery: {},
   friends: {},
-  friendRequests: []
+  friendRequests: [],
+  sheetsOutbox: []
 };
 
 /**
@@ -598,6 +611,93 @@ export class PersistenceStore {
     const outgoingRequests = this.data.friendRequests.filter(r => r.fromUserId === userId && r.status === 'pending');
 
     return { friends, incomingRequests, outgoingRequests };
+  }
+
+  // --- Google Sheets Outbox Queue Storage Operations ---
+
+  public async enqueueSheetsOutbox(item: {
+    id: string;
+    worksheet: string;
+    rowData: Record<string, any>;
+  }): Promise<void> {
+    if (this.usePostgres && this.postgres) {
+      await this.postgres.enqueueSheetsOutbox(item);
+      return;
+    }
+
+    if (!this.data.sheetsOutbox) this.data.sheetsOutbox = [];
+    const existing = this.data.sheetsOutbox.find(r => r.id === item.id);
+    if (!existing) {
+      const now = Date.now();
+      this.data.sheetsOutbox.push({
+        id: item.id,
+        worksheet: item.worksheet,
+        rowData: item.rowData,
+        status: 'pending',
+        retryCount: 0,
+        createdAt: now,
+        updatedAt: now
+      });
+      this.saveToDisk();
+    }
+  }
+
+  public async fetchPendingSheetsOutbox(batchSize: number = 50): Promise<SheetsOutboxRecord[]> {
+    if (this.usePostgres && this.postgres) {
+      return (await this.postgres.fetchPendingSheetsOutbox(batchSize)) as SheetsOutboxRecord[];
+    }
+
+    if (!this.data.sheetsOutbox) this.data.sheetsOutbox = [];
+    return this.data.sheetsOutbox
+      .filter(r => r.status === 'pending' || (r.status === 'failed' && r.retryCount < 10))
+      .sort((a, b) => a.createdAt - b.createdAt)
+      .slice(0, batchSize);
+  }
+
+  public async updateSheetsOutboxStatus(
+    id: string,
+    status: 'pending' | 'processing' | 'synced' | 'failed',
+    error?: string
+  ): Promise<void> {
+    if (this.usePostgres && this.postgres) {
+      await this.postgres.updateSheetsOutboxStatus(id, status, error);
+      return;
+    }
+
+    if (!this.data.sheetsOutbox) this.data.sheetsOutbox = [];
+    const item = this.data.sheetsOutbox.find(r => r.id === id);
+    if (item) {
+      item.status = status;
+      item.updatedAt = Date.now();
+      if (status === 'failed') {
+        item.retryCount = (item.retryCount || 0) + 1;
+        item.lastError = error;
+      } else {
+        item.lastError = error;
+      }
+      this.saveToDisk();
+    }
+  }
+
+  public async getSheetsOutboxStats(): Promise<{
+    pending: number;
+    processing: number;
+    synced: number;
+    failed: number;
+    total: number;
+  }> {
+    if (this.usePostgres && this.postgres) {
+      return await this.postgres.getSheetsOutboxStats();
+    }
+
+    if (!this.data.sheetsOutbox) this.data.sheetsOutbox = [];
+    const stats = { pending: 0, processing: 0, synced: 0, failed: 0, total: this.data.sheetsOutbox.length };
+    for (const r of this.data.sheetsOutbox) {
+      if (r.status in stats) {
+        (stats as any)[r.status]++;
+      }
+    }
+    return stats;
   }
 }
 

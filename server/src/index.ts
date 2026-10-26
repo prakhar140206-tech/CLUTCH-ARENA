@@ -14,12 +14,15 @@ import {
   validateProductionEnvironment, 
   validateBearerTokenHeader, 
   getSecurityAuditReport,
-  sanitizeInputString 
+  sanitizeInputString,
+  secureTimingSafeCompare
 } from './config/securityConfig.js';
 import { ScoringEngine } from './game/scoringEngine.js';
 import { MasteryEngine } from './adaptive/masteryEngine.js';
 import { RemediationEngine } from './adaptive/remediationEngine.js';
 import { DSATopic, DSAOnboardingPreferences } from './types/shared.js';
+import { googleSheetsService } from './sheets/googleSheetsService.js';
+import { sheetsSyncWorker } from './sheets/sheetsSyncWorker.js';
 
 dotenv.config();
 
@@ -442,7 +445,46 @@ app.post('/api/verify-answer', (req, res) => {
       }
 
       updatedMastery = persistenceStore.updateConceptMastery(activeUserId, newTopicRecord);
+
+      // Google Sheets asynchronous outbox sync for Progress
+      sheetsSyncWorker.enqueue(
+        'Progress',
+        {
+          userId: activeUserId,
+          username: persistenceStore.getUser(activeUserId)?.username || activeUserId,
+          topic: challenge.topic,
+          masteryScore: newTopicRecord.masteryScore,
+          currentDifficulty: newTopicRecord.currentDifficulty,
+          questionsAttempted: newTopicRecord.questionsAttempted,
+          questionsSolved: newTopicRecord.questionsSolved,
+          recentAccuracy: newTopicRecord.recentAccuracy,
+          lastUpdated: new Date().toISOString()
+        },
+        `prog_${activeUserId}_${challenge.topic}`
+      );
     }
+
+    // Google Sheets asynchronous outbox sync for solo QuestionAttempts
+    const attemptId = `solo_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    sheetsSyncWorker.enqueue(
+      'QuestionAttempts',
+      {
+        submissionId: attemptId,
+        roomId: 'SOLO_PRACTICE',
+        roundIndex: 1,
+        userId: activeUserId || 'guest',
+        username: (activeUserId && persistenceStore.getUser(activeUserId)?.username) || 'Solo Pilot',
+        challengeId: challenge.id,
+        topic: challenge.topic,
+        difficulty: challenge.difficulty,
+        isCorrect,
+        pointsAwarded: scoreResult.pointsAwarded,
+        speedBonus: scoreResult.speedBonus,
+        timeTakenMs: elapsedMs,
+        timestamp: new Date().toISOString()
+      },
+      attemptId
+    );
 
     res.json({
       isCorrect,
@@ -498,6 +540,23 @@ app.post('/api/auth/register', async (req, res) => {
 
     const token = generateSessionToken(userId);
     const { passwordHash: _, ...safeProfile } = userProfile;
+
+    // Google Sheets asynchronous outbox sync for Users (passwords excluded)
+    sheetsSyncWorker.enqueue(
+      'Users',
+      {
+        id: userProfile.id,
+        username: userProfile.username,
+        email: userProfile.email || '',
+        rankTier: userProfile.rankTier,
+        auraPoints: userProfile.auraPoints,
+        auraTitle: userProfile.auraTitle,
+        createdAt: new Date().toISOString(),
+        lastActive: new Date().toISOString()
+      },
+      `user_${userProfile.id}`
+    );
+
     res.status(201).json({ success: true, profile: safeProfile, token });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -578,6 +637,23 @@ app.post('/api/auth/profile', (req, res) => {
       username: sanitizedUsername
     });
     const { passwordHash: _, ...safeProfile } = profile;
+
+    // Google Sheets asynchronous outbox sync for Users
+    sheetsSyncWorker.enqueue(
+      'Users',
+      {
+        id: profile.id,
+        username: profile.username,
+        email: profile.email || '',
+        rankTier: profile.rankTier,
+        auraPoints: profile.auraPoints,
+        auraTitle: profile.auraTitle,
+        createdAt: new Date(profile.lastActive || Date.now()).toISOString(),
+        lastActive: new Date().toISOString()
+      },
+      `user_update_${profile.id}_${Date.now()}`
+    );
+
     res.json({ profile: safeProfile });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -776,17 +852,94 @@ io.on('connection', (socket: Socket) => {
 });
 
 // ============================================================================
+// GOOGLE SHEETS INTEGRATION DIAGNOSTICS & MANAGEMENT (AUTHORIZED)
+// ============================================================================
+
+function requireAdminAuthorization(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const adminKey = (req.headers['x-admin-key'] as string) || (req.query.adminKey as string);
+  const expectedKey = process.env.ADMIN_API_KEY || process.env.RUNNER_SECRET_KEY || 'clutch-dev-admin-key';
+
+  if (!adminKey || !secureTimingSafeCompare(adminKey, expectedKey)) {
+    return res.status(403).json({
+      error: 'Forbidden: Unauthorized access. Valid "x-admin-key" header is required for diagnostic operations.'
+    });
+  }
+  next();
+}
+
+// Authorized Diagnostic Status Endpoint
+app.get('/api/admin/sheets/status', requireAdminAuthorization, async (_req, res) => {
+  try {
+    const diagnostic = googleSheetsService.getDiagnosticStatus();
+    const metrics = await sheetsSyncWorker.getMetrics();
+    res.json({
+      success: true,
+      sheets: diagnostic,
+      worker: metrics,
+      timestamp: Date.now()
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Authorized Diagnostic Test Write
+app.post('/api/admin/sheets/test-sync', requireAdminAuthorization, async (_req, res) => {
+  try {
+    const writeResult = await googleSheetsService.writeTestRecord();
+    const metrics = await sheetsSyncWorker.getMetrics();
+    res.json({
+      success: writeResult.success,
+      message: writeResult.message,
+      targetWorksheet: writeResult.worksheet,
+      metrics
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Authorized Batch Force Flush Endpoint
+app.post('/api/admin/sheets/force-flush', requireAdminAuthorization, async (_req, res) => {
+  try {
+    const result = await sheetsSyncWorker.processOutboxBatch();
+    res.json({
+      success: true,
+      result
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============================================================================
 // SERVER LIFECYCLE & GRACEFUL SHUTDOWN
 // ============================================================================
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, async () => {
   console.log(`[DSA Battle Arena Server] Operational on http://localhost:${PORT}`);
   console.log(`[Security] Sandbox Isolation Mode: ${isolatedExecutionWorker.getIsolationStatus().mode}`);
   console.log(`[Storage] Persistence Engine: ${persistenceStore.getStorageEngine()}`);
+
+  // Initialize and start background Google Sheets Outbox Sync Worker
+  if (googleSheetsService.isEnabled()) {
+    console.log('[GoogleSheets] Integration enabled. Initializing background sync worker...');
+    sheetsSyncWorker.start();
+    sheetsSyncWorker.enqueue('PlatformEvents', {
+      eventId: `boot_${Date.now()}`,
+      eventType: 'SERVER_BOOT',
+      source: 'CLUTCH_BACKEND',
+      details: `CLUTCH server initialized on port ${PORT} with persistence ${persistenceStore.getStorageEngine()}`,
+      timestamp: new Date().toISOString()
+    });
+  } else {
+    console.log('[GoogleSheets] Integration currently disabled (GOOGLE_SHEETS_ENABLED != true)');
+  }
 });
 
 const gracefulShutdown = (signal: string) => {
   console.log(`[Server] Received ${signal}. Initiating graceful shutdown...`);
+  sheetsSyncWorker.stop();
   httpServer.close(() => {
     console.log('[Server] HTTP and Socket.IO server closed cleanly.');
     process.exit(0);

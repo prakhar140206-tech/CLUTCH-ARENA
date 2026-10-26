@@ -104,9 +104,9 @@ export const AvatarCustomizerScreen: React.FC = () => {
         </div>
 
         {/* Split Grid: 3D Stage on Left, Customizer Options on Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
           {/* 3D Viewport (5 cols) */}
-          <div className="lg:col-span-5 h-[360px] sm:h-[450px] clutch-panel-elevated rounded-2xl overflow-hidden relative shadow-2xl flex flex-col justify-between p-4">
+          <div className="lg:col-span-5 h-[260px] sm:h-[450px] clutch-panel-elevated rounded-2xl overflow-hidden relative shadow-2xl flex flex-col justify-between p-3 sm:p-4">
             <div className="flex items-center justify-between z-10">
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-clutch-violet/20 text-clutch-lavender border border-clutch-violet/40 font-bold">
                 INTERACTIVE 3D PREVIEW
@@ -134,14 +134,14 @@ export const AvatarCustomizerScreen: React.FC = () => {
               </Canvas>
             </div>
 
-            <div className="z-10 mt-auto bg-clutch-surface/85 backdrop-blur-md p-3 rounded-xl border border-clutch-border text-center">
+            <div className="z-10 mt-auto bg-clutch-surface/85 backdrop-blur-md p-2.5 sm:p-3 rounded-xl border border-clutch-border text-center">
               <span className="text-xs font-cyber font-bold text-white block">{userProfile.username}</span>
               <span className="text-[10px] font-mono text-clutch-lavender">{selectedTitle}</span>
             </div>
           </div>
 
           {/* Options Panel (7 cols) */}
-          <div className="lg:col-span-7 clutch-panel rounded-2xl p-6 space-y-6">
+          <div className="lg:col-span-7 clutch-panel rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Color Swatches */}
             <div>
               <label className="text-xs font-mono text-clutch-muted block mb-2.5">

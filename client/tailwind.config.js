@@ -8,30 +8,34 @@ export default {
     extend: {
       colors: {
         clutch: {
-          bg: '#060713',
-          surface: '#0c0f24',
-          'surface-light': '#121634',
-          'surface-elevated': '#171c42',
-          border: '#1e2552',
-          'border-focus': '#7c3aed',
-          violet: '#7c3aed',
-          'violet-light': '#8b5cf6',
-          lavender: '#c4b5fd',
-          'lavender-muted': '#a78bfa',
+          bg: '#0a0d10',
+          'bg-deep': '#06080a',
+          surface: '#11171d',
+          'surface-light': '#161e27',
+          'surface-elevated': '#1c2632',
+          border: 'rgba(34, 197, 94, 0.15)',
+          'border-subtle': 'rgba(255, 255, 255, 0.08)',
+          'border-focus': '#22c55e',
+          neon: '#22c55e',
+          lime: '#84cc16',
+          'lime-glow': '#a3e635',
+          cyan: '#06b6d4',
+          'cyan-glow': '#22d3ee',
+          gold: '#eab308',
+          'gold-light': '#facc15',
           text: '#f8fafc',
           muted: '#94a3b8',
           subtle: '#64748b',
           emerald: '#10b981',
           amber: '#f59e0b',
-          rose: '#ef4444',
-          cyan: '#06b6d4'
+          rose: '#ef4444'
         },
         cyber: {
-          dark: '#060713',
-          violet: '#7c3aed',
+          dark: '#0a0d10',
+          green: '#22c55e',
+          lime: '#84cc16',
           cyan: '#06b6d4',
-          lime: '#10b981',
-          magenta: '#ec4899'
+          gold: '#eab308'
         }
       },
       fontFamily: {

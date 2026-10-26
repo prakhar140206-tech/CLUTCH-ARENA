@@ -407,7 +407,7 @@ export const SoloQuestScreen: React.FC = () => {
 
           {/* Right: Dual Clocks & Score */}
           {matchStarted && !matchEnded && (
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto justify-end">
               <div className="px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-xs font-mono">
                 <span className="text-gray-400">Score: </span>
                 <span className="font-bold text-yellow-400">{score}</span>

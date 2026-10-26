@@ -121,9 +121,75 @@
         "highestStreak": 0
       },
       "lastActive": 1793047887762
+    },
+    "usr-75904e5e3ae39876": {
+      "id": "usr-75904e5e3ae39876",
+      "username": "Piyush Gupta",
+      "ratingMMR": 1200,
+      "auraPoints": 0,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793050274555,
+      "email": "0251csml169@niet.co.in",
+      "passwordHash": "36dac220a9c4716e9c7c96cbda48883f:5a67baf03a0415804ce9c92c190925ac23e88e72a4685c101dfcc6e952a5e5729355161135f56913c81b52da9e97889f5259cfb478a81a84246e97ef89e4c6bc"
     }
   },
   "matchHistory": [
+    {
+      "id": "277d8940-2322-4514-8f47-0cede7ff84e2",
+      "timestamp": 1793050873618,
+      "mode": "duel_1v1",
+      "durationMs": 600000,
+      "winner": {
+        "id": "bot-1d23962d",
+        "username": "AlgoSpark_AI#807",
+        "score": 3675
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "bot-1d23962d",
+          "username": "AlgoSpark_AI#807",
+          "score": 3675,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 25,
+          "totalTimeTakenMs": 395388,
+          "avgTimeTakenSec": 10.4,
+          "levelStats": {
+            "1": {
+              "attempted": 8,
+              "solved": 4,
+              "totalTimeMs": 89017
+            },
+            "2": {
+              "attempted": 7,
+              "solved": 5,
+              "totalTimeMs": 70719
+            },
+            "3": {
+              "attempted": 12,
+              "solved": 9,
+              "totalTimeMs": 121921
+            },
+            "4": {
+              "attempted": 11,
+              "solved": 7,
+              "totalTimeMs": 113731
+            }
+          },
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
     {
       "id": "8e30ff7e-c345-4498-9dd5-8dff0b6b6c99",
       "timestamp": 1793046110885,
@@ -2294,12 +2360,59 @@
       "matchesPlayed": 0,
       "matchesWon": 0,
       "highestStreak": 0
+    },
+    {
+      "id": "usr-75904e5e3ae39876",
+      "username": "Piyush Gupta",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout",
+      "auraPoints": 0,
+      "solved": 0,
+      "matchesPlayed": 0,
+      "matchesWon": 0,
+      "highestStreak": 0
     }
   ],
   "questCompletions": {
     "user_concurrent_quest_1793018958573_challenge_bfs_traversal": true
   },
-  "conceptMastery": {},
+  "conceptMastery": {
+    "usr-75904e5e3ae39876": {
+      "searching_and_sorting": {
+        "topic": "searching_and_sorting",
+        "masteryScore": 8,
+        "currentDifficulty": "easy",
+        "questionsAttempted": 4,
+        "questionsSolved": 0,
+        "recentAccuracy": 0,
+        "averageResponseTimeMs": 6635,
+        "consecutiveCorrect": 0,
+        "consecutiveWrong": 4,
+        "needsRemediation": true,
+        "remediationStep": {
+          "conceptKey": "binary_search_boundary",
+          "explanation": "Binary search works by discarding half the search space per iteration on monotonic domains. Use low + (high - low) // 2 to prevent integer overflow.",
+          "workedExample": "To find the first occurrence of X: when arr[mid] == X, record mid as best candidate and continue searching left with high = mid - 1.",
+          "practiceChallengeId": "fib-001",
+          "reassessed": false
+        },
+        "lastUpdated": 1793051643033
+      },
+      "stacks_and_queues": {
+        "topic": "stacks_and_queues",
+        "masteryScore": 41,
+        "currentDifficulty": "easy",
+        "questionsAttempted": 3,
+        "questionsSolved": 1,
+        "recentAccuracy": 21,
+        "averageResponseTimeMs": 6641,
+        "consecutiveCorrect": 0,
+        "consecutiveWrong": 1,
+        "needsRemediation": false,
+        "lastUpdated": 1793051661218
+      }
+    }
+  },
   "dsaPreferences": {
     "pilot-eval-adaptive-99": {
       "userId": "pilot-eval-adaptive-99",
@@ -2380,6 +2493,99 @@
       ],
       "progressionPacing": "steady",
       "completedAt": 1793043503606
+    },
+    "usr-75904e5e3ae39876": {
+      "userId": "usr-75904e5e3ae39876",
+      "languages": [
+        "python"
+      ],
+      "experienceLevel": "beginner",
+      "preferredTopics": [
+        "arrays_and_strings",
+        "searching_and_sorting",
+        "trees_and_bst",
+        "linked_lists",
+        "stacks_and_queues",
+        "recursion_and_backtracking",
+        "graphs",
+        "greedy_algorithms",
+        "dynamic_programming",
+        "hashing",
+        "heaps_and_priority_queues",
+        "bit_manipulation",
+        "complexity_analysis"
+      ],
+      "preferredFormats": [
+        "mcq",
+        "code_sprint",
+        "predict_output",
+        "interactive_array",
+        "bug_hunter",
+        "fill_in_blank",
+        "matching",
+        "pseudocode",
+        "arrange_steps"
+      ],
+      "goals": [
+        "interview_prep",
+        "competitive_programming",
+        "academic_dsa",
+        "casual_fun"
+      ],
+      "progressionPacing": "steady",
+      "completedAt": 1793050265640
     }
-  }
+  },
+  "friends": {},
+  "friendRequests": [],
+  "sheetsOutbox": [
+    {
+      "id": "test_outbox_1793052149540",
+      "worksheet": "Users",
+      "rowData": {
+        "id": "usr-test",
+        "username": "TestUser"
+      },
+      "status": "synced",
+      "retryCount": 0,
+      "createdAt": 1793052149540,
+      "updatedAt": 1793052149543
+    },
+    {
+      "id": "retry_test_1793052149545",
+      "worksheet": "MatchResults",
+      "rowData": {
+        "matchId": "m-retry-1",
+        "winner": "Player1"
+      },
+      "status": "synced",
+      "retryCount": 1,
+      "createdAt": 1793052149545,
+      "updatedAt": 1793052149549
+    },
+    {
+      "id": "test_outbox_1793052205512",
+      "worksheet": "Users",
+      "rowData": {
+        "id": "usr-test",
+        "username": "TestUser"
+      },
+      "status": "synced",
+      "retryCount": 0,
+      "createdAt": 1793052205512,
+      "updatedAt": 1793052205513
+    },
+    {
+      "id": "retry_test_1793052205514",
+      "worksheet": "MatchResults",
+      "rowData": {
+        "matchId": "m-retry-1",
+        "winner": "Player1"
+      },
+      "status": "synced",
+      "retryCount": 1,
+      "createdAt": 1793052205514,
+      "updatedAt": 1793052205516
+    }
+  ]
 }

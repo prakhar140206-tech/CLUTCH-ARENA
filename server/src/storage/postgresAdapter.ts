@@ -386,6 +386,89 @@ export class PostgresStorageAdapter {
     return map;
   }
 
+  // --- Google Sheets Outbox Queue Operations ---
+
+  public async enqueueSheetsOutbox(item: {
+    id: string;
+    worksheet: string;
+    rowData: Record<string, any>;
+  }): Promise<void> {
+    const now = Date.now();
+    await this.pool.query(
+      `INSERT INTO google_sheets_outbox (id, worksheet, row_data, status, retry_count, created_at, updated_at)
+       VALUES ($1, $2, $3, 'pending', 0, $4, $4)
+       ON CONFLICT (id) DO NOTHING`,
+      [item.id, item.worksheet, JSON.stringify(item.rowData), now]
+    );
+  }
+
+  public async fetchPendingSheetsOutbox(batchSize: number = 50): Promise<Array<{
+    id: string;
+    worksheet: string;
+    rowData: Record<string, any>;
+    status: string;
+    retryCount: number;
+    lastError?: string;
+    createdAt: number;
+    updatedAt: number;
+  }>> {
+    const res = await this.pool.query(
+      `SELECT id, worksheet, row_data as "rowData", status, retry_count as "retryCount",
+              last_error as "lastError", created_at as "createdAt", updated_at as "updatedAt"
+       FROM google_sheets_outbox
+       WHERE status = 'pending' OR (status = 'failed' AND retry_count < 10)
+       ORDER BY created_at ASC
+       LIMIT $1`,
+      [batchSize]
+    );
+    return res.rows;
+  }
+
+  public async updateSheetsOutboxStatus(
+    id: string,
+    status: 'pending' | 'processing' | 'synced' | 'failed',
+    error?: string
+  ): Promise<void> {
+    const now = Date.now();
+    if (status === 'failed') {
+      await this.pool.query(
+        `UPDATE google_sheets_outbox
+         SET status = $2, retry_count = retry_count + 1, last_error = $3, updated_at = $4
+         WHERE id = $1`,
+        [id, status, error || null, now]
+      );
+    } else {
+      await this.pool.query(
+        `UPDATE google_sheets_outbox
+         SET status = $2, last_error = $3, updated_at = $4
+         WHERE id = $1`,
+        [id, status, error || null, now]
+      );
+    }
+  }
+
+  public async getSheetsOutboxStats(): Promise<{
+    pending: number;
+    processing: number;
+    synced: number;
+    failed: number;
+    total: number;
+  }> {
+    const res = await this.pool.query(
+      `SELECT status, COUNT(*)::int as count
+       FROM google_sheets_outbox
+       GROUP BY status`
+    );
+    const stats = { pending: 0, processing: 0, synced: 0, failed: 0, total: 0 };
+    for (const row of res.rows) {
+      if (row.status in stats) {
+        (stats as any)[row.status] = row.count;
+      }
+      stats.total += row.count;
+    }
+    return stats;
+  }
+
   public async close(): Promise<void> {
     await this.pool.end();
   }

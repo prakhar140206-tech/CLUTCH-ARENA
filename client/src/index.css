@@ -3,15 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #060713;
-  --bg-surface: #0c0f24;
-  --bg-surface-light: #121634;
-  --bg-surface-elevated: #171c42;
-  --border-subtle: #1e2552;
-  --border-highlight: rgba(124, 58, 237, 0.4);
-  --accent-violet: #7c3aed;
-  --accent-violet-light: #8b5cf6;
-  --accent-lavender: #c4b5fd;
+  --bg-primary: #0a0d10;
+  --bg-surface: #11171d;
+  --bg-surface-light: #161e27;
+  --bg-surface-elevated: #1c2632;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-highlight: rgba(34, 197, 94, 0.35);
+  --accent-neon: #22c55e;
+  --accent-emerald: #10b981;
+  --accent-lime: #84cc16;
+  --accent-cyan: #06b6d4;
+  --accent-gold: #eab308;
   --text-primary: #f8fafc;
   --text-muted: #94a3b8;
   --text-subtle: #64748b;
@@ -35,6 +37,11 @@ html, body {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, input, select {
+  touch-action: manipulation;
 }
 
 /* Typography Helpers */
@@ -55,8 +62,8 @@ html, body {
   width: 200%;
   height: 45vh;
   background-image: 
-    linear-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(124, 58, 237, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(34, 197, 94, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 197, 94, 0.08) 1px, transparent 1px);
   background-size: 48px 48px;
   transform: perspective(600px) rotateX(65deg);
   transform-origin: bottom center;
@@ -67,57 +74,99 @@ html, body {
 
 /* CLUTCH Surface & Panel Design System */
 .clutch-panel {
-  background: rgba(12, 15, 36, 0.85);
+  background: rgba(17, 23, 29, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid #1e2552;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.5);
 }
 
 .clutch-panel-elevated {
-  background: rgba(18, 22, 52, 0.9);
+  background: rgba(22, 30, 39, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(124, 58, 237, 0.3);
-  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.65), 0 0 20px -5px rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.65), 0 0 20px -5px rgba(34, 197, 94, 0.15);
 }
 
 .clutch-panel-interactive {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .clutch-panel-interactive:hover {
-  border-color: rgba(124, 58, 237, 0.55);
+  border-color: rgba(34, 197, 94, 0.55);
   transform: translateY(-2px);
-  box-shadow: 0 16px 45px -8px rgba(0, 0, 0, 0.7), 0 0 25px -4px rgba(124, 58, 237, 0.22);
+  box-shadow: 0 16px 45px -8px rgba(0, 0, 0, 0.7), 0 0 25px -4px rgba(34, 197, 94, 0.25);
 }
 
-/* Buttons */
+/* Active Nav Glow Pill */
+.clutch-nav-active {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.9) 0%, rgba(34, 197, 94, 0.7) 100%);
+  border: 1px solid rgba(74, 222, 128, 0.5);
+  box-shadow: 0 0 18px rgba(34, 197, 94, 0.38);
+  color: #ffffff !important;
+}
+
+/* Signature Cyberpunk Neon Button */
+.clutch-btn-neon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #84cc16 0%, #10b981 50%, #06b6d4 100%);
+  color: #05090b;
+  font-weight: 900;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  letter-spacing: 0.05em;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.75rem;
+  min-height: 44px;
+  font-size: 0.875rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(163, 230, 53, 0.6);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.clutch-btn-neon:hover:not(:disabled) {
+  box-shadow: 0 0 35px rgba(34, 197, 94, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px) scale(1.02);
+}
+.clutch-btn-neon:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+.clutch-btn-neon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Primary Button fallback (Emerald) */
 .clutch-btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  background: linear-gradient(135deg, #10b981, #059669);
   color: #ffffff;
   font-weight: 700;
-  border-radius: 0.5rem;
+  border-radius: 0.625rem;
   padding: 0.625rem 1.25rem;
   min-height: 44px;
   font-size: 0.8125rem;
   letter-spacing: 0.04em;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 20px -3px rgba(124, 58, 237, 0.45);
-  border: 1px solid rgba(167, 139, 250, 0.3);
+  box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.45);
+  border: 1px solid rgba(52, 211, 153, 0.35);
   cursor: pointer;
   touch-action: manipulation;
 }
 .clutch-btn-primary:focus-visible {
-  outline: 2px solid #c4b5fd;
+  outline: 2px solid #86efac;
   outline-offset: 2px;
 }
 .clutch-btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-  box-shadow: 0 0 28px -2px rgba(124, 58, 237, 0.7);
+  background: linear-gradient(135deg, #22c55e, #10b981);
+  box-shadow: 0 0 28px -2px rgba(34, 197, 94, 0.7);
   transform: translateY(-1px);
 }
 .clutch-btn-primary:active:not(:disabled) {

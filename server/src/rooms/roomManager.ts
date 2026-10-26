@@ -17,6 +17,7 @@ import { executeCodeInIsolatedSandbox } from '../execution/codeRunner.js';
 import { isolatedExecutionWorker } from '../execution/isolatedWorker.js';
 import { generateAIChallenge } from '../ai/challengeGenerator.js';
 import { persistenceStore } from '../storage/db.js';
+import { sheetsSyncWorker } from '../sheets/sheetsSyncWorker.js';
 
 export class RoomManager {
   private io: Server;
@@ -157,6 +158,25 @@ export class RoomManager {
 
     hostSocket.join(roomId);
     this.syncRoomState(roomId);
+
+    // Google Sheets asynchronous outbox sync for CustomRooms
+    sheetsSyncWorker.enqueue(
+      'CustomRooms',
+      {
+        roomId: room.id,
+        code: room.code,
+        hostId: hostUser.id,
+        hostUsername: hostUser.username,
+        mode: defaultSettings.mode,
+        maxPlayers: defaultSettings.maxPlayers,
+        totalRounds: defaultSettings.totalRounds,
+        matchDurationMinutes: defaultSettings.matchDurationMinutes,
+        isPrivate: defaultSettings.isPrivate,
+        status: 'lobby',
+        createdAt: new Date().toISOString()
+      },
+      `room_${room.id}`
+    );
 
     return room;
   }
@@ -765,6 +785,27 @@ export class RoomManager {
     scoreRes.explanation = challenge.explanation;
     scoreRes.testCaseResults = testResults;
 
+    // Google Sheets asynchronous outbox sync for QuestionAttempts
+    sheetsSyncWorker.enqueue(
+      'QuestionAttempts',
+      {
+        submissionId: idempotencyKey,
+        roomId,
+        roundIndex,
+        userId: participant.id,
+        username: participant.username,
+        challengeId: challenge.id,
+        topic: challenge.topic,
+        difficulty: challenge.difficulty,
+        isCorrect,
+        pointsAwarded: scoreRes.pointsAwarded,
+        speedBonus: scoreRes.speedBonus,
+        timeTakenMs,
+        timestamp: new Date().toISOString()
+      },
+      `attempt_${idempotencyKey}`
+    );
+
     this.updateLeaderboard(roomId);
     this.syncRoomState(roomId);
 
@@ -865,12 +906,14 @@ export class RoomManager {
     const winner = room.leaderboard[0];
 
     // Persist completed match record and rankings to disk
+    const matchId = uuidv4();
+    const durationSeconds = (room.settings.matchDurationMinutes || 10) * 60;
     try {
       persistenceStore.recordMatch({
-        id: uuidv4(),
+        id: matchId,
         timestamp: Date.now(),
         mode: room.settings.mode,
-        durationMs: (room.settings.matchDurationMinutes || 10) * 60 * 1000,
+        durationMs: durationSeconds * 1000,
         winner: winner ? { id: winner.id, username: winner.username, score: winner.score } : { id: '', username: 'Nobody', score: 0 },
         participantsCount: Object.keys(room.participants).length,
         leaderboardSnippet: room.leaderboard.slice(0, 5)
@@ -878,6 +921,34 @@ export class RoomManager {
     } catch (err: any) {
       console.warn('[Storage] Failed to record match to persistent store:', err.message);
     }
+
+    // Google Sheets asynchronous outbox sync for MatchResults & CustomRooms
+    sheetsSyncWorker.enqueue(
+      'MatchResults',
+      {
+        matchId,
+        mode: room.settings.mode,
+        durationSeconds,
+        winnerId: winner?.id || '',
+        winnerUsername: winner?.username || 'Nobody',
+        winnerScore: winner?.score || 0,
+        participantsCount: Object.keys(room.participants).length,
+        timestamp: new Date().toISOString()
+      },
+      `match_${matchId}`
+    );
+
+    sheetsSyncWorker.enqueue(
+      'CustomRooms',
+      {
+        roomId: room.id,
+        code: room.code,
+        hostId: room.hostId,
+        status: 'match_ended',
+        updatedAt: new Date().toISOString()
+      },
+      `room_ended_${room.id}`
+    );
 
     this.io.to(roomId).emit('match_finished', {
       winner,

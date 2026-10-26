@@ -36,21 +36,21 @@ export const HomeScreen: React.FC = () => {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-clutch-violet/5 rounded-full blur-[180px] pointer-events-none" />
 
       {/* Top Navbar */}
-      <header className="w-full bg-clutch-surface/90 border-b border-clutch-border backdrop-blur-xl px-4 sm:px-8 py-3.5 z-40 sticky top-0 shrink-0">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-clutch-violet/30 to-clutch-surface-elevated border border-clutch-violet/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(124,58,237,0.3)]">
+      <header className="w-full bg-clutch-surface/90 border-b border-clutch-border backdrop-blur-xl px-3 sm:px-8 py-3 z-40 sticky top-0 shrink-0">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-clutch-violet/30 to-clutch-surface-elevated border border-clutch-violet/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(124,58,237,0.3)]">
               <img src={CLUTCH_LOGO} alt="CLUTCH Logo" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="font-cyber font-black text-sm tracking-wider text-white flex items-center gap-1.5">
-                CLUTCH <span className="text-[10px] px-1.5 py-0.2 rounded bg-clutch-violet/20 text-clutch-lavender border border-clutch-violet/30">ARENA</span>
+              <span className="font-cyber font-black text-xs sm:text-sm tracking-wider text-white flex items-center gap-1.5">
+                CLUTCH <span className="text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded bg-clutch-violet/20 text-clutch-lavender border border-clutch-violet/30">ARENA</span>
               </span>
-              <span className="text-[9px] font-mono text-clutch-muted tracking-tight">Competitive DSA Gaming</span>
+              <span className="text-[8.5px] font-mono text-clutch-muted tracking-tight hidden xs:inline">Competitive DSA Gaming</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => {
                 soundSynth.click();
@@ -60,7 +60,7 @@ export const HomeScreen: React.FC = () => {
                   setScreen('dashboard');
                 }
               }}
-              className="clutch-btn-ghost text-xs"
+              className="clutch-btn-ghost text-xs px-2.5 py-1.5"
             >
               Dashboard
             </button>
@@ -71,10 +71,10 @@ export const HomeScreen: React.FC = () => {
                   soundSynth.click();
                   setScreen('auth');
                 }}
-                className="clutch-btn-primary py-2 px-4 text-xs flex items-center gap-1.5"
+                className="clutch-btn-primary py-1.5 sm:py-2 px-3 sm:px-4 text-xs flex items-center gap-1.5"
               >
                 <LogIn className="w-3.5 h-3.5" />
-                <span>Sign In / Register</span>
+                <span>Sign In</span>
               </button>
             ) : (
               <button
@@ -90,7 +90,7 @@ export const HomeScreen: React.FC = () => {
                 >
                   {userProfile.username.charAt(0)}
                 </div>
-                <span>{userProfile.username}</span>
+                <span className="hidden xs:inline">{userProfile.username}</span>
               </button>
             )}
           </div>
@@ -98,14 +98,14 @@ export const HomeScreen: React.FC = () => {
       </header>
 
       {/* Hero Section with Arena Focal Point */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-16 flex flex-col items-center text-center z-10 w-full">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-12 sm:pb-16 flex flex-col items-center text-center z-10 w-full">
         {/* Holographic Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-clutch-violet/15 border border-clutch-violet/30 text-clutch-lavender text-xs font-mono mb-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-clutch-violet/15 border border-clutch-violet/30 text-clutch-lavender text-[10px] sm:text-xs font-mono mb-4 sm:mb-6">
           <Sparkles className="w-3.5 h-3.5 text-clutch-lavender" />
           <span>REAL-TIME MULTIPLAYER ALGORITHMIC ESPORTS</span>
         </div>
 
-        <h1 className="font-cyber font-black text-4xl sm:text-6xl md:text-7xl text-white tracking-wide mb-4 leading-tight">
+        <h1 className="font-cyber font-black text-3xl xs:text-4xl sm:text-6xl md:text-7xl text-white tracking-wide mb-4 leading-tight">
           MASTER DSA <span className="text-transparent bg-clip-text bg-gradient-to-r from-clutch-lavender via-clutch-violet-light to-white">UNDER FIRE</span>
         </h1>
 
