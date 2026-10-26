@@ -27,7 +27,8 @@ ENV PORT=4000
 # Install runtime utilities (including docker CLI for container sandbox orchestration)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl python3 docker.io \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && usermod -aG docker node
 
 COPY shared ./shared
 COPY server/package*.json ./server/

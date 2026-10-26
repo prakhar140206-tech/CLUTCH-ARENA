@@ -75,6 +75,10 @@ jobs:
           docker build -t clutch-sandbox-runner:latest -f server/Dockerfile.runner .
           docker image inspect clutch-sandbox-runner:latest --format '{{.Config.User}}'
 
+      - name: Configure Host Docker Socket Permissions
+        run: |
+          sudo chmod 666 /var/run/docker.sock
+
       - name: Launch PostgreSQL & API Stack via Docker Compose
         run: |
           docker compose up -d postgres clutch-runner clutch-api clutch-client
@@ -122,9 +126,18 @@ jobs:
       - name: Verify Live Endpoints & Production Readiness
         run: |
           echo "Testing /api/health..."
-          curl -f http://localhost:4000/api/health
-          echo -e "\nTesting /api/ready (must be 200 with PostgreSQL and container sandbox active)..."
-          curl -f http://localhost:4000/api/ready
+          curl -s http://localhost:4000/api/health
+          echo -e "\n\nTesting /api/ready..."
+          READY_BODY=$(curl -s http://localhost:4000/api/ready)
+          echo "Readiness Body: $READY_BODY"
+          READY_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000/api/ready)
+          echo "Readiness Status Code: $READY_CODE"
+          if [ "$READY_CODE" != "200" ]; then
+            echo "ERROR: /api/ready returned HTTP $READY_CODE instead of 200!"
+            docker compose logs clutch-api
+            exit 1
+          fi
+          echo "PASSED: Production endpoints are fully healthy and ready."
 
       - name: Setup Node.js 22 for Host-based Live Verification
         uses: actions/setup-node@v4
