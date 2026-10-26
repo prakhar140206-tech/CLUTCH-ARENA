@@ -103,30 +103,26 @@ const DEFAULT_PROFILE: UserProfile = {
   username: 'CyberNinja_' + Math.floor(100 + Math.random() * 900),
   isGuest: true,
   avatar: DEFAULT_AVATAR,
-  ratingMMR: 1250,
-  auraPoints: 48500,
-  auraTitle: 'Algorithm Rizzler',
-  equippedTitle: 'Dijkstra’s Favorite Child 👑',
-  equippedBadge: '🔥 NO CAP',
-  rankTier: 'Byte Knight',
+  ratingMMR: 1200,
+  auraPoints: 0,
+  auraTitle: 'Novice Coder',
+  equippedTitle: 'Recruit Pilot ⚔️',
+  equippedBadge: '⚔️ CONTENDER',
+  rankTier: 'Novice Bit',
   stats: {
-    matchesPlayed: 14,
-    matchesWon: 9,
-    challengesSolved: 38,
-    highestStreak: 7,
-    topicsMastered: {
-      arrays_and_strings: 85,
-      trees_and_bst: 70,
-      stacks_and_queues: 90
-    }
+    matchesPlayed: 0,
+    matchesWon: 0,
+    challengesSolved: 0,
+    highestStreak: 0,
+    topicsMastered: {}
   },
   inventory: {
-    unlockedCosmetics: ['cyber_ninja', 'neon_bot'],
-    coins: 450,
+    unlockedCosmetics: ['cyber_ninja'],
+    coins: 0,
     powerCards: {
-      uno_reverse: 3,
-      sigma_shield: 2,
-      gigachad_focus: 1
+      uno_reverse: 0,
+      sigma_shield: 0,
+      gigachad_focus: 0
     }
   }
 };
@@ -209,7 +205,24 @@ export const useGameStore = create<GameStore>()(
       setEditorSettings: (settings) => set((s) => ({ ...s, ...settings }))
     }),
     {
-      name: 'clutch_player_state_v1',
+      name: 'clutch_player_state_v2',
+      version: 2,
+      migrate: (persistedState: any) => {
+        if (!persistedState || !persistedState.userProfile) return persistedState;
+        const p = persistedState.userProfile;
+        // Purge legacy hardcoded mock stats
+        if (p.auraPoints === 48500) p.auraPoints = 0;
+        if (p.stats?.challengesSolved === 38 && p.stats?.matchesPlayed === 14 && p.stats?.highestStreak === 7) {
+          p.stats = {
+            matchesPlayed: 0,
+            matchesWon: 0,
+            challengesSolved: 0,
+            highestStreak: 0,
+            topicsMastered: {}
+          };
+        }
+        return persistedState;
+      },
       partialize: (state) => ({
         userProfile: state.userProfile,
         soloSolvedIds: state.soloSolvedIds,

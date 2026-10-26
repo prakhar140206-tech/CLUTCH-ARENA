@@ -100,14 +100,14 @@ export const AuthScreen: React.FC = () => {
           equippedTitle: selectedTitle,
           preferredLanguage: selectedLanguage
         });
-        setSuccessMsg('Callsign registered! 50,000 Starting Aura unlocked.');
+        setSuccessMsg('Callsign registered! Welcome to CLUTCH Arena.');
       } else {
         loginUser(handle.trim(), email.trim() || `${handle.toLowerCase()}@clutch.arena`);
         updateUserProfile({
           equippedTitle: selectedTitle,
           preferredLanguage: selectedLanguage,
-          auraPoints: 50000,
-          auraTitle: 'Algorithm Rizzler'
+          auraPoints: 0,
+          auraTitle: 'Novice Coder'
         });
         setSuccessMsg('Callsign registered in local arena session.');
       }

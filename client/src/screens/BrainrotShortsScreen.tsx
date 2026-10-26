@@ -118,8 +118,13 @@ export const BrainrotShortsScreen: React.FC = () => {
       const nextStreak = streak + 1;
       setStreak(nextStreak);
       setAnsweredState('correct');
+      const currentHighest = userProfile.stats?.highestStreak || 0;
       updateUserProfile({
-        auraPoints: (userProfile.auraPoints || 48500) + 1000 + nextStreak * 150
+        auraPoints: (userProfile.auraPoints || 0) + 1000 + nextStreak * 150,
+        stats: {
+          ...userProfile.stats,
+          highestStreak: Math.max(currentHighest, nextStreak)
+        }
       });
     } else {
       soundSynth.vineBoom();

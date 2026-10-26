@@ -135,47 +135,9 @@ export interface DatabaseSchema {
 }
 
 const DEFAULT_SEEDS: DatabaseSchema = {
-  users: {
-    'user-001': {
-      id: 'user-001',
-      username: 'SigmaAlgoLord',
-      email: 'sigma@clutch.gg',
-      ratingMMR: 2450,
-      auraPoints: 120500,
-      auraTitle: 'Algorithm God',
-      rankTier: 'Grandmaster Apex',
-      stats: { matchesPlayed: 240, matchesWon: 198, challengesSolved: 890, highestStreak: 24 },
-      lastActive: Date.now()
-    },
-    'user-002': {
-      id: 'user-002',
-      username: 'QuantumByte',
-      email: 'quantum@clutch.gg',
-      ratingMMR: 2180,
-      auraPoints: 95400,
-      auraTitle: 'Matrix Surfer',
-      rankTier: 'Master Elite',
-      stats: { matchesPlayed: 185, matchesWon: 142, challengesSolved: 620, highestStreak: 18 },
-      lastActive: Date.now()
-    },
-    'user-003': {
-      id: 'user-003',
-      username: 'CyberNinja_42',
-      email: 'ninja@clutch.gg',
-      ratingMMR: 1950,
-      auraPoints: 72000,
-      auraTitle: 'Pointer Whisperer',
-      rankTier: 'Diamond Vanguard',
-      stats: { matchesPlayed: 120, matchesWon: 85, challengesSolved: 430, highestStreak: 14 },
-      lastActive: Date.now()
-    }
-  },
+  users: {},
   matchHistory: [],
-  globalLeaderboard: [
-    { id: 'user-001', username: 'SigmaAlgoLord', ratingMMR: 2450, rankTier: 'Grandmaster Apex' },
-    { id: 'user-002', username: 'QuantumByte', ratingMMR: 2180, rankTier: 'Master Elite' },
-    { id: 'user-003', username: 'CyberNinja_42', ratingMMR: 1950, rankTier: 'Diamond Vanguard' }
-  ],
+  globalLeaderboard: [],
   questCompletions: {},
   dsaPreferences: {},
   conceptMastery: {}
@@ -204,6 +166,8 @@ export class PersistenceStore {
     if (options?.ready !== undefined) this.ready = options.ready;
 
     this.data = this.loadFromDisk();
+    this.updateLeaderboardCache();
+    this.saveToDisk();
     if (!options) {
       this.initStorage();
     }
@@ -287,7 +251,25 @@ export class PersistenceStore {
 
       if (fs.existsSync(DB_FILE)) {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
-        return JSON.parse(raw);
+        const parsed = JSON.parse(raw) as DatabaseSchema;
+        const cleanUsers: Record<string, StoredUserProfile> = {};
+        const testPrefixes = ['Contender_', 'Soak_', 'Phase6Agent_', 'HostAgent', 'GuestAgent', 'ArenaHost_', 'IntegrityTester', 'MatchChampion', 'AlphaLead', 'BetaRival', 'TournamentHost', 'Impostor', 'RealHost'];
+        const fakeIds = ['user-001', 'user-002', 'user-003', 'host-auth-test', 'guest-impostor', 'pilot-alpha-1', 'pilot-beta-2', 'host-arena-lead'];
+
+        for (const [id, u] of Object.entries(parsed.users || {})) {
+          if (fakeIds.includes(id)) continue;
+          if (testPrefixes.some(p => u.username.startsWith(p))) continue;
+          if (id.startsWith('soak-') || id.startsWith('host-user-') || id.startsWith('player-') || id.startsWith('user_concurrent_') || id.startsWith('user_winner_')) continue;
+          
+          // Ensure auraPoints strictly reflects real user accomplishments
+          if (u.auraPoints === 5000 || u.auraPoints === undefined) {
+            u.auraPoints = ((u.stats?.matchesWon || 0) * 250) + ((u.stats?.challengesSolved || 0) * 100);
+          }
+          cleanUsers[id] = u;
+        }
+
+        parsed.users = cleanUsers;
+        return parsed;
       }
     } catch (err: any) {
       console.warn('[Storage] Could not load DB file, initializing defaults:', err.message);
@@ -325,7 +307,7 @@ export class PersistenceStore {
       id: user.id,
       username: user.username,
       ratingMMR: 1200,
-      auraPoints: 5000,
+      auraPoints: 0,
       auraTitle: 'Novice Coder',
       rankTier: 'Byte Scout',
       stats: { matchesPlayed: 0, matchesWon: 0, challengesSolved: 0, highestStreak: 0 },
@@ -480,14 +462,19 @@ export class PersistenceStore {
     return this.data.matchHistory.slice(0, limit);
   }
 
-  private updateLeaderboardCache(): void {
+  public updateLeaderboardCache(): void {
     const sorted = Object.values(this.data.users)
-      .sort((a, b) => b.ratingMMR - a.ratingMMR)
+      .sort((a, b) => b.ratingMMR - a.ratingMMR || (b.stats?.challengesSolved || 0) - (a.stats?.challengesSolved || 0))
       .map(u => ({
         id: u.id,
         username: u.username,
         ratingMMR: u.ratingMMR,
-        rankTier: u.rankTier
+        rankTier: u.rankTier,
+        auraPoints: u.auraPoints || 0,
+        solved: u.stats?.challengesSolved || 0,
+        matchesPlayed: u.stats?.matchesPlayed || 0,
+        matchesWon: u.stats?.matchesWon || 0,
+        highestStreak: u.stats?.highestStreak || 0
       }));
     this.data.globalLeaderboard = sorted;
   }

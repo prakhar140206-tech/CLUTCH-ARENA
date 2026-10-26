@@ -234,7 +234,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             {/* Aura Points Pill */}
             <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-full bg-clutch-surface-elevated border border-clutch-violet/40 text-[11px] sm:text-xs font-mono font-bold text-clutch-lavender shadow-sm">
               <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-clutch-amber fill-current" />
-              <span>{(userProfile.auraPoints || 48500).toLocaleString()}</span>
+              <span>{(userProfile.auraPoints || 0).toLocaleString()}</span>
               <span className="text-[9px] sm:text-[10px] text-clutch-muted hidden xs:inline sm:inline">AURA</span>
             </div>
 

@@ -90,8 +90,28 @@ class SocketService {
           leaderboard
         });
       }
-      const myId = useGameStore.getState().userProfile.id;
-      if (winner?.id === myId) {
+      const store = useGameStore.getState();
+      const myId = store.userProfile.id;
+      const isWinner = winner?.id === myId;
+      const currentStats = store.userProfile.stats || {
+        matchesPlayed: 0,
+        matchesWon: 0,
+        challengesSolved: 0,
+        highestStreak: 0,
+        topicsMastered: {}
+      };
+
+      store.updateUserProfile({
+        ratingMMR: Math.max(800, (store.userProfile.ratingMMR || 1200) + (isWinner ? 25 : -10)),
+        auraPoints: (store.userProfile.auraPoints || 0) + (isWinner ? 500 : 100),
+        stats: {
+          ...currentStats,
+          matchesPlayed: currentStats.matchesPlayed + 1,
+          matchesWon: isWinner ? currentStats.matchesWon + 1 : currentStats.matchesWon
+        }
+      });
+
+      if (isWinner) {
         confetti({
           particleCount: 120,
           spread: 80,

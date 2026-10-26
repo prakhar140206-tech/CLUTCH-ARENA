@@ -245,6 +245,15 @@ export const SoloQuestScreen: React.FC = () => {
 
         const points = data.pointsAwarded || 100;
         setScore(prev => prev + points);
+        const currentHighest = userProfile.stats?.highestStreak || 0;
+        updateUserProfile({
+          auraPoints: (userProfile.auraPoints || 0) + points,
+          stats: {
+            ...userProfile.stats,
+            challengesSolved: (userProfile.stats?.challengesSolved || 0) + 1,
+            highestStreak: Math.max(currentHighest, newStreak)
+          }
+        });
 
         // Adaptive Difficulty Promotion (3 consecutive correct answers -> next tier)
         let nextDiff = difficulty;
@@ -329,6 +338,15 @@ export const SoloQuestScreen: React.FC = () => {
         setStreak(newStreak);
         setConsecutiveErrors(0);
         setScore(prev => prev + 100);
+        const currentHighest = userProfile.stats?.highestStreak || 0;
+        updateUserProfile({
+          auraPoints: (userProfile.auraPoints || 0) + 100,
+          stats: {
+            ...userProfile.stats,
+            challengesSolved: (userProfile.stats?.challengesSolved || 0) + 1,
+            highestStreak: Math.max(currentHighest, newStreak)
+          }
+        });
 
         setFeedback({
           isCorrect: true,

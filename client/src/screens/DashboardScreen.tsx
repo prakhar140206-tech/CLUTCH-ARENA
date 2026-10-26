@@ -61,6 +61,7 @@ export const DashboardScreen: React.FC = () => {
   const [isJoiningRoom, setIsJoiningRoom] = useState<boolean>(false);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
   const [loadingMastery, setLoadingMastery] = useState<boolean>(false);
+  const [liveLeaderboard, setLiveLeaderboard] = useState<any[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -81,10 +82,30 @@ export const DashboardScreen: React.FC = () => {
       }
     };
     fetchMastery();
-    return () => { isMounted = false; };
+
+    const fetchLeaderboard = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/leaderboard`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.leaderboard && isMounted) {
+            setLiveLeaderboard(data.leaderboard);
+          }
+        }
+      } catch (err) {
+        // Fallback handled gracefully
+      }
+    };
+    fetchLeaderboard();
+    const interval = setInterval(fetchLeaderboard, 15000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, [userProfile.id]);
 
-  // Daily Quests tied to real user achievements and solo solved IDs
+  // Daily Quests tied strictly to real user achievements and solo solved IDs
   const [quests, setQuests] = useState<QuestItem[]>([
     {
       id: 'quest-arrays',
@@ -100,16 +121,16 @@ export const DashboardScreen: React.FC = () => {
       title: 'Maintain a 5x Streak in any Arena Mode',
       topic: 'Competitive',
       rewardAura: 3500,
-      current: Math.min(5, userProfile.stats?.highestStreak || 3),
+      current: Math.min(5, userProfile.stats?.highestStreak || 0),
       target: 5,
       claimed: false
     },
     {
       id: 'quest-shorts',
-      title: 'Correctly Validate 5 DSA Truth Assertions',
-      topic: 'DSA Shorts',
+      title: 'Correctly Solve 5 DSA Challenges',
+      topic: 'DSA Practice',
       rewardAura: 1500,
-      current: 5,
+      current: Math.min(5, userProfile.stats?.challengesSolved || 0),
       target: 5,
       claimed: false
     }
@@ -118,7 +139,7 @@ export const DashboardScreen: React.FC = () => {
   const handleClaimQuest = (questId: string, reward: number) => {
     soundSynth.levelUp();
     confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
-    const currentAura = userProfile.auraPoints || 48500;
+    const currentAura = userProfile.auraPoints || 0;
     updateUserProfile({ auraPoints: currentAura + reward });
     setQuests((prev) =>
       prev.map((q) => (q.id === questId ? { ...q, claimed: true } : q))
@@ -173,15 +194,40 @@ export const DashboardScreen: React.FC = () => {
     setScreen('solo_quest');
   };
 
-  // Verified Leaderboard Records
-  const verifiedLeaderboard = [
-    { rank: 1, username: 'AlexChen_O1', tier: 'Grandmaster Architect', rating: 2450, solved: 142, isCurrent: false },
-    { rank: 2, username: 'ByteKnight_Sigma', tier: 'Algorithm Sentinel', rating: 2180, solved: 119, isCurrent: false },
-    { rank: 3, username: 'TreeMaster_Pro', tier: 'Tree Master', rating: 1940, solved: 98, isCurrent: false },
-    { rank: 4, username: userProfile.username, tier: userProfile.rankTier, rating: userProfile.ratingMMR, solved: userProfile.stats?.challengesSolved || 38, isCurrent: true },
-    { rank: 5, username: 'DijkstraFanatic', tier: 'Byte Knight', rating: 1120, solved: 29, isCurrent: false },
-    { rank: 6, username: 'NeoBinary_Dev', tier: 'Novice Bit', rating: 980, solved: 21, isCurrent: false },
-  ];
+  // Real Leaderboard Records (Strictly real-time users)
+  const combinedPilots: any[] = [...liveLeaderboard];
+  const userInLeaderboard = combinedPilots.find(p => p.id === userProfile.id || p.username === userProfile.username);
+  if (!userInLeaderboard) {
+    combinedPilots.push({
+      id: userProfile.id,
+      username: userProfile.username,
+      ratingMMR: userProfile.ratingMMR,
+      rankTier: userProfile.rankTier,
+      auraPoints: userProfile.auraPoints || 0,
+      solved: userProfile.stats?.challengesSolved || 0
+    });
+  }
+
+  // Sort real users by rating MMR descending, then solved count
+  combinedPilots.sort((a, b) => (b.ratingMMR || 1200) - (a.ratingMMR || 1200) || (b.solved || 0) - (a.solved || 0));
+
+  let filteredLeaderboard = combinedPilots;
+  if (leaderboardFilter === 'friends') {
+    // Real friends filter: displays current user with clear invite action when no friends have joined yet
+    filteredLeaderboard = combinedPilots.filter(p => p.id === userProfile.id);
+  } else if (leaderboardFilter === 'tier') {
+    filteredLeaderboard = combinedPilots.filter(p => (p.rankTier || 'Byte Scout') === userProfile.rankTier);
+  }
+
+  const verifiedLeaderboard = filteredLeaderboard.map((item, idx) => ({
+    rank: idx + 1,
+    username: item.username,
+    tier: item.rankTier || 'Byte Scout',
+    rating: item.ratingMMR || 1200,
+    solved: item.solved || item.stats?.challengesSolved || 0,
+    aura: item.auraPoints || 0,
+    isCurrent: item.id === userProfile.id || item.username === userProfile.username
+  }));
 
   // Quick Action Handlers for the 4 Game Modes
   const handleLaunchAIDuel = async () => {
@@ -331,7 +377,7 @@ export const DashboardScreen: React.FC = () => {
               {/* Streak Badge */}
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-clutch-surface-elevated border border-clutch-amber/30 text-clutch-amber font-mono text-xs font-bold">
                 <Flame className="w-4 h-4 fill-current" />
-                <span>{userProfile.stats?.highestStreak || 7}x Streak</span>
+                <span>{userProfile.stats?.highestStreak || 0}x Streak</span>
               </div>
             </div>
 
@@ -363,7 +409,7 @@ export const DashboardScreen: React.FC = () => {
               </div>
               <div className="mt-2">
                 <span className="text-2xl font-cyber font-black text-white">
-                  {userProfile.stats?.challengesSolved || 38}
+                  {userProfile.stats?.challengesSolved || 0}
                 </span>
                 <span className="text-[11px] font-mono text-clutch-muted block mt-0.5">Verifiable DSA</span>
               </div>
@@ -376,10 +422,10 @@ export const DashboardScreen: React.FC = () => {
               </div>
               <div className="mt-2">
                 <span className="text-2xl font-cyber font-black text-white">
-                  {userProfile.stats?.matchesPlayed || 14}
+                  {userProfile.stats?.matchesPlayed || 0}
                 </span>
                 <span className="text-[11px] font-mono text-clutch-muted block mt-0.5">
-                  {userProfile.stats?.matchesWon || 9} Victories
+                  {userProfile.stats?.matchesWon || 0} Victories
                 </span>
               </div>
             </div>
@@ -391,7 +437,7 @@ export const DashboardScreen: React.FC = () => {
               </div>
               <div className="mt-2">
                 <span className="text-xl font-cyber font-black text-clutch-amber">
-                  {(userProfile.auraPoints || 48500).toLocaleString()}
+                  {(userProfile.auraPoints || 0).toLocaleString()}
                 </span>
                 <span className="text-[11px] font-mono text-clutch-muted block mt-0.5">Reputation</span>
               </div>
@@ -822,45 +868,58 @@ export const DashboardScreen: React.FC = () => {
 
               {/* Leaderboard Table */}
               <div className="space-y-2">
-                {verifiedLeaderboard.map((item) => (
-                  <div
-                    key={item.username}
-                    className={`p-2.5 rounded-xl border flex items-center justify-between text-xs font-mono transition-all ${
-                      item.isCurrent
-                        ? 'bg-clutch-violet/15 border-clutch-violet/50 font-bold'
-                        : 'bg-clutch-surface-light border-clutch-border text-clutch-muted'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`w-6 text-center font-bold text-xs ${
-                          item.rank === 1
-                            ? 'text-clutch-amber'
-                            : item.rank === 2
-                            ? 'text-slate-300'
-                            : item.rank === 3
-                            ? 'text-amber-600'
-                            : 'text-clutch-subtle'
-                        }`}
-                      >
-                        #{item.rank}
-                      </span>
-                      <div className="flex flex-col">
-                        <span className={item.isCurrent ? 'text-white' : 'text-slate-200'}>
-                          {item.username} {item.isCurrent && '(You)'}
-                        </span>
-                        <span className="text-[10px] text-clutch-subtle">{item.tier}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-4 text-right">
-                      <div>
-                        <div className="text-white font-bold">{item.rating} MMR</div>
-                        <div className="text-[10px] text-clutch-subtle">{item.solved} solved</div>
-                      </div>
-                    </div>
+                {verifiedLeaderboard.length === 0 ? (
+                  <div className="py-8 text-center text-clutch-muted font-mono text-xs space-y-1 bg-clutch-surface-light/40 rounded-xl border border-clutch-border/40">
+                    <p className="text-white font-medium">No real-time combatants found for this filter.</p>
+                    <p className="text-[11px] text-clutch-subtle">
+                      {leaderboardFilter === 'friends'
+                        ? 'Share your private room code with friends to compete!'
+                        : 'Play an arena match or solve solo quests to claim rank #1!'}
+                    </p>
                   </div>
-                ))}
+                ) : (
+                  verifiedLeaderboard.map((item) => (
+                    <div
+                      key={item.username}
+                      className={`p-2.5 rounded-xl border flex items-center justify-between text-xs font-mono transition-all ${
+                        item.isCurrent
+                          ? 'bg-clutch-violet/15 border-clutch-violet/50 font-bold'
+                          : 'bg-clutch-surface-light border-clutch-border text-clutch-muted'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={`w-6 text-center font-bold text-xs ${
+                            item.rank === 1
+                              ? 'text-clutch-amber'
+                              : item.rank === 2
+                              ? 'text-slate-300'
+                              : item.rank === 3
+                              ? 'text-amber-600'
+                              : 'text-clutch-subtle'
+                          }`}
+                        >
+                          #{item.rank}
+                        </span>
+                        <div className="flex flex-col">
+                          <span className={item.isCurrent ? 'text-white' : 'text-slate-200'}>
+                            {item.username} {item.isCurrent && '(You)'}
+                          </span>
+                          <span className="text-[10px] text-clutch-subtle">{item.tier}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4 text-right">
+                        <div>
+                          <div className="text-white font-bold">{item.rating} MMR</div>
+                          <div className="text-[10px] text-clutch-subtle">
+                            {item.solved} solved • {item.aura.toLocaleString()} aura
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 

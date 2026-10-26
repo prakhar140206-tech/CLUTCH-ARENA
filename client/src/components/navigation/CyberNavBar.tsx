@@ -125,7 +125,7 @@ export const CyberNavBar: React.FC<{ activeTab?: ScreenState }> = ({ activeTab }
           {/* Aura Pill */}
           <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/15 to-yellow-500/10 border border-amber-500/35 text-amber-300 text-xs font-cyber font-bold shadow-[0_0_15px_rgba(245,158,11,0.15)]">
             <Flame className="w-3.5 h-3.5 text-amber-400 fill-current animate-pulse" />
-            <span>{(userProfile.auraPoints || 48500).toLocaleString()}</span>
+            <span>{(userProfile.auraPoints || 0).toLocaleString()}</span>
             <span className="text-[8.5px] text-amber-400/80 font-mono">AURA</span>
           </div>
 

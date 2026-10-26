@@ -27,10 +27,12 @@ export const ProfileScreen: React.FC = () => {
   const userProfile = useGameStore((s) => s.userProfile);
   const updateUserProfile = useGameStore((s) => s.updateUserProfile);
 
+  const conceptMastery = useGameStore((s) => s.conceptMastery);
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [usernameInput, setUsernameInput] = useState<string>(userProfile.username);
   const [bioInput, setBioInput] = useState<string>(
-    userProfile.bio || 'Grinding O(1) space algorithms. Bro never gets cooked.'
+    userProfile.bio || 'Algorithm combatant ready for the arena.'
   );
 
   const handleSaveBio = () => {
@@ -47,26 +49,26 @@ export const ProfileScreen: React.FC = () => {
     username: usernameInput || userProfile.username,
     isBot: false,
     score: 0,
-    combo: userProfile.stats?.highestStreak || 3,
+    combo: userProfile.stats?.highestStreak || 0,
     isEliminated: false,
     loadout: userProfile.avatar,
     position3D: { x: 0, y: 0, z: 0 },
-    auraPoints: userProfile.auraPoints,
+    auraPoints: userProfile.auraPoints || 0,
     equippedTitle: userProfile.equippedTitle
   };
 
   const achievements = [
-    { title: 'GigaChad O(1) Solver', desc: 'Solved a problem in under 5 seconds', icon: '⚡', unlocked: true },
-    { title: 'Sigma Grindset', desc: 'Achieved a 5x or greater streak', icon: '🗿', unlocked: true },
-    { title: 'No Cap Detector', desc: 'Swiped 10 consecutive truth assertions in Shorts', icon: '🧢', unlocked: true },
-    { title: 'Tree Architect', desc: 'Completed all Binary Search Tree visual puzzles', icon: '🌲', unlocked: true },
+    { title: 'GigaChad O(1) Solver', desc: 'Solved a problem in under 5 seconds', icon: '⚡', unlocked: (userProfile.stats?.challengesSolved || 0) >= 1 },
+    { title: 'Sigma Grindset', desc: 'Achieved a 5x or greater streak', icon: '🗿', unlocked: (userProfile.stats?.highestStreak || 0) >= 5 },
+    { title: 'No Cap Detector', desc: 'Maintained a 10+ streak or solved 10+ challenges', icon: '🧢', unlocked: (userProfile.stats?.highestStreak || 0) >= 10 || (userProfile.stats?.challengesSolved || 0) >= 10 },
+    { title: 'Tree Architect', desc: 'Completed Binary Search Tree challenges', icon: '🌲', unlocked: (conceptMastery?.['trees_and_bst']?.questionsSolved || 0) > 0 },
     { title: 'Grandmaster Turing', desc: 'Reached 50,000+ Aura Points', icon: '👑', unlocked: (userProfile.auraPoints || 0) >= 50000 },
-    { title: 'Arena Contender', desc: 'Competed in competitive multiplayer arenas', icon: '🏆', unlocked: true }
+    { title: 'Arena Contender', desc: 'Competed in competitive multiplayer arenas', icon: '🏆', unlocked: (userProfile.stats?.matchesPlayed || 0) >= 1 }
   ];
 
   const winRate = userProfile.stats?.matchesPlayed
     ? Math.round(((userProfile.stats?.matchesWon || 0) / userProfile.stats.matchesPlayed) * 100)
-    : 64;
+    : 0;
 
   return (
     <AppShell activeScreen="profile">
@@ -172,7 +174,7 @@ export const ProfileScreen: React.FC = () => {
                   />
                 ) : (
                   <p className="text-xs text-clutch-muted leading-relaxed font-mono">
-                    "{userProfile.bio || 'Grinding O(1) space algorithms. Bro never gets cooked.'}"
+                    "{userProfile.bio || 'Algorithm combatant ready for the arena.'}"
                   </p>
                 )}
               </div>
@@ -186,7 +188,7 @@ export const ProfileScreen: React.FC = () => {
                 <div className="p-3 rounded-xl bg-clutch-surface-light border border-clutch-border">
                   <span className="text-[10px] font-mono text-clutch-subtle block">AURA POINTS</span>
                   <span className="font-cyber font-bold text-lg text-clutch-amber">
-                    {(userProfile.auraPoints || 48500).toLocaleString()}
+                    {(userProfile.auraPoints || 0).toLocaleString()}
                   </span>
                 </div>
                 <div className="p-3 rounded-xl bg-clutch-surface-light border border-clutch-border">
@@ -196,7 +198,7 @@ export const ProfileScreen: React.FC = () => {
                 <div className="p-3 rounded-xl bg-clutch-surface-light border border-clutch-border">
                   <span className="text-[10px] font-mono text-clutch-subtle block">MAX STREAK</span>
                   <span className="font-cyber font-bold text-lg text-clutch-lavender">
-                    {userProfile.stats?.highestStreak || 7}x
+                    {userProfile.stats?.highestStreak || 0}x
                   </span>
                 </div>
               </div>
