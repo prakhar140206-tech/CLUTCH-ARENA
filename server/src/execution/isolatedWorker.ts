@@ -59,7 +59,7 @@ export class IsolatedExecutionWorker {
       return 'isolated_microservice';
     }
 
-    // 2. Check if Docker is available on host
+    // 2. Check if Docker is available on host and runner image exists
     try {
       const dockerCheck = spawnSync('docker', ['version', '--format', '{{.Server.Version}}'], {
         encoding: 'utf-8',
@@ -67,7 +67,11 @@ export class IsolatedExecutionWorker {
       });
       if (dockerCheck.status === 0 && dockerCheck.stdout && dockerCheck.stdout.trim().length > 0) {
         this.dockerAvailable = true;
-        return 'docker_container';
+        const imageName = process.env.RUNNER_DOCKER_IMAGE || 'clutch-sandbox-runner:latest';
+        const imageCheck = spawnSync('docker', ['image', 'inspect', imageName], { stdio: 'ignore' });
+        if (imageCheck.status === 0) {
+          return 'docker_container';
+        }
       }
     } catch {
       this.dockerAvailable = false;
@@ -77,8 +81,8 @@ export class IsolatedExecutionWorker {
     const enforceContainer = process.env.ENFORCE_CONTAINER_SANDBOX === 'true' || 
       (process.env.NODE_ENV === 'production' && !process.env.ALLOW_LOCAL_SUBPROCESS_SANDBOX);
 
-    if (enforceContainer && !this.dockerAvailable) {
-      console.warn('[Security] Container sandbox not detected. Public untrusted code execution is disabled for safety.');
+    if (enforceContainer) {
+      console.warn('[Security] Container sandbox image not detected or unavailable. Public untrusted code execution is disabled for safety.');
       return 'disabled';
     }
 
