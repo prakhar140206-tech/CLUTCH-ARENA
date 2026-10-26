@@ -13,10 +13,10 @@ concurrency:
 
 jobs:
   # ----------------------------------------------------------------------------
-  # Job 1: Compilation, Unit, Adversarial & Concurrency Integrity Gates
+  # Job 1: Compilation, Unit, Adversarial, Concurrency & Microservice Integrity
   # ----------------------------------------------------------------------------
   local-verification:
-    name: Local Build & Concurrency Integrity
+    name: Local Build, Concurrency & Microservice Integrity
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
@@ -46,6 +46,11 @@ jobs:
           npm --prefix server run build
           npm --prefix client run build
 
+      - name: Run Core Test Suite
+        working-directory: server
+        run: |
+          npm test
+
       - name: Run Concurrency & Data Integrity Suite
         working-directory: server
         run: |
@@ -56,8 +61,18 @@ jobs:
         run: |
           npx tsx test/adversarialRunnerTest.ts
 
+      - name: Run Hardened Runner Microservice Regression Suite
+        working-directory: server
+        run: |
+          npm run test:microservice
+
+      - name: Run Sandbox Isolation & Security Suite
+        working-directory: server
+        run: |
+          npx tsx test/sandboxSecurityTest.ts
+
   # ----------------------------------------------------------------------------
-  # Job 2: Real Linux, Docker Container Sandbox & PostgreSQL Verification Gate
+  # Job 2: Architecture A Decoupled Microservice & PostgreSQL Deployment Gate
   # ----------------------------------------------------------------------------
   linux-docker-and-postgres-gate:
     name: Linux Docker Isolation & PostgreSQL Deployment Gate
@@ -70,18 +85,27 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Dedicated Runner Container Image
+      - name: Build Dedicated Sandbox Runner Container Image
         run: |
           docker build -t clutch-sandbox-runner:latest -f server/Dockerfile.runner .
           docker image inspect clutch-sandbox-runner:latest --format '{{.Config.User}}'
 
-      - name: Configure Host Docker Socket Permissions
+      - name: Configure Host Docker Socket Permissions (Ephemeral CI Runner)
         run: |
           sudo chmod 666 /var/run/docker.sock
 
-      - name: Launch PostgreSQL & API Stack via Docker Compose
+      - name: Generate High-Entropy Ephemeral CI Secrets
         run: |
-          docker compose up -d postgres clutch-runner clutch-api clutch-client
+          DB_PASS=$(openssl rand -hex 16)
+          echo "DATABASE_PASSWORD=$DB_PASS" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgres://clutch_admin:$DB_PASS@127.0.0.1:5432/clutch_db" >> $GITHUB_ENV
+          echo "RUNNER_SERVICE_SECRET=$(openssl rand -hex 32)" >> $GITHUB_ENV
+          echo "JWT_SECRET=$(openssl rand -hex 32)" >> $GITHUB_ENV
+          echo "ALLOWED_ORIGINS=https://clutch.arena,http://localhost" >> $GITHUB_ENV
+
+      - name: Launch Hardened Architecture A Microservice Stack
+        run: |
+          docker compose -f docker-compose.microservice.yml up -d --build
 
       - name: Wait for PostgreSQL Healthcheck
         run: |
@@ -97,17 +121,35 @@ jobs:
           done
           if [ "$STATUS" != '"healthy"' ]; then
             echo "PostgreSQL healthcheck timed out!"
-            docker compose logs postgres
+            docker compose -f docker-compose.microservice.yml logs postgres
             exit 1
           fi
 
-      - name: Wait for API Server Healthcheck
+      - name: Wait for Runner Microservice Healthcheck
         run: |
-          echo "Waiting for clutch-api healthcheck..."
+          echo "Waiting for clutch-runner-service healthcheck..."
           for i in {1..30}; do
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000/api/health || echo "000")
+            STATUS=$(docker inspect --format='{{json .State.Health.Status}}' clutch-runner-service 2>/dev/null || echo '"starting"')
+            if [ "$STATUS" = '"healthy"' ]; then
+              echo "Runner microservice is healthy!"
+              break
+            fi
+            echo "Waiting for runner (status: $STATUS)... ($i/30)"
+            sleep 2
+          done
+          if [ "$STATUS" != '"healthy"' ]; then
+            echo "Runner microservice healthcheck timed out!"
+            docker compose -f docker-compose.microservice.yml logs clutch-runner-service
+            exit 1
+          fi
+
+      - name: Wait for API & Client Proxy Healthcheck (Port 80)
+        run: |
+          echo "Waiting for reverse proxy (clutch-client) on port 80..."
+          for i in {1..30}; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/api/health || echo "000")
             if [ "$HTTP_CODE" = "200" ]; then
-              echo "CLUTCH API is operational!"
+              echo "CLUTCH Reverse Proxy & API are operational!"
               break
             fi
             echo "Waiting for API (status code: $HTTP_CODE)... ($i/30)"
@@ -115,26 +157,27 @@ jobs:
           done
           if [ "$HTTP_CODE" != "200" ]; then
             echo "CLUTCH API healthcheck timed out!"
-            docker compose logs clutch-api
+            docker compose -f docker-compose.microservice.yml logs clutch-api
+            docker compose -f docker-compose.microservice.yml logs clutch-client
             exit 1
           fi
 
       - name: Run Authoritative PostgreSQL Migration
         run: |
-          docker compose exec -T clutch-api node dist/storage/migrateJsonToPostgres.js
+          docker compose -f docker-compose.microservice.yml exec -T clutch-api node dist/storage/migrateJsonToPostgres.js
 
       - name: Verify Live Endpoints & Production Readiness
         run: |
-          echo "Testing /api/health..."
-          curl -s http://localhost:4000/api/health
+          echo "Testing /api/health through reverse proxy..."
+          curl -s http://localhost/api/health
           echo -e "\n\nTesting /api/ready..."
-          READY_BODY=$(curl -s http://localhost:4000/api/ready)
+          READY_BODY=$(curl -s http://localhost/api/ready)
           echo "Readiness Body: $READY_BODY"
-          READY_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000/api/ready)
+          READY_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/api/ready)
           echo "Readiness Status Code: $READY_CODE"
           if [ "$READY_CODE" != "200" ]; then
             echo "ERROR: /api/ready returned HTTP $READY_CODE instead of 200!"
-            docker compose logs clutch-api
+            docker compose -f docker-compose.microservice.yml logs clutch-api
             exit 1
           fi
           echo "PASSED: Production endpoints are fully healthy and ready."
@@ -153,7 +196,7 @@ jobs:
       - name: Execute Live Infrastructure Verification Suite (Strict CI Mode)
         working-directory: server
         env:
-          DATABASE_URL: postgres://clutch_admin:clutch_secure_db_password_2026@localhost:5432/clutch_db
+          SERVER_URL: http://localhost
           FAIL_ON_BLOCKED: "true"
         run: |
           npx tsx test/liveInfrastructureGateTest.ts
@@ -161,13 +204,13 @@ jobs:
       - name: Verify Fail-Closed Gate (Stop PostgreSQL & Check 503)
         run: |
           echo "Stopping PostgreSQL to test fail-closed behavior..."
-          docker compose stop postgres
+          docker compose -f docker-compose.microservice.yml stop postgres
           sleep 2
-          READY_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000/api/ready)
+          READY_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/api/ready)
           echo "Readiness response code with database stopped: $READY_STATUS"
           if [ "$READY_STATUS" != "503" ]; then
             echo "FAILED: Production API must return 503 when PostgreSQL is down!"
-            curl -s http://localhost:4000/api/ready
+            curl -s http://localhost/api/ready
             exit 1
           fi
           echo "PASSED: Production API strictly failed closed (503)."
@@ -175,4 +218,4 @@ jobs:
       - name: Teardown Services
         if: always()
         run: |
-          docker compose down -v
+          docker compose -f docker-compose.microservice.yml down -v

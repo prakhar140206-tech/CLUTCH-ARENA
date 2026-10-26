@@ -6,7 +6,7 @@ import pg from 'pg';
 import { IsolatedExecutionWorker } from '../src/execution/isolatedWorker.js';
 
 const { Pool } = pg;
-const SERVER_URL = 'http://localhost:4000';
+const SERVER_URL = process.env.SERVER_URL || 'http://localhost:4000';
 
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -203,7 +203,11 @@ async function runLiveInfrastructureGateSuite() {
 
   // 6. Real PostgreSQL Database Integration Check
   await testStep('6. Live PostgreSQL Database: Integration test or strict blocker documentation', async () => {
-    const connStr = process.env.DATABASE_URL || 'postgres://clutch_admin:clutch_secure_db_password_2026@localhost:5432/clutch_db';
+    const connStr = process.env.DATABASE_URL;
+    if (!connStr) {
+      console.log('     ⚠️ [BLOCKED] DATABASE_URL is not configured. Live database test skipped.');
+      return 'BLOCKED';
+    }
     const sanitizedConnStr = connStr.replace(/:([^:@]+)@/, ':***@');
     console.log(`     - Attempting live PostgreSQL connection to: ${sanitizedConnStr}...`);
 

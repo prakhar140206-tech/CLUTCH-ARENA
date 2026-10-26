@@ -10,8 +10,12 @@ import { executeCodeInIsolatedSandbox, detectHostLanguageSupport } from './execu
 import { persistenceStore, hashPassword, verifyPassword } from './storage/db.js';
 import { isolatedExecutionWorker } from './execution/isolatedWorker.js';
 import { generateAIChallenge } from './ai/challengeGenerator.js';
+import { validateProductionEnvironment } from './config/securityConfig.js';
 
 dotenv.config();
+
+// Fail-closed validation of required production secrets and environment variables
+validateProductionEnvironment('api');
 
 const app = express();
 app.set('trust proxy', 1); // Trust reverse proxy (Nginx) headers for accurate client IP and rate limiting
@@ -20,7 +24,7 @@ const PORT = process.env.PORT || 4000;
 const rawOrigins = process.env.ALLOWED_ORIGINS;
 const corsOrigins = rawOrigins
   ? rawOrigins.split(',').map(s => s.trim())
-  : ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', '*'];
+  : (process.env.NODE_ENV === 'production' ? [] : ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000']);
 
 // Security Headers (Defense in depth)
 app.use((_req, res, next) => {

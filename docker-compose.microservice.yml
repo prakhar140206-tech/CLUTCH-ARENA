@@ -4,11 +4,12 @@ version: '3.8'
 # CLUTCH ARCHITECTURE A: DECOUPLED RUNNER MICROSERVICE PRODUCTION STACK
 #
 # Threat Model & Security Posture:
-# - ZERO Docker daemon socket mounts (/var/run/docker.sock) on public API.
-# - Untrusted code execution dispatched to dedicated runner microservice.
-# - Runner microservice isolated on private internal network (no external ingress).
-# - Mutual service authentication enforced via RUNNER_SERVICE_SECRET Bearer tokens.
-# - Strict compute resource ceilings, execution timeouts, and memory limits.
+# - ZERO Docker daemon socket mounts on public API (clutch-api).
+# - Dedicated runner microservice orchestrates per-submission ephemeral sandboxes.
+# - clutch-internal network is strictly private (internal: true) with NO internet access.
+# - Public API has NO directly published ports; ingress is strictly via reverse proxy.
+# - Fail-closed: Docker Compose aborts if any production credential is unset or empty.
+# - Constant-time RFC 6750 Bearer token authentication between API and runner.
 # ============================================================================
 
 networks:
@@ -16,11 +17,11 @@ networks:
     driver: bridge
   clutch-internal:
     driver: bridge
-    internal: false # Ingress between API, runner, and database
+    internal: true # Genuinely private: zero external inbound or outbound internet access
 
 services:
   # ============================================================================
-  # 1. Authoritative PostgreSQL Database
+  # 1. Authoritative PostgreSQL Database (Isolated on Internal Network)
   # ============================================================================
   postgres:
     image: postgres:16-alpine
@@ -31,10 +32,12 @@ services:
     environment:
       POSTGRES_DB: clutch_db
       POSTGRES_USER: clutch_admin
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-clutch_secure_db_password_2026}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?DATABASE_PASSWORD must be explicitly set and non-empty in production}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./server/src/storage/schema.sql:/docker-entrypoint-initdb.d/init-schema.sql:ro
+    ports:
+      - "127.0.0.1:5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U clutch_admin -d clutch_db"]
       interval: 10s
@@ -42,8 +45,8 @@ services:
       retries: 5
 
   # ============================================================================
-  # 2. Dedicated Isolated Runner Microservice
-  # Decoupled execution boundary with zero host Docker socket exposure
+  # 2. Dedicated Isolated Runner Microservice (Internal Network Only)
+  # Orchestrates per-submission short-lived container sandboxes
   # ============================================================================
   clutch-runner-service:
     build:
@@ -53,11 +56,15 @@ services:
     restart: unless-stopped
     networks:
       - clutch-internal
-    # Notice: NO host port publishing! Private to internal network only.
+    # Zero published host ports: private to internal network only
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       NODE_ENV: production
       RUNNER_PORT: 5050
-      RUNNER_SERVICE_SECRET: ${RUNNER_SERVICE_SECRET:-clutch_runner_production_secret_key_2026}
+      RUNNER_SERVICE_SECRET: ${RUNNER_SERVICE_SECRET:?RUNNER_SERVICE_SECRET must be explicitly set and non-empty in production}
+      ENFORCE_CONTAINER_SANDBOX: "true"
+      RUNNER_DOCKER_IMAGE: "clutch-sandbox-runner:latest"
     deploy:
       resources:
         limits:
@@ -74,6 +81,7 @@ services:
 
   # ============================================================================
   # 3. Backend API & Multiplayer Server (ZERO Docker Socket Mounts)
+  # Accessible strictly through reverse proxy (clutch-frontend)
   # ============================================================================
   clutch-api:
     build:
@@ -92,15 +100,19 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: postgres://clutch_admin:${DATABASE_PASSWORD:-clutch_secure_db_password_2026}@postgres:5432/clutch_db
-      ALLOWED_ORIGINS: "http://localhost,http://localhost:80,http://localhost:5173"
+      DATABASE_URL: postgres://clutch_admin:${DATABASE_PASSWORD:?DATABASE_PASSWORD must be explicitly set in production}@postgres:5432/clutch_db
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?ALLOWED_ORIGINS must be set to exact production origin}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set to strong 32+ char token in production}
       # Microservice boundary: dispatches submissions to internal runner
       RUNNER_SERVICE_URL: http://clutch-runner-service:5050
-      RUNNER_SERVICE_SECRET: ${RUNNER_SERVICE_SECRET:-clutch_runner_production_secret_key_2026}
-    # CRITICAL SECURITY CONTROL:
-    # No volumes: - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - "4000:4000"
+      RUNNER_SERVICE_SECRET: ${RUNNER_SERVICE_SECRET:?RUNNER_SERVICE_SECRET must be explicitly set in production}
+      RUNNER_HTTP_TIMEOUT_MS: 8000
+      ENFORCE_CONTAINER_SANDBOX: "true"
+    # CRITICAL SECURITY CONTROLS:
+    # 1. NO raw Docker socket volume mount:
+    #    volumes: - /var/run/docker.sock:/var/run/docker.sock (REMOVED)
+    # 2. NO directly published host ports (ports: - "4000:4000" REMOVED)
+    #    Access is strictly mediated through the clutch-client reverse proxy on clutch-frontend
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
       interval: 15s
@@ -109,6 +121,7 @@ services:
 
   # ============================================================================
   # 4. Production Web Client & Reverse Proxy (Nginx)
+  # Only service publishing external ports to host (Port 80/443)
   # ============================================================================
   clutch-client:
     build:

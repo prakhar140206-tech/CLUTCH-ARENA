@@ -18,6 +18,7 @@ export interface SandboxExecutionConfig {
   readOnlyRootFs: boolean;
   networkDisabled: boolean;
   unprivilegedUser: string; // e.g. '1000:1000' or 'nobody'
+  isRunnerService?: boolean;
 }
 
 export const DEFAULT_SANDBOX_CONFIG: SandboxExecutionConfig = {
@@ -53,8 +54,8 @@ export class IsolatedExecutionWorker {
   }
 
   private detectIsolationCapabilities(): IsolationMode {
-    // 1. Check if external runner microservice configured
-    if (process.env.JUDGE0_API_URL || process.env.RUNNER_SERVICE_URL) {
+    // 1. Check if external runner microservice configured (only if not acting as runner service provider)
+    if (!this.config.isRunnerService && (process.env.JUDGE0_API_URL || process.env.RUNNER_SERVICE_URL)) {
       return 'isolated_microservice';
     }
 
