@@ -97,9 +97,21 @@ export function validateProductionEnvironment(serviceType: 'api' | 'runner'): vo
     if (!dbUrl) {
       errors.push('DATABASE_URL is required in production.');
     } else {
-      for (const banned of BANNED_DEFAULT_CREDENTIALS) {
-        if (dbUrl.includes(banned)) {
-          errors.push(`DATABASE_URL contains known insecure default password: "${banned}".`);
+      try {
+        const parsed = new URL(dbUrl);
+        const pass = decodeURIComponent(parsed.password || '');
+        if (!pass) {
+          errors.push('DATABASE_URL must include a password in production.');
+        } else {
+          for (const banned of BANNED_DEFAULT_CREDENTIALS) {
+            if (pass.toLowerCase() === banned.toLowerCase() || pass.toLowerCase().includes(banned.toLowerCase())) {
+              errors.push(`DATABASE_URL contains known insecure default password: "${banned}".`);
+            }
+          }
+        }
+      } catch {
+        if (dbUrl.includes('clutch_secure_db_password_2026')) {
+          errors.push('DATABASE_URL contains known insecure default password: "clutch_secure_db_password_2026".');
         }
       }
     }
