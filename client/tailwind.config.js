@@ -38,6 +38,9 @@ export default {
         cyber: ['Orbitron', 'Space Grotesk', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
         sans: ['Outfit', 'Space Grotesk', 'sans-serif']
+      },
+      screens: {
+        xs: '480px'
       }
     },
   },

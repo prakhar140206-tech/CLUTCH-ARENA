@@ -158,9 +158,9 @@ export const ArenaHero3D: React.FC<ArenaHero3DProps> = ({ height = '100%' }) => 
   }
 
   return (
-    <div style={{ height }} className="w-full relative select-none pointer-events-auto">
+    <div style={{ height }} className="w-full h-full relative select-none overflow-hidden touch-pan-y pointer-events-none sm:pointer-events-auto">
       <Canvas
-        camera={{ position: [0, 2.8, 7.2], fov: 42 }}
+        camera={{ position: [0, 2.8, 8.5], fov: 46 }}
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 1.5]}
       >
