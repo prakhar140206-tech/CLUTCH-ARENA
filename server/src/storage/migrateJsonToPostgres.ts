@@ -34,12 +34,24 @@ export async function runJsonToPostgresMigration() {
   console.log(`  ✅ Source records validated: ${usersCount} users, ${matchesCount} match records.`);
 
   // 2. Create Timestamped Rollback Backup
-  if (!fs.existsSync(BACKUP_DIR)) {
-    fs.mkdirSync(BACKUP_DIR, { recursive: true });
+  let backupFile: string | null = null;
+  try {
+    if (!fs.existsSync(BACKUP_DIR)) {
+      fs.mkdirSync(BACKUP_DIR, { recursive: true });
+    }
+    backupFile = path.join(BACKUP_DIR, `clutch_store_backup_${Date.now()}.json`);
+    fs.copyFileSync(JSON_FILE, backupFile);
+    console.log(`[Step 2] Created rollback backup at: ${backupFile}`);
+  } catch (backupErr: any) {
+    console.warn(`[Step 2] Note: Cannot write to ${BACKUP_DIR} (${backupErr.message}). Writing backup to /tmp...`);
+    try {
+      backupFile = path.join('/tmp', `clutch_store_backup_${Date.now()}.json`);
+      fs.copyFileSync(JSON_FILE, backupFile);
+      console.log(`[Step 2] Created rollback backup at: ${backupFile}`);
+    } catch (tmpErr: any) {
+      console.warn(`[Step 2] Note: Skipped disk backup creation (${tmpErr.message}). Source JSON preserved in-place.`);
+    }
   }
-  const backupFile = path.join(BACKUP_DIR, `clutch_store_backup_${Date.now()}.json`);
-  fs.copyFileSync(JSON_FILE, backupFile);
-  console.log(`[Step 2] Created rollback backup at: ${backupFile}`);
 
   // 3. Connect to PostgreSQL
   console.log('[Step 3] Initializing PostgreSQL connection & schema...');
@@ -47,8 +59,8 @@ export async function runJsonToPostgresMigration() {
   const connected = await pgAdapter.initialize();
 
   if (!connected) {
-    console.warn('[Migration] Could not connect to PostgreSQL. Verify DATABASE_URL is configured.');
-    return { success: false, reason: 'PostgreSQL connection failed' };
+    console.error('[Migration] Could not connect to PostgreSQL. Verify DATABASE_URL is configured.');
+    throw new Error('PostgreSQL connection failed');
   }
 
   // 4. Migrate Users
