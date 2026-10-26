@@ -53,7 +53,11 @@ export const HomeScreen: React.FC = () => {
             <button
               onClick={() => {
                 soundSynth.click();
-                setScreen('dashboard');
+                if (userProfile.isGuest) {
+                  setScreen('auth');
+                } else {
+                  setScreen('dashboard');
+                }
               }}
               className="clutch-btn-ghost text-xs"
             >
@@ -69,7 +73,7 @@ export const HomeScreen: React.FC = () => {
                 className="clutch-btn-primary py-2 px-4 text-xs flex items-center gap-1.5"
               >
                 <LogIn className="w-3.5 h-3.5" />
-                <span>Sign In</span>
+                <span>Sign In / Register</span>
               </button>
             ) : (
               <button
@@ -118,7 +122,11 @@ export const HomeScreen: React.FC = () => {
           <button
             onClick={() => {
               soundSynth.click();
-              setScreen('lobby');
+              if (userProfile.isGuest) {
+                setScreen('auth');
+              } else {
+                setScreen('lobby');
+              }
             }}
             className="w-full sm:w-1/2 clutch-btn-primary py-3.5 text-sm flex items-center justify-center gap-2"
           >
@@ -129,7 +137,11 @@ export const HomeScreen: React.FC = () => {
           <button
             onClick={() => {
               soundSynth.click();
-              setScreen('solo_quest');
+              if (userProfile.isGuest) {
+                setScreen('auth');
+              } else {
+                setScreen('solo_quest');
+              }
             }}
             className="w-full sm:w-1/2 clutch-btn-secondary py-3.5 text-sm flex items-center justify-center gap-2"
           >
@@ -207,10 +219,10 @@ export const HomeScreen: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4 text-clutch-muted">
-            <button onClick={() => setScreen('dashboard')} className="hover:text-white transition-colors">Dashboard</button>
-            <button onClick={() => setScreen('solo_quest')} className="hover:text-white transition-colors">Solo Quest</button>
-            <button onClick={() => setScreen('lobby')} className="hover:text-white transition-colors">Arena</button>
-            <button onClick={() => setScreen('settings')} className="hover:text-white transition-colors">Settings</button>
+            <button onClick={() => { if (userProfile.isGuest) setScreen('auth'); else setScreen('dashboard'); }} className="hover:text-white transition-colors">Dashboard</button>
+            <button onClick={() => { if (userProfile.isGuest) setScreen('auth'); else setScreen('solo_quest'); }} className="hover:text-white transition-colors">Solo Quest</button>
+            <button onClick={() => { if (userProfile.isGuest) setScreen('auth'); else setScreen('lobby'); }} className="hover:text-white transition-colors">Arena</button>
+            <button onClick={() => { if (userProfile.isGuest) setScreen('auth'); else setScreen('settings'); }} className="hover:text-white transition-colors">Settings</button>
           </div>
         </div>
       </footer>

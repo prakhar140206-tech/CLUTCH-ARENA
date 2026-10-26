@@ -22,9 +22,19 @@ export const App: React.FC = () => {
     socketService.connect();
   }, []);
 
+  // PUBLIC SCREEN:
+  // First-time and returning visitors see the Home Page (Landing Page) first.
+  if (currentScreen === 'home' || currentScreen === 'cinematic') {
+    return (
+      <div className="w-screen h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-hidden">
+        <HomeScreen />
+      </div>
+    );
+  }
+
   // MANDATORY AUTHENTICATION GATE:
-  // If the user is a guest or not yet authenticated, they must sign up or log in.
-  // No one can access the platform, main dashboard, or game arenas without credentials.
+  // If an unauthenticated guest tries to enter the platform, main dashboard, arena, lobby, etc.,
+  // they are strictly blocked and presented with the AuthScreen.
   if (userProfile.isGuest) {
     return (
       <div className="w-screen h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-hidden">
@@ -36,7 +46,6 @@ export const App: React.FC = () => {
 
   return (
     <div className="w-screen h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-hidden">
-      {(currentScreen === 'home' || currentScreen === 'cinematic') && <HomeScreen />}
       {currentScreen === 'dashboard' && <DashboardScreen />}
       {currentScreen === 'profile' && <ProfileScreen />}
       {currentScreen === 'settings' && <SettingsScreen />}

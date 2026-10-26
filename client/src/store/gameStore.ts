@@ -130,7 +130,7 @@ const DEFAULT_PROFILE: UserProfile = {
 export const useGameStore = create<GameStore>()(
   persist(
     (set) => ({
-      currentScreen: 'dashboard',
+      currentScreen: 'home',
       setScreen: (screen) => set({ currentScreen: screen }),
 
       userProfile: DEFAULT_PROFILE,
@@ -157,7 +157,8 @@ export const useGameStore = create<GameStore>()(
           id: 'guest-' + Math.random().toString(36).substring(2, 9),
           username: 'GuestCoder_' + Math.floor(100 + Math.random() * 900),
           isGuest: true
-        }
+        },
+        currentScreen: 'home'
       })),
 
       onboardingOpen: false,

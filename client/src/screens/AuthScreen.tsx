@@ -14,7 +14,8 @@ import {
   Code2,
   Zap,
   CheckCircle2,
-  LogIn
+  LogIn,
+  ArrowLeft
 } from 'lucide-react';
 
 export const AuthScreen: React.FC = () => {
@@ -138,6 +139,20 @@ export const AuthScreen: React.FC = () => {
     <AppShell activeScreen="auth" showSidebar={false}>
       <div className="flex-1 min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 relative z-10">
         <div className="w-full max-w-md clutch-panel-elevated rounded-2xl p-6 sm:p-8 shadow-2xl relative">
+          {/* Back to Home Navigation */}
+          <div className="mb-4">
+            <button
+              onClick={() => {
+                soundSynth.click();
+                setScreen('home');
+              }}
+              className="text-xs font-mono text-clutch-muted hover:text-white flex items-center gap-1.5 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Home</span>
+            </button>
+          </div>
+
           {/* Header */}
           <div className="text-center mb-6">
             <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center p-2 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
