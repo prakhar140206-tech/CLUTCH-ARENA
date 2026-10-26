@@ -8,6 +8,7 @@
     "build": "tsc && node -e \"require('fs').copyFileSync('src/storage/schema.sql', 'dist/storage/schema.sql')\"",
     "start": "node dist/index.js",
     "test": "tsx test/runTests.ts",
+    "test:microservice": "tsx test/runnerMicroserviceTest.ts",
     "test:load": "tsx test/loadTest100.ts"
   },
   "dependencies": {

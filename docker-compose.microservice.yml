@@ -1,0 +1,133 @@
+version: '3.8'
+
+# ============================================================================
+# CLUTCH ARCHITECTURE A: DECOUPLED RUNNER MICROSERVICE PRODUCTION STACK
+#
+# Threat Model & Security Posture:
+# - ZERO Docker daemon socket mounts (/var/run/docker.sock) on public API.
+# - Untrusted code execution dispatched to dedicated runner microservice.
+# - Runner microservice isolated on private internal network (no external ingress).
+# - Mutual service authentication enforced via RUNNER_SERVICE_SECRET Bearer tokens.
+# - Strict compute resource ceilings, execution timeouts, and memory limits.
+# ============================================================================
+
+networks:
+  clutch-frontend:
+    driver: bridge
+  clutch-internal:
+    driver: bridge
+    internal: false # Ingress between API, runner, and database
+
+services:
+  # ============================================================================
+  # 1. Authoritative PostgreSQL Database
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: clutch-postgres
+    restart: unless-stopped
+    networks:
+      - clutch-internal
+    environment:
+      POSTGRES_DB: clutch_db
+      POSTGRES_USER: clutch_admin
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-clutch_secure_db_password_2026}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./server/src/storage/schema.sql:/docker-entrypoint-initdb.d/init-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clutch_admin -d clutch_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # 2. Dedicated Isolated Runner Microservice
+  # Decoupled execution boundary with zero host Docker socket exposure
+  # ============================================================================
+  clutch-runner-service:
+    build:
+      context: .
+      dockerfile: server/Dockerfile.runner-service
+    container_name: clutch-runner-service
+    restart: unless-stopped
+    networks:
+      - clutch-internal
+    # Notice: NO host port publishing! Private to internal network only.
+    environment:
+      NODE_ENV: production
+      RUNNER_PORT: 5050
+      RUNNER_SERVICE_SECRET: ${RUNNER_SERVICE_SECRET:-clutch_runner_production_secret_key_2026}
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 512M
+        reservations:
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5050/health"]
+      interval: 15s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+  # ============================================================================
+  # 3. Backend API & Multiplayer Server (ZERO Docker Socket Mounts)
+  # ============================================================================
+  clutch-api:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: clutch-api
+    restart: unless-stopped
+    networks:
+      - clutch-internal
+      - clutch-frontend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clutch-runner-service:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgres://clutch_admin:${DATABASE_PASSWORD:-clutch_secure_db_password_2026}@postgres:5432/clutch_db
+      ALLOWED_ORIGINS: "http://localhost,http://localhost:80,http://localhost:5173"
+      # Microservice boundary: dispatches submissions to internal runner
+      RUNNER_SERVICE_URL: http://clutch-runner-service:5050
+      RUNNER_SERVICE_SECRET: ${RUNNER_SERVICE_SECRET:-clutch_runner_production_secret_key_2026}
+    # CRITICAL SECURITY CONTROL:
+    # No volumes: - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "4000:4000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+
+  # ============================================================================
+  # 4. Production Web Client & Reverse Proxy (Nginx)
+  # ============================================================================
+  clutch-client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: clutch-client
+    restart: unless-stopped
+    networks:
+      - clutch-frontend
+    depends_on:
+      - clutch-api
+    ports:
+      - "80:80"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 20s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local

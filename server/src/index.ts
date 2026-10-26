@@ -171,7 +171,7 @@ app.post('/api/run-code', async (req, res) => {
     if (!code || !language) {
       return res.status(400).json({ error: 'Missing code or language' });
     }
-    const result = await executeCodeInIsolatedSandbox(language, code, testCases || []);
+    const result = await isolatedExecutionWorker.executeSubmission(language, code, testCases || []);
     return res.json(result);
   } catch (err: any) {
     return res.status(500).json({ error: err.message });

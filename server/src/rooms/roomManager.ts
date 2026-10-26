@@ -12,6 +12,7 @@ import { DSA_CHALLENGE_BANK, getSanitizedChallenge } from '../challenges/challen
 import { ScoringEngine } from '../game/scoringEngine.js';
 import { BotEngine, BOT_PROFILES } from '../bots/botEngine.js';
 import { executeCodeInIsolatedSandbox } from '../execution/codeRunner.js';
+import { isolatedExecutionWorker } from '../execution/isolatedWorker.js';
 import { generateAIChallenge } from '../ai/challengeGenerator.js';
 import { persistenceStore } from '../storage/db.js';
 
@@ -520,7 +521,7 @@ export class RoomManager {
 
     // Check correctness based on type
     if (challenge.type === 'code_sprint') {
-      const runnerRes = await executeCodeInIsolatedSandbox(language || 'python', String(answer), challenge.testCases || []);
+      const runnerRes = await isolatedExecutionWorker.executeSubmission(language || 'python', String(answer), challenge.testCases || []);
       isCorrect = runnerRes.allPassed;
       testResults = runnerRes.testResults;
     } else if (challenge.type === 'visual_puzzle') {

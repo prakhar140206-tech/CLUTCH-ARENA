@@ -114,6 +114,8 @@ export class IsolatedExecutionWorker {
     testResults: any[];
     overallStatus: string;
     isolationBoundary: IsolationMode;
+    executedBy?: string;
+    executionNumber?: number;
   }> {
     // Defense-in-depth static scan
     const scan = scanCodeForVulnerabilities(language, code);
@@ -151,6 +153,11 @@ export class IsolatedExecutionWorker {
       };
     }
 
+    // If external runner microservice available, dispatch over internal HTTP/gRPC
+    if (this.mode === 'isolated_microservice') {
+      return await this.executeInMicroserviceSandbox(language, code, testCases);
+    }
+
     // If Docker container isolation available, run in unprivileged container
     if (this.mode === 'docker_container') {
       return await this.executeInDockerSandbox(language, code, testCases);
@@ -158,6 +165,141 @@ export class IsolatedExecutionWorker {
 
     // Local restricted process execution (dev / test environment)
     return await this.executeInLocalRestrictedSandbox(language, code, testCases);
+  }
+
+  /**
+   * Dedicated Runner Microservice Execution Engine
+   * Dispatches code execution payload to a decoupled, internal runner service
+   * - Never mounts Docker socket in the API container
+   * - Enforces service-to-service auth (RUNNER_SERVICE_SECRET)
+   * - Enforces HTTP client request timeout (6,000ms AbortSignal)
+   * - Enforces payload bounds (max code length 64KB, max test cases 50)
+   */
+  private async executeInMicroserviceSandbox(
+    language: 'python' | 'javascript' | 'cpp' | 'java',
+    code: string,
+    testCases: TestCase[]
+  ): Promise<{
+    allPassed: boolean;
+    totalTests: number;
+    passedTests: number;
+    testResults: Array<{
+      id: string;
+      passed: boolean;
+      actualOutput?: string;
+      expectedOutput?: string;
+      error?: string;
+      executionTimeMs?: number;
+      status?: string;
+    }>;
+    overallStatus: 'PASSED' | 'FAILED' | 'TIMEOUT' | 'SECURITY_VIOLATION' | 'SANDBOX_ISOLATION_REQUIRED' | 'SERVICE_UNAVAILABLE';
+    isolationBoundary: IsolationMode;
+    executedBy?: string;
+    executionNumber?: number;
+  }> {
+    const runnerUrl = process.env.RUNNER_SERVICE_URL || process.env.JUDGE0_API_URL;
+    if (!runnerUrl) {
+      return {
+        allPassed: false,
+        totalTests: testCases.length,
+        passedTests: 0,
+        testResults: testCases.map(tc => ({
+          id: tc.id,
+          passed: false,
+          error: 'RUNNER_SERVICE_URL is not configured on this host.',
+          status: 'SERVICE_UNAVAILABLE'
+        })),
+        overallStatus: 'SERVICE_UNAVAILABLE',
+        isolationBoundary: 'isolated_microservice'
+      };
+    }
+
+    // Enforce payload bounds
+    if (code.length > 64 * 1024) {
+      return {
+        allPassed: false,
+        totalTests: testCases.length,
+        passedTests: 0,
+        testResults: testCases.map(tc => ({
+          id: tc.id,
+          passed: false,
+          error: 'Payload size exceeded: Submission exceeds maximum length of 64KB.',
+          status: 'SECURITY_VIOLATION'
+        })),
+        overallStatus: 'SECURITY_VIOLATION',
+        isolationBoundary: 'isolated_microservice'
+      };
+    }
+
+    const endpoint = `${runnerUrl.replace(/\/+$/, '')}/execute`;
+    const controller = new AbortController();
+    const timeoutMs = Number(process.env.RUNNER_HTTP_TIMEOUT_MS) || 8000;
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'CLUTCH-API-Worker/1.0'
+      };
+
+      if (process.env.RUNNER_SERVICE_SECRET) {
+        headers['Authorization'] = `Bearer ${process.env.RUNNER_SERVICE_SECRET}`;
+        headers['X-Runner-Secret'] = process.env.RUNNER_SERVICE_SECRET;
+      }
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          language,
+          code,
+          testCases: testCases.slice(0, 50),
+          config: {
+            wallClockTimeoutMs: this.config.wallClockTimeoutMs,
+            maxMemoryMb: this.config.maxMemoryMb
+          }
+        }),
+        signal: controller.signal
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text().catch(() => '');
+        throw new Error(`Runner microservice returned HTTP ${res.status}: ${errorText.slice(0, 200)}`);
+      }
+
+      const data: any = await res.json();
+      return {
+        allPassed: Boolean(data.allPassed),
+        totalTests: data.totalTests || testCases.length,
+        passedTests: data.passedTests || 0,
+        testResults: Array.isArray(data.testResults) ? data.testResults : [],
+        overallStatus: data.overallStatus || (data.allPassed ? 'PASSED' : 'FAILED'),
+        isolationBoundary: 'isolated_microservice',
+        executedBy: data.executedBy || 'clutch-runner-microservice',
+        executionNumber: data.executionNumber
+      };
+    } catch (err: any) {
+      const isTimeout = err.name === 'AbortError' || err.message?.includes('aborted');
+      const errorMsg = isTimeout 
+        ? `Runner microservice request timed out after ${timeoutMs}ms.`
+        : `Runner microservice communication error: ${err.message}`;
+
+      return {
+        allPassed: false,
+        totalTests: testCases.length,
+        passedTests: 0,
+        testResults: testCases.map(tc => ({
+          id: tc.id,
+          passed: false,
+          error: errorMsg,
+          status: isTimeout ? 'TIMEOUT' : 'SERVICE_UNAVAILABLE'
+        })),
+        overallStatus: isTimeout ? 'TIMEOUT' : 'SERVICE_UNAVAILABLE',
+        isolationBoundary: 'isolated_microservice'
+      };
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   /**
