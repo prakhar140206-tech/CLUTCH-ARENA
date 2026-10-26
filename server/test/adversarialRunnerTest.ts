@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { executeCodeInIsolatedSandbox, scanCodeForVulnerabilities, detectHostLanguageSupport } from '../src/execution/codeRunner.js';
-import { TestCase } from '../../shared/types.js';
+import { TestCase } from '../src/types/shared.js';
 
 const sampleTestCases: TestCase[] = [
   { id: 'tc1', input: '[-2,1,-3,4,-1,2,1,-5,4]', expectedOutput: '6', isHidden: false },

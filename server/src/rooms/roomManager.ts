@@ -7,7 +7,7 @@ import {
   SubmissionPayload,
   SubmissionResponse,
   Challenge
-} from '../../../shared/types.js';
+} from '../types/shared.js';
 import { DSA_CHALLENGE_BANK, getSanitizedChallenge } from '../challenges/challengeBank.js';
 import { ScoringEngine } from '../game/scoringEngine.js';
 import { BotEngine, BOT_PROFILES } from '../bots/botEngine.js';

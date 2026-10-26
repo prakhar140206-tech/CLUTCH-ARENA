@@ -91,6 +91,11 @@ jobs:
             echo "Waiting for healthy database (status: $STATUS)... ($i/30)"
             sleep 2
           done
+          if [ "$STATUS" != '"healthy"' ]; then
+            echo "PostgreSQL healthcheck timed out!"
+            docker compose logs postgres
+            exit 1
+          fi
 
       - name: Wait for API Server Healthcheck
         run: |
@@ -104,6 +109,11 @@ jobs:
             echo "Waiting for API (status code: $HTTP_CODE)... ($i/30)"
             sleep 2
           done
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "CLUTCH API healthcheck timed out!"
+            docker compose logs clutch-api
+            exit 1
+          fi
 
       - name: Run Authoritative PostgreSQL Migration
         run: |

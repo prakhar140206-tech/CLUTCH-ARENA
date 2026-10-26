@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import { v4 as uuidv4 } from 'uuid';
-import { TestCase } from '../../../shared/types.js';
+import { TestCase } from '../types/shared.js';
 
 export interface CodeExecutionResult {
   passed: boolean;

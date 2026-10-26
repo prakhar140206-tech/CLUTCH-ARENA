@@ -1,4 +1,4 @@
-import { Challenge } from '../../../shared/types.js';
+import { Challenge } from '../types/shared.js';
 
 export const DSA_CHALLENGE_BANK: Challenge[] = [
   // 1. Array & Two Pointers: Two Sum Target

@@ -1,4 +1,4 @@
-import { Challenge, SubmissionResponse, Difficulty } from '../../../shared/types.js';
+import { Challenge, SubmissionResponse, Difficulty } from '../types/shared.js';
 
 export interface ScoreCalculationInput {
   challenge: Challenge;

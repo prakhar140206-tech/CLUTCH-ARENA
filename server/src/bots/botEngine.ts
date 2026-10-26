@@ -1,4 +1,4 @@
-import { Participant, Challenge } from '../../../shared/types.js';
+import { Participant, Challenge } from '../types/shared.js';
 
 export interface BotConfig {
   name: string;

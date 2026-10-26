@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import { v4 as uuidv4 } from 'uuid';
-import { TestCase } from '../../../shared/types.js';
+import { TestCase } from '../types/shared.js';
 import { killProcessTree, scanCodeForVulnerabilities } from './codeRunner.js';
 
 export type IsolationMode = 'docker_container' | 'isolated_microservice' | 'local_restricted_process' | 'disabled';

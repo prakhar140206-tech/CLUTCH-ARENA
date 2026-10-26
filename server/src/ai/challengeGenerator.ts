@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { v4 as uuidv4 } from 'uuid';
-import { Challenge, Difficulty, DSATopic } from '../../../shared/types.js';
+import { Challenge, Difficulty, DSATopic } from '../types/shared.js';
 
 let aiClient: GoogleGenAI | null = null;
 if (process.env.GEMINI_API_KEY) {

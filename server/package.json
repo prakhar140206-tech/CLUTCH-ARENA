@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc && node -e \"require('fs').copyFileSync('src/storage/schema.sql', 'dist/storage/schema.sql')\"",
     "start": "node dist/index.js",
     "test": "tsx test/runTests.ts",
     "test:load": "tsx test/loadTest100.ts"
