@@ -2,6 +2,7 @@ import pg from 'pg';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { DSAOnboardingPreferences, ConceptMasteryRecord } from '../types/shared.js';
 
 const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
@@ -281,6 +282,108 @@ export class PostgresStorageAdapter {
       [limit]
     );
     return res.rows;
+  }
+
+  public async saveDSAPreferences(prefs: DSAOnboardingPreferences): Promise<void> {
+    await this.pool.query(
+      `INSERT INTO user_dsa_preferences (
+        user_id, languages, experience_level, preferred_topics, preferred_formats, 
+        goals, progression_pacing, diagnostic_score, assessed_level, completed_at, updated_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      ON CONFLICT (user_id) DO UPDATE SET
+        languages = EXCLUDED.languages,
+        experience_level = EXCLUDED.experience_level,
+        preferred_topics = EXCLUDED.preferred_topics,
+        preferred_formats = EXCLUDED.preferred_formats,
+        goals = EXCLUDED.goals,
+        progression_pacing = EXCLUDED.progression_pacing,
+        diagnostic_score = EXCLUDED.diagnostic_score,
+        assessed_level = EXCLUDED.assessed_level,
+        completed_at = EXCLUDED.completed_at,
+        updated_at = EXCLUDED.updated_at`,
+      [
+        prefs.userId,
+        JSON.stringify(prefs.languages || ['python']),
+        prefs.experienceLevel || 'beginner',
+        JSON.stringify(prefs.preferredTopics || []),
+        JSON.stringify(prefs.preferredFormats || []),
+        JSON.stringify(prefs.goals || []),
+        prefs.progressionPacing || 'steady',
+        prefs.diagnosticScore || 0,
+        prefs.assessedLevel || 'easy',
+        prefs.completedAt || Date.now(),
+        Date.now()
+      ]
+    );
+  }
+
+  public async getDSAPreferences(userId: string): Promise<DSAOnboardingPreferences | null> {
+    const res = await this.pool.query(
+      `SELECT user_id as "userId", languages, experience_level as "experienceLevel", 
+              preferred_topics as "preferredTopics", preferred_formats as "preferredFormats",
+              goals, progression_pacing as "progressionPacing", diagnostic_score as "diagnosticScore",
+              assessed_level as "assessedLevel", completed_at as "completedAt"
+       FROM user_dsa_preferences WHERE user_id = $1`,
+      [userId]
+    );
+    return res.rows[0] || null;
+  }
+
+  public async updateConceptMastery(userId: string, record: ConceptMasteryRecord): Promise<void> {
+    const id = `${userId}_${record.topic}`;
+    await this.pool.query(
+      `INSERT INTO user_concept_mastery (
+        id, user_id, topic, mastery_score, current_difficulty, questions_attempted,
+        questions_solved, recent_accuracy, avg_response_time_ms, consecutive_correct,
+        consecutive_wrong, needs_remediation, remediation_step, last_updated
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      ON CONFLICT (user_id, topic) DO UPDATE SET
+        mastery_score = EXCLUDED.mastery_score,
+        current_difficulty = EXCLUDED.current_difficulty,
+        questions_attempted = EXCLUDED.questions_attempted,
+        questions_solved = EXCLUDED.questions_solved,
+        recent_accuracy = EXCLUDED.recent_accuracy,
+        avg_response_time_ms = EXCLUDED.avg_response_time_ms,
+        consecutive_correct = EXCLUDED.consecutive_correct,
+        consecutive_wrong = EXCLUDED.consecutive_wrong,
+        needs_remediation = EXCLUDED.needs_remediation,
+        remediation_step = EXCLUDED.remediation_step,
+        last_updated = EXCLUDED.last_updated`,
+      [
+        id,
+        userId,
+        record.topic,
+        record.masteryScore,
+        record.currentDifficulty,
+        record.questionsAttempted,
+        record.questionsSolved,
+        record.recentAccuracy,
+        record.averageResponseTimeMs,
+        record.consecutiveCorrect,
+        record.consecutiveWrong,
+        record.needsRemediation,
+        JSON.stringify(record.remediationStep || null),
+        Date.now()
+      ]
+    );
+  }
+
+  public async getConceptMastery(userId: string): Promise<Record<string, ConceptMasteryRecord>> {
+    const res = await this.pool.query(
+      `SELECT topic, mastery_score as "masteryScore", current_difficulty as "currentDifficulty",
+              questions_attempted as "questionsAttempted", questions_solved as "questionsSolved",
+              recent_accuracy as "recentAccuracy", avg_response_time_ms as "averageResponseTimeMs",
+              consecutive_correct as "consecutiveCorrect", consecutive_wrong as "consecutiveWrong",
+              needs_remediation as "needsRemediation", remediation_step as "remediationStep",
+              last_updated as "lastUpdated"
+       FROM user_concept_mastery WHERE user_id = $1`,
+      [userId]
+    );
+    const map: Record<string, ConceptMasteryRecord> = {};
+    for (const row of res.rows) {
+      map[row.topic] = row;
+    }
+    return map;
   }
 
   public async close(): Promise<void> {

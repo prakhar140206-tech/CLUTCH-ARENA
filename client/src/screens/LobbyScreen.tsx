@@ -3,6 +3,8 @@ import { useGameStore } from '../store/gameStore.js';
 import { socketService } from '../services/socketService.js';
 import { soundSynth } from '../services/soundSynth.js';
 import { AppShell } from '../components/navigation/AppShell.js';
+import { DSAOnboardingModal } from '../components/onboarding/DSAOnboardingModal.js';
+import { MatchDurationMinutes, PerQuestionSeconds } from '../../../shared/types.js';
 import {
   Swords,
   Users,
@@ -22,7 +24,9 @@ import {
   Copy,
   Check,
   ChevronRight,
-  ShieldAlert
+  ShieldAlert,
+  BrainCircuit,
+  Timer
 } from 'lucide-react';
 
 export const LobbyScreen: React.FC = () => {
@@ -36,13 +40,17 @@ export const LobbyScreen: React.FC = () => {
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  const selectedMatchDuration = useGameStore((s) => s.selectedMatchDuration);
+  const setSelectedMatchDuration = useGameStore((s) => s.setSelectedMatchDuration);
+  const selectedQuestionTimer = useGameStore((s) => s.selectedQuestionTimer);
+  const setSelectedQuestionTimer = useGameStore((s) => s.setSelectedQuestionTimer);
+  const setOnboardingOpen = useGameStore((s) => s.setOnboardingOpen);
+
   // Custom Arena Configuration State
   const [customMaxPlayers, setCustomMaxPlayers] = useState<number>(70);
-  const [customTotalRounds, setCustomTotalRounds] = useState<number>(25);
-  const [customRoundSeconds, setCustomRoundSeconds] = useState<number>(20);
   const [customMode, setCustomMode] = useState<any>('mega_arena_100');
 
-  // Launch official 70-Player Tournament Preset (25 Qs, 20s per question)
+  // Launch official 70-Player Tournament Preset (universal time-based endless match)
   const handleStartTournament70 = async () => {
     try {
       soundSynth.airhorn();
@@ -51,8 +59,10 @@ export const LobbyScreen: React.FC = () => {
       await socketService.createRoom(userProfile, {
         mode: 'mega_arena_100',
         maxPlayers: 70,
-        roundDurationSeconds: 20, // 20s per question
-        totalRounds: 25 // 25 questions (~10 min tournament session)
+        matchDurationMinutes: selectedMatchDuration,
+        questionDurationSeconds: selectedQuestionTimer,
+        roundDurationSeconds: selectedQuestionTimer,
+        totalRounds: 9999
       });
       setScreen('arena_3d');
     } catch (err: any) {
@@ -70,8 +80,10 @@ export const LobbyScreen: React.FC = () => {
       const room = await socketService.createRoom(userProfile, {
         mode,
         maxPlayers,
-        roundDurationSeconds: 120,
-        totalRounds: 5
+        matchDurationMinutes: selectedMatchDuration,
+        questionDurationSeconds: selectedQuestionTimer,
+        roundDurationSeconds: selectedQuestionTimer,
+        totalRounds: 9999
       });
       if (mode === 'ai_arena') {
         await socketService.addBot(room.id, 'balanced');
@@ -109,8 +121,10 @@ export const LobbyScreen: React.FC = () => {
       await socketService.createRoom(userProfile, {
         mode: customMode,
         maxPlayers: customMaxPlayers,
-        roundDurationSeconds: customRoundSeconds,
-        totalRounds: customTotalRounds
+        matchDurationMinutes: selectedMatchDuration,
+        questionDurationSeconds: selectedQuestionTimer,
+        roundDurationSeconds: selectedQuestionTimer,
+        totalRounds: 9999
       });
       setShowCustomModal(false);
       setScreen('arena_3d');
@@ -124,7 +138,7 @@ export const LobbyScreen: React.FC = () => {
   return (
     <AppShell activeScreen="lobby">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-8">
-        
+
         {/* Error Alert if any */}
         {errorMessage && (
           <div className="p-4 rounded-xl bg-clutch-rose/10 border border-clutch-rose/40 text-clutch-rose text-xs font-mono flex items-center justify-between">
@@ -170,6 +184,80 @@ export const LobbyScreen: React.FC = () => {
               <Zap className="w-4 h-4 text-clutch-amber" />
               <span>{isJoining ? 'Queueing Arena...' : 'Queue 70-Player Match'}</span>
             </button>
+          </div>
+        </section>
+
+        {/* Universal Time-Based Match Controls */}
+        <section className="p-5 rounded-2xl bg-gradient-to-r from-gray-900 via-[#0e1626] to-gray-900 border border-cyan-500/30 shadow-xl space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <Timer className="w-5 h-5 text-cyan-400" />
+                <h3 className="font-cyber font-bold text-base text-white tracking-wide">
+                  UNIVERSAL MATCH DURATION & ENGINE SETTINGS
+                </h3>
+              </div>
+              <p className="text-xs text-gray-400 font-mono mt-0.5">
+                Questions continue endless until match timer expires. Adaptive difficulty scales dynamically.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setOnboardingOpen(true)}
+              className="px-4 py-2 rounded-xl bg-purple-950/60 hover:bg-purple-900/80 border border-purple-500/40 text-purple-200 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-lg shadow-purple-950/40"
+            >
+              <BrainCircuit className="w-4 h-4 text-purple-400" /> Personalize DSA
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-800/80">
+            {/* Match Duration Selector */}
+            <div>
+              <label className="text-xs font-mono uppercase text-gray-400 block mb-2">
+                Overall Match Duration (Continuous Endless Questions)
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {([10, 15, 25, 30] as MatchDurationMinutes[]).map(mins => {
+                  const isSelected = selectedMatchDuration === mins;
+                  return (
+                    <button
+                      key={mins}
+                      onClick={() => setSelectedMatchDuration(mins)}
+                      className={`py-2.5 rounded-xl border font-mono text-xs font-bold transition-all ${isSelected
+                          ? 'border-cyan-400 bg-cyan-950/60 text-cyan-200 shadow-lg shadow-cyan-500/20'
+                          : 'border-gray-800 bg-gray-900/50 text-gray-400 hover:border-gray-700'
+                        }`}
+                    >
+                      {mins} MIN
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Per-Question Timer Selector */}
+            <div>
+              <label className="text-xs font-mono uppercase text-gray-400 block mb-2">
+                Per-Question Time Limit
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {([20, 15] as PerQuestionSeconds[]).map(secs => {
+                  const isSelected = selectedQuestionTimer === secs;
+                  return (
+                    <button
+                      key={secs}
+                      onClick={() => setSelectedQuestionTimer(secs)}
+                      className={`py-2.5 rounded-xl border font-mono text-xs font-bold transition-all ${isSelected
+                          ? 'border-purple-400 bg-purple-950/60 text-purple-200 shadow-lg shadow-purple-500/20'
+                          : 'border-gray-800 bg-gray-900/50 text-gray-400 hover:border-gray-700'
+                        }`}
+                    >
+                      {secs} SEC {secs === 20 ? '(Default)' : '(Blitz)'}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -323,33 +411,31 @@ export const LobbyScreen: React.FC = () => {
 
               <div>
                 <label className="text-xs font-mono text-clutch-muted block mb-1.5">
-                  ROUND COUNT
+                  MATCH DURATION (ENDLESS PLAY)
                 </label>
                 <select
-                  value={customTotalRounds}
-                  onChange={(e) => setCustomTotalRounds(Number(e.target.value))}
+                  value={selectedMatchDuration}
+                  onChange={(e) => setSelectedMatchDuration(Number(e.target.value) as any)}
                   className="w-full bg-clutch-surface-light border border-clutch-border text-clutch-lavender text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
                 >
-                  <option value={3}>3 Rounds (Quick Sprint)</option>
-                  <option value={5}>5 Rounds (Standard Match)</option>
-                  <option value={10}>10 Rounds (Marathon)</option>
-                  <option value={25}>25 Rounds (Tournament Spec)</option>
+                  <option value={10}>10 Minutes (Standard)</option>
+                  <option value={15}>15 Minutes (Competitive)</option>
+                  <option value={25}>25 Minutes (Tournament)</option>
+                  <option value={30}>30 Minutes (Marathon)</option>
                 </select>
               </div>
 
               <div>
                 <label className="text-xs font-mono text-clutch-muted block mb-1.5">
-                  CLOCK PER QUESTION
+                  PER-QUESTION TIMER
                 </label>
                 <select
-                  value={customRoundSeconds}
-                  onChange={(e) => setCustomRoundSeconds(Number(e.target.value))}
+                  value={selectedQuestionTimer}
+                  onChange={(e) => setSelectedQuestionTimer(Number(e.target.value) as any)}
                   className="w-full bg-clutch-surface-light border border-clutch-border text-clutch-lavender text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
                 >
-                  <option value={20}>20 Seconds (Blitz Reflex)</option>
-                  <option value={60}>60 Seconds (Rapid Solving)</option>
-                  <option value={180}>3 Minutes (Code Sprint)</option>
-                  <option value={600}>10 Minutes (Standard Algorithm)</option>
+                  <option value={20}>20 Seconds (Standard Rapid)</option>
+                  <option value={15}>15 Seconds (Blitz Pro)</option>
                 </select>
               </div>
             </div>
@@ -372,6 +458,9 @@ export const LobbyScreen: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* DSA Onboarding & Calibration Modal */}
+      <DSAOnboardingModal />
     </AppShell>
   );
 };

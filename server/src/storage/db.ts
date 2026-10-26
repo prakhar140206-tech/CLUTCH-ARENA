@@ -4,6 +4,7 @@ import * as crypto from 'crypto';
 import { promisify } from 'util';
 import { fileURLToPath } from 'url';
 import { PostgresStorageAdapter } from './postgresAdapter.js';
+import { DSAOnboardingPreferences, ConceptMasteryRecord, DSATopic } from '../types/shared.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -129,6 +130,8 @@ export interface DatabaseSchema {
   matchHistory: MatchRecord[];
   globalLeaderboard: Array<{ id: string; username: string; ratingMMR: number; rankTier: string }>;
   questCompletions?: Record<string, boolean>; // key: userId_challengeId
+  dsaPreferences?: Record<string, DSAOnboardingPreferences>;
+  conceptMastery?: Record<string, Record<string, ConceptMasteryRecord>>;
 }
 
 const DEFAULT_SEEDS: DatabaseSchema = {
@@ -173,7 +176,9 @@ const DEFAULT_SEEDS: DatabaseSchema = {
     { id: 'user-002', username: 'QuantumByte', ratingMMR: 2180, rankTier: 'Master Elite' },
     { id: 'user-003', username: 'CyberNinja_42', ratingMMR: 1950, rankTier: 'Diamond Vanguard' }
   ],
-  questCompletions: {}
+  questCompletions: {},
+  dsaPreferences: {},
+  conceptMastery: {}
 };
 
 /**
@@ -414,6 +419,57 @@ export class PersistenceStore {
     }
 
     return { success: true, pointsAwarded };
+  }
+
+  public getDSAPreferences(userId: string): DSAOnboardingPreferences | undefined {
+    if (!this.data.dsaPreferences) this.data.dsaPreferences = {};
+    return this.data.dsaPreferences[userId];
+  }
+
+  public saveDSAPreferences(prefs: DSAOnboardingPreferences): DSAOnboardingPreferences {
+    if (this.isProduction && !this.usePostgres) {
+      throw new Error(`DatabaseUnavailable: ${this.readinessError || 'Production PostgreSQL is not ready.'}`);
+    }
+    if (!this.data.dsaPreferences) this.data.dsaPreferences = {};
+    const updated: DSAOnboardingPreferences = {
+      ...prefs,
+      completedAt: prefs.completedAt || Date.now()
+    };
+    this.data.dsaPreferences[prefs.userId] = updated;
+    this.saveToDisk();
+
+    if (this.usePostgres && this.postgres) {
+      this.postgres.saveDSAPreferences(updated).catch(err => {
+        console.warn('[Postgres] Async save preferences error:', err.message);
+      });
+    }
+    return updated;
+  }
+
+  public getConceptMastery(userId: string): Record<string, ConceptMasteryRecord> {
+    if (!this.data.conceptMastery) this.data.conceptMastery = {};
+    return this.data.conceptMastery[userId] || {};
+  }
+
+  public updateConceptMastery(userId: string, record: ConceptMasteryRecord): ConceptMasteryRecord {
+    if (this.isProduction && !this.usePostgres) {
+      throw new Error(`DatabaseUnavailable: ${this.readinessError || 'Production PostgreSQL is not ready.'}`);
+    }
+    if (!this.data.conceptMastery) this.data.conceptMastery = {};
+    if (!this.data.conceptMastery[userId]) this.data.conceptMastery[userId] = {};
+
+    this.data.conceptMastery[userId][record.topic] = {
+      ...record,
+      lastUpdated: Date.now()
+    };
+    this.saveToDisk();
+
+    if (this.usePostgres && this.postgres) {
+      this.postgres.updateConceptMastery(userId, record).catch(err => {
+        console.warn('[Postgres] Async update mastery error:', err.message);
+      });
+    }
+    return this.data.conceptMastery[userId][record.topic];
   }
 
   public getGlobalLeaderboard(limit = 20) {

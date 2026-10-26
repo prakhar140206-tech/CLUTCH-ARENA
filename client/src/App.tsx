@@ -11,6 +11,7 @@ import { SoloQuestScreen } from './screens/SoloQuestScreen.js';
 import { ArenaScreen } from './screens/ArenaScreen.js';
 import { AvatarCustomizerScreen } from './screens/AvatarCustomizerScreen.js';
 import { BrainrotShortsScreen } from './screens/BrainrotShortsScreen.js';
+import { DSAOnboardingModal } from './components/onboarding/DSAOnboardingModal.js';
 
 export const App: React.FC = () => {
   const currentScreen = useGameStore((s) => s.currentScreen);
@@ -32,6 +33,7 @@ export const App: React.FC = () => {
       {currentScreen === 'arena_3d' && <ArenaScreen />}
       {currentScreen === 'avatar_customizer' && <AvatarCustomizerScreen />}
       {currentScreen === 'brainrot_shorts' && <BrainrotShortsScreen />}
+      <DSAOnboardingModal />
     </div>
   );
 };

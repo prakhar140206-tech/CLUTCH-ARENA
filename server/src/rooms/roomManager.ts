@@ -6,7 +6,9 @@ import {
   Participant,
   SubmissionPayload,
   SubmissionResponse,
-  Challenge
+  Challenge,
+  Difficulty,
+  ProgressiveStageLevel
 } from '../types/shared.js';
 import { DSA_CHALLENGE_BANK, getSanitizedChallenge } from '../challenges/challengeBank.js';
 import { ScoringEngine } from '../game/scoringEngine.js';
@@ -23,8 +25,12 @@ export class RoomManager {
   private codeToRoomId: Map<string, string> = new Map();
   // Round timers
   private roundTimers: Map<string, NodeJS.Timeout> = new Map();
+  // Overall match duration authoritative timers (10, 15, 20, 25, 30, 45, 60 min)
+  private matchTimers: Map<string, NodeJS.Timeout> = new Map();
   // Bot active timers
   private botTimers: Map<string, NodeJS.Timeout[]> = new Map();
+  // Tracking delivered challenge IDs per room to prevent duplicate questions within a match
+  private deliveredChallenges: Map<string, Set<string>> = new Map();
   // Processed submission idempotency keys to prevent duplicates
   private processedSubmissions: Set<string> = new Set();
   // Submissions per room per round: Map<roomId_roundIndex_participantId, boolean>
@@ -36,6 +42,31 @@ export class RoomManager {
 
   constructor(io: Server) {
     this.io = io;
+  }
+
+  /**
+   * Automatic 4-Stage Progressive Difficulty Engine across ALL game modes:
+   * Level 1: Easy (0% - 25% match elapsed) - Basic arrays, strings, simple logic, introductory MCQs
+   * Level 2: Medium (25% - 50% match elapsed) - Searching, sorting, linked lists, stacks, queues
+   * Level 3: Hard / Very Hard (50% - 75% match elapsed) - Trees, graphs, recursion, advanced problem-solving
+   * Level 4: Advanced / Extreme (75% - 100% match elapsed) - Dynamic programming, complex graphs, optimization
+   */
+  public static calculateProgressiveStage(elapsedMs: number, totalDurationMs: number): {
+    stage: ProgressiveStageLevel;
+    difficulty: Difficulty;
+    stageName: string;
+    stageSubtitle: string;
+  } {
+    const ratio = totalDurationMs > 0 ? elapsedMs / totalDurationMs : 0;
+    if (ratio < 0.25) {
+      return { stage: 1, difficulty: 'easy', stageName: 'Level 1: Easy', stageSubtitle: 'Basic arrays, strings, and introductory logic' };
+    } else if (ratio < 0.50) {
+      return { stage: 2, difficulty: 'medium', stageName: 'Level 2: Medium', stageSubtitle: 'Searching, sorting, linked lists, and stacks' };
+    } else if (ratio < 0.75) {
+      return { stage: 3, difficulty: 'hard', stageName: 'Level 3: Hard / Very Hard', stageSubtitle: 'Trees, graphs, and recursive algorithms' };
+    } else {
+      return { stage: 4, difficulty: 'advanced', stageName: 'Level 4: Advanced / Extreme', stageSubtitle: 'Dynamic programming and advanced optimizations' };
+    }
   }
 
   public generateRoomCode(): string {
@@ -56,13 +87,18 @@ export class RoomManager {
 
     const defaultSettings: RoomSettings = {
       maxPlayers: customSettings?.maxPlayers || 16,
-      totalRounds: customSettings?.totalRounds || 5,
-      roundDurationSeconds: customSettings?.roundDurationSeconds || 600, // Default 10 min
+      totalRounds: customSettings?.totalRounds || 9999, // Endless: continues until overall timer expires
+      roundDurationSeconds: customSettings?.questionDurationSeconds || 20,
+      matchDurationMinutes: customSettings?.matchDurationMinutes || 25,
+      questionDurationSeconds: customSettings?.questionDurationSeconds || 20,
       topicFilter: customSettings?.topicFilter || 'all',
       difficulty: customSettings?.difficulty || 'mixed',
       mode: customSettings?.mode || 'duel_1v1',
       allowSpectators: true,
-      botFillCount: customSettings?.botFillCount || 0
+      botFillCount: customSettings?.botFillCount || 0,
+      isPrivate: customSettings?.isPrivate ?? false,
+      allowedLanguages: customSettings?.allowedLanguages || ['python', 'javascript', 'cpp', 'java', 'c'],
+      progressiveDifficulty: customSettings?.progressiveDifficulty ?? true
     };
 
     const hostParticipant: Participant = {
@@ -75,6 +111,12 @@ export class RoomManager {
       combo: 0,
       maxCombo: 0,
       isEliminated: false,
+      levelStats: {
+        1: { attempted: 0, solved: 0, totalTimeMs: 0 },
+        2: { attempted: 0, solved: 0, totalTimeMs: 0 },
+        3: { attempted: 0, solved: 0, totalTimeMs: 0 },
+        4: { attempted: 0, solved: 0, totalTimeMs: 0 }
+      },
       loadout: hostUser.loadout || {
         color: '#8B5CF6',
         visorGlow: '#A78BFA',
@@ -94,6 +136,8 @@ export class RoomManager {
       settings: defaultSettings,
       status: 'lobby',
       currentRound: 0,
+      currentStage: 1,
+      stageName: 'Level 1: Easy',
       participants: { [hostUser.id]: hostParticipant },
       leaderboard: [{
         id: hostUser.id,
@@ -101,7 +145,8 @@ export class RoomManager {
         score: 0,
         rank: 1,
         combo: 0,
-        isEliminated: false
+        isEliminated: false,
+        levelStats: hostParticipant.levelStats
       }]
     };
 
@@ -166,6 +211,12 @@ export class RoomManager {
         combo: 0,
         maxCombo: 0,
         isEliminated: false,
+        levelStats: {
+          1: { attempted: 0, solved: 0, totalTimeMs: 0 },
+          2: { attempted: 0, solved: 0, totalTimeMs: 0 },
+          3: { attempted: 0, solved: 0, totalTimeMs: 0 },
+          4: { attempted: 0, solved: 0, totalTimeMs: 0 }
+        },
         loadout: user.loadout || {
           color: '#06B6D4',
           visorGlow: '#22D3EE',
@@ -326,11 +377,31 @@ export class RoomManager {
 
     room.status = 'countdown';
     room.currentRound = 0;
+
+    // Server-authoritative overall match duration (10, 15, 20, 25, 30, 45, 60 min)
+    const matchMinutes = room.settings.matchDurationMinutes || 25;
+    const matchDurationMs = matchMinutes * 60 * 1000;
+    const matchExpiresAt = Date.now() + 3000 + matchDurationMs;
+    room.matchExpiresAt = matchExpiresAt;
+    room.currentStage = 1;
+    room.stageName = 'Level 1: Easy';
+
+    // Schedule authoritative overall match deadline
+    this.clearRoomTimers(roomId);
+    const overallTimer = setTimeout(() => {
+      this.finishMatch(roomId);
+    }, 3000 + matchDurationMs);
+    this.matchTimers.set(roomId, overallTimer);
+
     this.syncRoomState(roomId);
 
     let countdown = 3;
     const interval = setInterval(() => {
-      this.io.to(roomId).emit('match_countdown', { countdown });
+      this.io.to(roomId).emit('match_countdown', {
+        countdown,
+        matchExpiresAt: room.matchExpiresAt,
+        matchDurationMinutes: matchMinutes
+      });
       countdown--;
       if (countdown < 0) {
         clearInterval(interval);
@@ -345,9 +416,30 @@ export class RoomManager {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    this.clearRoomTimers(roomId);
+    // Clear per-question timers
+    const rTimer = this.roundTimers.get(roomId);
+    if (rTimer) {
+      clearTimeout(rTimer);
+      this.roundTimers.delete(roomId);
+    }
+    const bList = this.botTimers.get(roomId);
+    if (bList) {
+      bList.forEach(clearTimeout);
+      this.botTimers.delete(roomId);
+    }
 
-    if (room.currentRound >= room.settings.totalRounds) {
+    const now = Date.now();
+    // 1. Check if overall match timer expired
+    if (room.matchExpiresAt && now >= room.matchExpiresAt) {
+      this.finishMatch(roomId);
+      return;
+    }
+
+    // 2. End-of-match rule:
+    // If less time remains in the match than the configured question timer, do not start a question that cannot fit.
+    const questionLimitSecs = room.settings.questionDurationSeconds || 20;
+    const remainingMatchMs = Math.max(0, (room.matchExpiresAt || (now + 600000)) - now);
+    if (remainingMatchMs < questionLimitSecs * 1000) {
       this.finishMatch(roomId);
       return;
     }
@@ -362,59 +454,125 @@ export class RoomManager {
       }
     });
 
-    // 1. Adaptive Difficulty Scaling (Beginner -> Intermediate -> Advanced -> Expert)
+    // 3. Automatic 4-Stage Progressive Difficulty Schedule across ALL game modes
+    const totalMatchMs = (room.settings.matchDurationMinutes || 25) * 60 * 1000;
+    const elapsedMs = Math.max(0, totalMatchMs - remainingMatchMs);
+    const stageInfo = RoomManager.calculateProgressiveStage(elapsedMs, totalMatchMs);
+    const previousStage = room.currentStage || 1;
+    room.currentStage = stageInfo.stage;
+    room.stageName = stageInfo.stageName;
+
+    // Broadcast Stage Transition banner if level advanced
+    if (previousStage !== stageInfo.stage) {
+      this.io.to(roomId).emit('stage_transition', {
+        stage: stageInfo.stage,
+        stageName: stageInfo.stageName,
+        difficulty: stageInfo.difficulty,
+        message: `${stageInfo.stageName.toUpperCase()} UNLOCKED — ${stageInfo.difficulty.toUpperCase()} CHALLENGES`,
+        subtitle: stageInfo.stageSubtitle
+      });
+    }
+
+    // Performance adjustment within current stage
     const participantsList = Object.values(room.participants);
     const highestCombo = Math.max(...participantsList.map(p => p.combo), 0);
     const solvedLastRound = participantsList.filter(p => p.currentStatus === 'solved').length;
     const isHighPerforming = room.currentRound > 1 && (highestCombo >= 2 || solvedLastRound >= participantsList.length / 2);
 
-    let targetDifficulty: 'beginner' | 'intermediate' | 'advanced' | 'expert' = 'beginner';
-    if (room.currentRound === 1) {
-      targetDifficulty = 'beginner';
-    } else if (room.currentRound === 2) {
-      targetDifficulty = isHighPerforming ? 'intermediate' : 'beginner';
-    } else if (room.currentRound === 3) {
-      targetDifficulty = isHighPerforming ? 'advanced' : 'intermediate';
-    } else if (room.currentRound >= 4) {
-      targetDifficulty = isHighPerforming ? 'expert' : 'advanced';
+    let targetDifficulty: Difficulty = stageInfo.difficulty;
+    if (stageInfo.stage === 1) {
+      targetDifficulty = 'easy';
+    } else if (stageInfo.stage === 2) {
+      targetDifficulty = isHighPerforming ? 'medium' : 'easy';
+    } else if (stageInfo.stage === 3) {
+      targetDifficulty = isHighPerforming ? 'hard' : 'medium';
+    } else {
+      targetDifficulty = isHighPerforming ? 'extreme_hard' : 'advanced';
     }
 
-    // 2. Dynamic Adaptive Timer: Respect custom configured timer (e.g. 20s for Speed Blitz Tournament) or adaptive countdown
-    const baseDuration = 600; // 10 minutes max
-    const roundReduction = (room.currentRound - 1) * 60; // 1 minute reduction per round
-    const calculatedDuration = Math.max(360, baseDuration - roundReduction); // minimum 6 minutes (360s)
-    const duration = (room.settings.roundDurationSeconds && room.settings.roundDurationSeconds > 0)
-      ? room.settings.roundDurationSeconds 
-      : calculatedDuration;
+    const duration = questionLimitSecs;
 
-    // 3. Dynamic On-The-Fly AI Challenge Generation
-    const possibleTopics: any[] = ['arrays_and_strings', 'trees_and_bst', 'graphs', 'complexity_analysis', 'dynamic_programming'];
-    const chosenTopic = (room.settings.topicFilter && room.settings.topicFilter !== 'all')
-      ? room.settings.topicFilter
-      : possibleTopics[(room.currentRound - 1) % possibleTopics.length];
+    // 4. Question Deduplication & Selection with Language and Topic constraints
+    if (!this.deliveredChallenges.has(roomId)) {
+      this.deliveredChallenges.set(roomId, new Set());
+    }
+    const delivered = this.deliveredChallenges.get(roomId)!;
 
-    const selectedChallenge = await generateAIChallenge(chosenTopic, targetDifficulty, duration);
-    DSA_CHALLENGE_BANK.push(selectedChallenge);
+    let pool = DSA_CHALLENGE_BANK.filter(c => {
+      if (c.provenance === 'diagnostic') return false;
+      if (delivered.has(c.id)) return false;
+      if (room.settings.topicFilter && room.settings.topicFilter !== 'all') {
+        if (c.topic !== room.settings.topicFilter) return false;
+      }
+      if (room.settings.allowedLanguages && room.settings.allowedLanguages.length > 0) {
+        if (c.languageRequirement && c.languageRequirement.length > 0) {
+          const hasMatch = c.languageRequirement.some(l => room.settings.allowedLanguages!.includes(l));
+          if (!hasMatch) return false;
+        }
+      }
+      return true;
+    });
 
-    const expiresAt = Date.now() + duration * 1000;
+    if (pool.length === 0) {
+      delivered.clear(); // Reset history if exhausted
+      pool = DSA_CHALLENGE_BANK.filter(c => {
+        if (c.provenance === 'diagnostic') return false;
+        if (room.settings.topicFilter && room.settings.topicFilter !== 'all') {
+          if (c.topic !== room.settings.topicFilter) return false;
+        }
+        if (room.settings.allowedLanguages && room.settings.allowedLanguages.length > 0) {
+          if (c.languageRequirement && c.languageRequirement.length > 0) {
+            const hasMatch = c.languageRequirement.some(l => room.settings.allowedLanguages!.includes(l));
+            if (!hasMatch) return false;
+          }
+        }
+        return true;
+      });
+    }
 
+    let selectedChallenge = pool.find(c => c.difficulty === targetDifficulty);
+    if (!selectedChallenge) {
+      // Graceful fallback to stage difficulty or pool member
+      selectedChallenge = pool.find(c => c.difficulty === stageInfo.difficulty) || pool[0];
+    }
+
+    if (!selectedChallenge) {
+      try {
+        const possibleTopics: any[] = ['arrays_and_strings', 'trees_and_bst', 'graphs', 'complexity_analysis', 'dynamic_programming'];
+        const chosenTopic = (room.settings.topicFilter && room.settings.topicFilter !== 'all')
+          ? room.settings.topicFilter
+          : possibleTopics[(room.currentRound - 1) % possibleTopics.length];
+        selectedChallenge = await generateAIChallenge(chosenTopic, targetDifficulty, duration);
+        DSA_CHALLENGE_BANK.push(selectedChallenge);
+      } catch {
+        selectedChallenge = DSA_CHALLENGE_BANK[0];
+      }
+    }
+
+    delivered.add(selectedChallenge.id);
+
+    const expiresAt = now + duration * 1000;
     room.roundExpiresAt = expiresAt;
+    room.questionExpiresAt = expiresAt;
     room.activeChallenge = getSanitizedChallenge(selectedChallenge);
 
     this.syncRoomState(roomId);
     this.io.to(roomId).emit('round_started', {
       roundIndex: room.currentRound,
-      totalRounds: room.settings.totalRounds,
       challenge: room.activeChallenge,
       difficulty: targetDifficulty,
+      stage: room.currentStage,
+      stageName: room.stageName,
       durationSeconds: duration,
+      questionExpiresAt: expiresAt,
+      matchExpiresAt: room.matchExpiresAt,
       expiresAt
     });
 
     // Schedule AI Bot actions
     this.scheduleBotActions(roomId, selectedChallenge);
 
-    // Authoritative server-side expiration timer
+    // Authoritative server-side per-question expiration timer
     const timer = setTimeout(() => {
       this.handleRoundTimeout(roomId);
     }, duration * 1000);
@@ -472,6 +630,32 @@ export class RoomManager {
       };
     }
 
+    // Overall match timer deadline check
+    if (room.matchExpiresAt && Date.now() > room.matchExpiresAt) {
+      return {
+        success: false,
+        isCorrect: false,
+        pointsAwarded: 0,
+        speedBonus: 0,
+        comboMultiplier: 1.0,
+        totalScore: 0,
+        feedback: 'Match deadline expired. Submissions are closed.'
+      };
+    }
+
+    // Per-question deadline check (with 2s network latency grace window)
+    if (room.roundExpiresAt && Date.now() > room.roundExpiresAt + 2000) {
+      return {
+        success: false,
+        isCorrect: false,
+        pointsAwarded: 0,
+        speedBonus: 0,
+        comboMultiplier: 1.0,
+        totalScore: 0,
+        feedback: 'Question deadline expired. Submission too late.'
+      };
+    }
+
     // Check idempotency & single submission per round
     const subKey = `${roomId}_${roundIndex}_${userId}`;
     if (this.roundSubmissions.has(subKey) || this.processedSubmissions.has(idempotencyKey)) {
@@ -517,17 +701,20 @@ export class RoomManager {
     this.processedSubmissions.add(idempotencyKey);
 
     let isCorrect = false;
+    let partialCreditRatio = 0.0;
     let testResults: any = undefined;
 
-    // Check correctness based on type
+    // Universal format validation
     if (challenge.type === 'code_sprint') {
-      const runnerRes = await isolatedExecutionWorker.executeSubmission(language || 'python', String(answer), challenge.testCases || []);
+      const execLang = (language === 'c' ? 'cpp' : (language || 'python')) as 'python' | 'cpp' | 'java' | 'javascript';
+      const runnerRes = await isolatedExecutionWorker.executeSubmission(execLang, String(answer), challenge.testCases || []);
       isCorrect = runnerRes.allPassed;
       testResults = runnerRes.testResults;
-    } else if (challenge.type === 'visual_puzzle') {
-      isCorrect = String(answer).trim() === String(challenge.correctAnswer).trim();
+      partialCreditRatio = isCorrect ? 1.0 : 0.0;
     } else {
-      isCorrect = String(answer).trim().toLowerCase() === String(challenge.correctAnswer).trim().toLowerCase();
+      const validation = ScoringEngine.validateAnswer(challenge, answer);
+      isCorrect = validation.isCorrect;
+      partialCreditRatio = validation.partialCreditRatio;
     }
 
     // Calculate score server-side
@@ -536,11 +723,28 @@ export class RoomManager {
       isCorrect,
       timeTakenMs,
       currentCombo: participant.combo,
+      partialCreditRatio,
       testCaseResults: testResults
     });
 
     // Track total time taken and correct answer statistics for tournament evaluation
     participant.totalTimeTakenMs = (participant.totalTimeTakenMs || 0) + timeTakenMs;
+
+    // Record progressive level-wise stats
+    const currentStage = room.currentStage || 1;
+    if (!participant.levelStats) {
+      participant.levelStats = {
+        1: { attempted: 0, solved: 0, totalTimeMs: 0 },
+        2: { attempted: 0, solved: 0, totalTimeMs: 0 },
+        3: { attempted: 0, solved: 0, totalTimeMs: 0 },
+        4: { attempted: 0, solved: 0, totalTimeMs: 0 }
+      };
+    }
+    if (!participant.levelStats[currentStage]) {
+      participant.levelStats[currentStage] = { attempted: 0, solved: 0, totalTimeMs: 0 };
+    }
+    participant.levelStats[currentStage].attempted += 1;
+    participant.levelStats[currentStage].totalTimeMs += timeTakenMs;
 
     if (isCorrect) {
       participant.score += scoreRes.pointsAwarded;
@@ -548,6 +752,7 @@ export class RoomManager {
       participant.maxCombo = Math.max(participant.maxCombo, participant.combo);
       participant.currentStatus = 'solved';
       participant.correctCount = (participant.correctCount || 0) + 1;
+      participant.levelStats[currentStage].solved += 1;
     } else {
       participant.combo = 0;
       participant.currentStatus = 'failed';
@@ -585,7 +790,11 @@ export class RoomManager {
 
     if (submittedCount >= activeParticipants.length) {
       // All submitted, trigger round review early
-      this.clearRoomTimers(roomId);
+      const rTimer = this.roundTimers.get(roomId);
+      if (rTimer) {
+        clearTimeout(rTimer);
+        this.roundTimers.delete(roomId);
+      }
       setTimeout(() => this.handleRoundTimeout(roomId), 800);
     }
 
@@ -596,14 +805,24 @@ export class RoomManager {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    this.clearRoomTimers(roomId);
+    const rTimer = this.roundTimers.get(roomId);
+    if (rTimer) {
+      clearTimeout(rTimer);
+      this.roundTimers.delete(roomId);
+    }
+
+    // Check if overall match timer has expired
+    if (room.matchExpiresAt && Date.now() >= room.matchExpiresAt) {
+      this.finishMatch(roomId);
+      return;
+    }
+
     room.status = 'round_review';
 
     // In elimination mode ('last_brain_standing'), eliminate the lowest score or wrong answer
     if (room.settings.mode === 'last_brain_standing') {
       const active = Object.values(room.participants).filter(p => !p.isEliminated);
       if (active.length > 1) {
-        // Find player with lowest score or who failed
         const failedPlayers = active.filter(p => p.currentStatus !== 'solved');
         const candidateToEliminate = failedPlayers.length > 0
           ? failedPlayers[failedPlayers.length - 1]
@@ -624,19 +843,21 @@ export class RoomManager {
     this.syncRoomState(roomId);
     this.io.to(roomId).emit('round_ended', {
       roundIndex: room.currentRound,
-      leaderboard: room.leaderboard
+      leaderboard: room.leaderboard,
+      matchExpiresAt: room.matchExpiresAt
     });
 
-    // Wait 5 seconds review, then next round
+    // Wait 1.5 seconds review, then immediately deliver next question
     setTimeout(() => {
       this.nextRound(roomId);
-    }, 5000);
+    }, 1500);
   }
 
   public finishMatch(roomId: string): void {
     const room = this.rooms.get(roomId);
-    if (!room) return;
+    if (!room || room.status === 'match_ended') return;
 
+    this.clearRoomTimers(roomId);
     room.status = 'match_ended';
     this.updateLeaderboard(roomId);
     this.syncRoomState(roomId);
@@ -649,7 +870,7 @@ export class RoomManager {
         id: uuidv4(),
         timestamp: Date.now(),
         mode: room.settings.mode,
-        durationMs: 0,
+        durationMs: (room.settings.matchDurationMinutes || 10) * 60 * 1000,
         winner: winner ? { id: winner.id, username: winner.username, score: winner.score } : { id: '', username: 'Nobody', score: 0 },
         participantsCount: Object.keys(room.participants).length,
         leaderboardSnippet: room.leaderboard.slice(0, 5)
@@ -660,7 +881,11 @@ export class RoomManager {
 
     this.io.to(roomId).emit('match_finished', {
       winner,
-      leaderboard: room.leaderboard
+      leaderboard: room.leaderboard,
+      totalQuestions: room.currentRound,
+      matchDurationMinutes: room.settings.matchDurationMinutes || 25,
+      finalStageReached: room.currentStage || 1,
+      stageName: room.stageName || 'Level 1: Easy'
     });
   }
 
@@ -692,6 +917,7 @@ export class RoomManager {
         correctCount: p.correctCount || 0,
         totalTimeTakenMs: p.totalTimeTakenMs || 0,
         avgTimeTakenSec: p.avgTimeTakenSec || 0,
+        levelStats: p.levelStats || {},
         rewardCoins: 0,
         rewardBadge: ''
       }))
@@ -735,6 +961,12 @@ export class RoomManager {
     if (t) {
       clearTimeout(t);
       this.roundTimers.delete(roomId);
+    }
+
+    const m = this.matchTimers.get(roomId);
+    if (m) {
+      clearTimeout(m);
+      this.matchTimers.delete(roomId);
     }
 
     const bList = this.botTimers.get(roomId);

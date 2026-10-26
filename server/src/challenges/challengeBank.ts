@@ -393,11 +393,279 @@ export const DSA_CHALLENGE_BANK: Challenge[] = [
     correctAnswer: 'Node "p" (second letter) with children "p" and "t"',
     explanation: 'From "ap", it branches into "app" (child "p") and "apt" (child "t"). Then from "app" it further branches to end-of-word and child "l". The fork at second letter "p" splits into "p" and "t".',
     timeLimitSeconds: 15
+  },
+
+  // 20. Fill In The Blank: Binary Search Boundary Invariant (Easy)
+  {
+    id: 'fib-001',
+    title: 'Fill-In-Blank: Binary Search Boundary Update',
+    topic: 'searching_and_sorting',
+    difficulty: 'easy',
+    type: 'fill_in_blank',
+    prompt: 'Fill in the blanks to complete the standard ascending Binary Search algorithm when target is greater than mid value.',
+    codeSnippet: `int binary_search(int arr[], int n, int target) {
+  int low = 0, high = n - 1;
+  while (low <= high) {
+    int mid = low + (high - low) / 2;
+    if (arr[mid] == target) return mid;
+    else if (arr[mid] < target) {
+      {{BLANK_1}} = {{BLANK_2}};
+    } else {
+      high = mid - 1;
+    }
+  }
+  return -1;
+}`,
+    fillBlankData: {
+      template: '{{BLANK_1}} = {{BLANK_2}}',
+      blanks: [
+        { id: 'BLANK_1', label: 'Left pointer', hint: 'Variable to advance', acceptedAnswers: ['low', 'l'] },
+        { id: 'BLANK_2', label: 'New boundary', hint: 'Value after mid', acceptedAnswers: ['mid + 1', 'mid+1'] }
+      ]
+    },
+    correctAnswer: { BLANK_1: 'low', BLANK_2: 'mid + 1' },
+    explanation: 'When arr[mid] < target, the target must reside strictly in the right half, so low is updated to mid + 1.',
+    timeLimitSeconds: 20,
+    provenance: 'verified_bank'
+  },
+
+  // 21. Fill In The Blank: Reverse Linked List (Medium)
+  {
+    id: 'fib-002',
+    title: 'Fill-In-Blank: Linked List In-Place Reversal',
+    topic: 'linked_lists',
+    difficulty: 'medium',
+    type: 'fill_in_blank',
+    prompt: 'Fill in the blank to complete the iterative pointer redirection in reverse_list.',
+    codeSnippet: `ListNode* reverseList(ListNode* head) {
+  ListNode* prev = nullptr;
+  ListNode* curr = head;
+  while (curr != nullptr) {
+    ListNode* nextNode = curr->next;
+    {{BLANK_1}} = prev;
+    prev = curr;
+    curr = nextNode;
+  }
+  return prev;
+}`,
+    fillBlankData: {
+      template: '{{BLANK_1}} = prev',
+      blanks: [
+        { id: 'BLANK_1', label: 'Pointer reversal target', hint: 'Member of curr pointing backwards', acceptedAnswers: ['curr->next', 'curr.next'] }
+      ]
+    },
+    correctAnswer: { BLANK_1: 'curr->next' },
+    explanation: 'curr->next must be redirected backwards to prev to reverse the link direction.',
+    timeLimitSeconds: 20,
+    provenance: 'verified_bank'
+  },
+
+  // 22. Matching: Algorithm to Worst-Case Time Complexity (Medium)
+  {
+    id: 'mat-001',
+    title: 'Matching: Algorithms to Worst-Case Time Complexity',
+    topic: 'complexity_analysis',
+    difficulty: 'medium',
+    type: 'matching',
+    prompt: 'Match each algorithm on the left with its corresponding worst-case time complexity on the right.',
+    matchingData: {
+      leftColumn: [
+        { id: 'L1', text: 'Merge Sort' },
+        { id: 'L2', text: 'Naive Quick Sort (Last Element Pivot)' },
+        { id: 'L3', text: 'Binary Search' },
+        { id: 'L4', text: 'Hash Table Lookup (Separate Chaining Collision)' }
+      ],
+      rightColumn: [
+        { id: 'R1', text: 'O(N log N)' },
+        { id: 'R2', text: 'O(N²)' },
+        { id: 'R3', text: 'O(log N)' },
+        { id: 'R4', text: 'O(N)' }
+      ],
+      correctPairs: [
+        { leftId: 'L1', rightId: 'R1' },
+        { leftId: 'L2', rightId: 'R2' },
+        { leftId: 'L3', rightId: 'R3' },
+        { leftId: 'L4', rightId: 'R4' }
+      ]
+    },
+    correctAnswer: [
+      { leftId: 'L1', rightId: 'R1' },
+      { leftId: 'L2', rightId: 'R2' },
+      { leftId: 'L3', rightId: 'R3' },
+      { leftId: 'L4', rightId: 'R4' }
+    ],
+    explanation: 'Merge sort is guaranteed O(N log N); Quick sort degrades to O(N²) when partitions are lopsided; Binary search is O(log N); Hash table degenerates to O(N) when all keys hash to the same bucket.',
+    timeLimitSeconds: 25,
+    provenance: 'verified_bank'
+  },
+
+  // 23. Matching: Data Structures to Primary Use Cases (Easy)
+  {
+    id: 'mat-002',
+    title: 'Matching: Data Structures to Canonical Use Cases',
+    topic: 'stacks_and_queues',
+    difficulty: 'easy',
+    type: 'matching',
+    prompt: 'Match each core data structure with its canonical system design / algorithmic use case.',
+    matchingData: {
+      leftColumn: [
+        { id: 'DS1', text: 'LIFO Stack' },
+        { id: 'DS2', text: 'FIFO Queue' },
+        { id: 'DS3', text: 'Min-Heap Priority Queue' },
+        { id: 'DS4', text: 'Trie (Prefix Tree)' }
+      ],
+      rightColumn: [
+        { id: 'UC1', text: 'Call stack & Undo operations' },
+        { id: 'UC2', text: 'Breadth-First Search & Buffer streaming' },
+        { id: 'UC3', text: 'Dijkstra shortest path & Job scheduling' },
+        { id: 'UC4', text: 'Search engine autocomplete' }
+      ],
+      correctPairs: [
+        { leftId: 'DS1', rightId: 'UC1' },
+        { leftId: 'DS2', rightId: 'UC2' },
+        { leftId: 'DS3', rightId: 'UC3' },
+        { leftId: 'DS4', rightId: 'UC4' }
+      ]
+    },
+    correctAnswer: [
+      { leftId: 'DS1', rightId: 'UC1' },
+      { leftId: 'DS2', rightId: 'UC2' },
+      { leftId: 'DS3', rightId: 'UC3' },
+      { leftId: 'DS4', rightId: 'UC4' }
+    ],
+    explanation: 'Stacks power undo/function frames (LIFO). Queues support level-order traversal (FIFO). Heaps retrieve min/max keys in O(log N). Tries query prefix matches in O(length of string).',
+    timeLimitSeconds: 25,
+    provenance: 'verified_bank'
+  },
+
+  // 24. Arrange Steps: Merge Sort Sequence (Medium)
+  {
+    id: 'arr-seq-001',
+    title: 'Arrange Steps: Merge Sort Recursive Pipeline',
+    topic: 'searching_and_sorting',
+    difficulty: 'medium',
+    type: 'arrange_steps',
+    prompt: 'Arrange the core execution steps of Merge Sort in correct chronological sequence.',
+    arrangeStepsData: {
+      items: [
+        { id: 's1', text: 'Check base case: if length <= 1, return array' },
+        { id: 's2', text: 'Calculate midpoint: mid = length / 2' },
+        { id: 's3', text: 'Recursively sort left half and right half' },
+        { id: 's4', text: 'Merge two sorted subarrays into a single combined sorted array' }
+      ],
+      correctOrderIds: ['s1', 's2', 's3', 's4']
+    },
+    correctAnswer: ['s1', 's2', 's3', 's4'],
+    explanation: 'Merge sort follows Divide-and-Conquer: check base case, partition at midpoint, conquer subproblems recursively, then combine (merge) the sorted halves.',
+    timeLimitSeconds: 20,
+    provenance: 'verified_bank'
+  },
+
+  // 25. Pseudocode Challenge: Recursive Binary Search Tracing (Easy)
+  {
+    id: 'pcode-001',
+    title: 'Pseudocode: Trace Recursive Call Sequence',
+    topic: 'recursion_and_backtracking',
+    difficulty: 'easy',
+    type: 'pseudocode',
+    prompt: 'Trace the recursive call count for `binary_search(arr, 0, 7, target=9)` where `arr = [1, 3, 5, 7, 9, 11, 13, 15]`. How many recursive steps occur to locate 9?',
+    codeSnippet: `function binary_search(arr, low, high, target):
+    if low > high: return -1
+    mid = low + (high - low) / 2
+    if arr[mid] == target:
+        return mid
+    else if arr[mid] < target:
+        return binary_search(arr, mid + 1, high, target)
+    else:
+        return binary_search(arr, low, mid - 1, target)`,
+    options: ['2 steps', '1 step', '3 steps', '4 steps'],
+    correctAnswer: '2 steps',
+    explanation: 'Step 1: low=0, high=7, mid=3 (arr[3]=7 < 9) -> recurse right with low=4, high=7. Step 2: low=4, high=7, mid=5 (arr[5]=11 > 9) -> recurse left with low=4, high=4. Step 3 finds arr[4]=9 in total 2 recursive descent calls.',
+    timeLimitSeconds: 20,
+    provenance: 'verified_bank'
+  },
+
+  // 26. Interactive Array Challenge: Two Pointer Subarray Selection (Medium)
+  {
+    id: 'ia-001',
+    title: 'Interactive 3D Array: Kadane Maximum Subarray Selection',
+    topic: 'arrays_and_strings',
+    difficulty: 'medium',
+    type: 'interactive_array',
+    prompt: 'Select the contiguous subarray slice [start_index, end_index] that yields the maximum possible sum in array `[-2, 1, -3, 4, -1, 2, 1, -5, 4]`.',
+    interactiveArrayData: {
+      initialArray: [-2, 1, -3, 4, -1, 2, 1, -5, 4],
+      pointers: [
+        { id: 'left', label: 'Start (L)', initialIndex: 0, color: '#38bdf8' },
+        { id: 'right', label: 'End (R)', initialIndex: 0, color: '#a855f7' }
+      ],
+      targetDescription: 'Select start index 3 and end index 6 (subarray [4, -1, 2, 1], sum = 6)',
+      actionType: 'select_subarray',
+      validationTarget: { startIndex: 3, endIndex: 6 }
+    },
+    correctAnswer: { startIndex: 3, endIndex: 6 },
+    explanation: 'The slice from index 3 to 6 is [4, -1, 2, 1], which sums to 6. Any other subarray produces a lower sum.',
+    timeLimitSeconds: 25,
+    provenance: 'verified_bank'
+  },
+
+  // 27. Diagnostic Assessment: Language & Level Calibration (Assessment)
+  {
+    id: 'diag-001',
+    title: 'Diagnostic: Array In-Place Rotation Complexity',
+    topic: 'arrays_and_strings',
+    difficulty: 'medium',
+    type: 'mcq',
+    prompt: 'What is the minimum auxiliary space complexity required to rotate an array of n elements to the right by k steps in-place?',
+    options: ['O(1)', 'O(k)', 'O(n)', 'O(log n)'],
+    correctAnswer: 'O(1)',
+    explanation: 'Using the triple reversal algorithm (reverse whole array, reverse first k, reverse remaining n-k) requires O(1) extra space and O(n) time.',
+    timeLimitSeconds: 20,
+    provenance: 'diagnostic'
+  },
+
+  // 28. Diagnostic Assessment: Tree Depth Calculation (Assessment)
+  {
+    id: 'diag-002',
+    title: 'Diagnostic: Binary Tree Max Depth Recursion',
+    topic: 'trees_and_bst',
+    difficulty: 'easy',
+    type: 'predict_output',
+    prompt: 'What is the recurrence relation for the maximum depth of a binary tree given root node?',
+    codeSnippet: `int maxDepth(TreeNode* root) {
+  if (root == nullptr) return 0;
+  return 1 + max(maxDepth(root->left), maxDepth(root->right));
+}`,
+    options: [
+      '1 + max(leftDepth, rightDepth)',
+      '1 + leftDepth + rightDepth',
+      'max(leftDepth, rightDepth)',
+      '2 * max(leftDepth, rightDepth)'
+    ],
+    correctAnswer: '1 + max(leftDepth, rightDepth)',
+    explanation: 'The depth of a tree is 1 (for the root itself) plus the maximum depth of its subtrees.',
+    timeLimitSeconds: 20,
+    provenance: 'diagnostic'
+  },
+
+  // 29. Extreme Hard: Segment Tree with Lazy Propagation (Extreme Hard)
+  {
+    id: 'seg-ext-001',
+    title: 'Extreme Hard: Segment Tree Lazy Range Updates',
+    topic: 'trees_and_bst',
+    difficulty: 'extreme_hard',
+    type: 'complexity',
+    prompt: 'What is the per-query time complexity for a range addition update [L, R] on a Segment Tree with Lazy Propagation across an array of size N?',
+    options: ['O(log N)', 'O(N)', 'O(1)', 'O(sqrt(N))'],
+    correctAnswer: 'O(log N)',
+    explanation: 'Lazy propagation defers updates to child nodes until the interval is queried, ensuring at most 4 nodes per tree level are visited, yielding O(log N) worst-case time.',
+    timeLimitSeconds: 15,
+    provenance: 'verified_bank'
   }
 ];
 
 export function getSanitizedChallenge(challenge: Challenge): any {
-  // Strip correctAnswer and referenceSolution, and sanitize hidden test cases
+  // Strip correctAnswer and referenceSolution, and sanitize hidden test cases / answer keys
   const { correctAnswer, referenceSolution, ...safeCopy } = challenge;
   if (safeCopy.testCases) {
     safeCopy.testCases = safeCopy.testCases.map(tc => ({
@@ -408,5 +676,27 @@ export function getSanitizedChallenge(challenge: Challenge): any {
       explanation: tc.isHidden ? undefined : tc.explanation
     }));
   }
+  if (safeCopy.matchingData) {
+    const { correctPairs, ...safeMatching } = safeCopy.matchingData;
+    safeCopy.matchingData = safeMatching;
+  }
+  if (safeCopy.arrangeStepsData) {
+    const { correctOrderIds, ...safeArrange } = safeCopy.arrangeStepsData;
+    safeCopy.arrangeStepsData = safeArrange;
+  }
+  if (safeCopy.fillBlankData) {
+    safeCopy.fillBlankData = {
+      template: safeCopy.fillBlankData.template,
+      blanks: safeCopy.fillBlankData.blanks.map(b => {
+        const { acceptedAnswers, ...safeB } = b;
+        return safeB;
+      })
+    };
+  }
+  if (safeCopy.interactiveArrayData) {
+    const { validationTarget, ...safeArray } = safeCopy.interactiveArrayData;
+    safeCopy.interactiveArrayData = safeArray;
+  }
   return safeCopy;
 }
+

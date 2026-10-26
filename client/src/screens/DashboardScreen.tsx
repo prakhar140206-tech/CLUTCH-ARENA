@@ -5,6 +5,8 @@ import { soundSynth } from '../services/soundSynth.js';
 import { AppShell } from '../components/navigation/AppShell.js';
 import { ArenaHero3D } from '../components/arena3d/ArenaHero3D.js';
 import confetti from 'canvas-confetti';
+import { API_BASE_URL } from '../config/api.js';
+import { DSATopic, ConceptMasteryRecord } from '../../../shared/types.js';
 import {
   Swords,
   Compass,
@@ -26,7 +28,11 @@ import {
   ChevronRight,
   Filter,
   Copy,
-  Check
+  Check,
+  BrainCircuit,
+  BookOpen,
+  AlertTriangle,
+  RotateCcw
 } from 'lucide-react';
 
 interface QuestItem {
@@ -44,12 +50,39 @@ export const DashboardScreen: React.FC = () => {
   const userProfile = useGameStore((s) => s.userProfile);
   const updateUserProfile = useGameStore((s) => s.updateUserProfile);
   const soloSolvedIds = useGameStore((s) => s.soloSolvedIds);
+  const setSoloTopic = useGameStore((s) => s.setSoloTopic);
+  const setOnboardingOpen = useGameStore((s) => s.setOnboardingOpen);
+  const conceptMastery = useGameStore((s) => s.conceptMastery);
+  const setConceptMastery = useGameStore((s) => s.setConceptMastery);
 
   const [leaderboardFilter, setLeaderboardFilter] = useState<'global' | 'friends' | 'tier'>('global');
   const [showPrivateModal, setShowPrivateModal] = useState<boolean>(false);
   const [privateRoomCode, setPrivateRoomCode] = useState<string>('');
   const [isJoiningRoom, setIsJoiningRoom] = useState<boolean>(false);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
+  const [loadingMastery, setLoadingMastery] = useState<boolean>(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchMastery = async () => {
+      setLoadingMastery(true);
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/user/dsa-mastery?userId=${userProfile.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.mastery && isMounted) {
+            setConceptMastery(data.mastery);
+          }
+        }
+      } catch (err) {
+        // Fallback to store conceptMastery
+      } finally {
+        if (isMounted) setLoadingMastery(false);
+      }
+    };
+    fetchMastery();
+    return () => { isMounted = false; };
+  }, [userProfile.id]);
 
   // Daily Quests tied to real user achievements and solo solved IDs
   const [quests, setQuests] = useState<QuestItem[]>([
@@ -98,6 +131,47 @@ export const DashboardScreen: React.FC = () => {
   const xpInCurrentLevel = currentXP % 300;
   const xpThreshold = 300;
   const xpProgressPercent = Math.min(100, Math.round((xpInCurrentLevel / xpThreshold) * 100));
+
+  // Verified 13 Core DSA Disciplines
+  const ALL_TOPICS: { id: DSATopic; label: string }[] = [
+    { id: 'arrays_and_strings', label: 'Arrays & Strings' },
+    { id: 'searching_and_sorting', label: 'Searching & Sorting' },
+    { id: 'linked_lists', label: 'Linked Lists' },
+    { id: 'stacks_and_queues', label: 'Stacks & Queues' },
+    { id: 'recursion_and_backtracking', label: 'Recursion & Backtracking' },
+    { id: 'trees_and_bst', label: 'Trees & BST' },
+    { id: 'graphs', label: 'Graphs & Traversal' },
+    { id: 'greedy_algorithms', label: 'Greedy Algorithms' },
+    { id: 'dynamic_programming', label: 'Dynamic Programming' },
+    { id: 'hashing', label: 'Hashing & Hashmaps' },
+    { id: 'heaps_and_priority_queues', label: 'Heaps & Priority Queues' },
+    { id: 'bit_manipulation', label: 'Bit Manipulation' },
+    { id: 'complexity_analysis', label: 'Complexity Analysis' }
+  ];
+
+  // Derived real mastery statistics (Zero fabricated progress)
+  const masteryEntries = Object.values(conceptMastery);
+  const totalAttempted = masteryEntries.reduce((sum, m) => sum + (m.questionsAttempted || 0), 0);
+  const totalSolved = masteryEntries.reduce((sum, m) => sum + (m.questionsSolved || 0), 0);
+  const overallAccuracy = totalAttempted > 0 ? Math.round((totalSolved / totalAttempted) * 100) : 0;
+  
+  const sortedByMastery = [...ALL_TOPICS].sort((a, b) => {
+    const scoreA = conceptMastery[a.id]?.masteryScore ?? 50;
+    const scoreB = conceptMastery[b.id]?.masteryScore ?? 50;
+    return scoreB - scoreA;
+  });
+
+  const strongestTopic = sortedByMastery[0];
+  const remediationTopics = ALL_TOPICS.filter(t => conceptMastery[t.id]?.needsRemediation);
+  const recommendedPracticeTopic = remediationTopics.length > 0 
+    ? remediationTopics[0] 
+    : sortedByMastery[sortedByMastery.length - 1];
+
+  const handlePracticeTopic = (topicId: DSATopic) => {
+    soundSynth.click();
+    setSoloTopic(topicId);
+    setScreen('solo_quest');
+  };
 
   // Verified Leaderboard Records
   const verifiedLeaderboard = [
@@ -445,7 +519,198 @@ export const DashboardScreen: React.FC = () => {
         </section>
 
         {/* =========================================================
-            SECTION 4: SPLIT GRID (DAILY QUESTS & LEADERBOARD)
+            SECTION 4: DSA ADAPTIVE CONCEPT MASTERY & PROGRESSION
+            ========================================================= */}
+        <section className="clutch-panel rounded-2xl p-6 relative overflow-hidden border border-clutch-violet/30 shadow-xl">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-4 border-b border-clutch-border">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender">
+                <BrainCircuit className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="font-cyber font-bold text-lg text-white">DSA CONCEPT MASTERY</h2>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 font-semibold">
+                    EVIDENCE-BASED ENGINE
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-clutch-muted">
+                  Continuous performance tracking across 13 core disciplines. Difficulty adapts automatically based on response velocity and validated accuracy.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setOnboardingOpen(true)}
+              className="clutch-btn-secondary px-4 py-2 text-xs flex items-center gap-2 shrink-0 border-cyan-500/30 hover:border-cyan-400"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Recalibrate / Preferences</span>
+            </button>
+          </div>
+
+          {/* 4 Summary Stat Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="p-4 rounded-xl bg-clutch-surface-light border border-clutch-border flex flex-col justify-between">
+              <span className="text-[10px] font-mono text-clutch-subtle uppercase tracking-wider">Overall Assessment</span>
+              <div className="text-lg font-cyber font-bold text-white capitalize mt-1">
+                {userProfile.dsaPreferences?.assessedLevel || userProfile.dsaPreferences?.experienceLevel || 'Calibrated'}
+              </div>
+              <span className="text-[11px] font-mono text-cyan-400 mt-1">
+                {userProfile.dsaPreferences?.languages?.map(l => l.toUpperCase()).join(', ') || 'PYTHON'}
+              </span>
+            </div>
+
+            <div className="p-4 rounded-xl bg-clutch-surface-light border border-clutch-border flex flex-col justify-between">
+              <span className="text-[10px] font-mono text-clutch-subtle uppercase tracking-wider">Top Proficiency</span>
+              <div className="text-lg font-cyber font-bold text-emerald-400 truncate mt-1">
+                {strongestTopic.label}
+              </div>
+              <span className="text-[11px] font-mono text-clutch-muted mt-1">
+                {conceptMastery[strongestTopic.id]?.masteryScore ?? 50}% Evidence Score
+              </span>
+            </div>
+
+            <div className="p-4 rounded-xl bg-clutch-surface-light border border-clutch-border flex flex-col justify-between">
+              <span className="text-[10px] font-mono text-clutch-subtle uppercase tracking-wider">Recommended Focus</span>
+              <div className="text-lg font-cyber font-bold text-amber-400 truncate mt-1">
+                {recommendedPracticeTopic.label}
+              </div>
+              <span className="text-[11px] font-mono text-clutch-muted mt-1">
+                {remediationTopics.length > 0 ? '⚠ Guided Remediation' : 'Ready for advancement'}
+              </span>
+            </div>
+
+            <div className="p-4 rounded-xl bg-clutch-surface-light border border-clutch-border flex flex-col justify-between">
+              <span className="text-[10px] font-mono text-clutch-subtle uppercase tracking-wider">DSA Accuracy / Velocity</span>
+              <div className="text-lg font-cyber font-bold text-white mt-1">
+                {overallAccuracy}% <span className="text-xs font-mono text-clutch-subtle font-normal">({totalSolved}/{totalAttempted} solved)</span>
+              </div>
+              <span className="text-[11px] font-mono text-clutch-lavender mt-1">
+                13 Disciplines Active
+              </span>
+            </div>
+          </div>
+
+          {/* 13 Disciplines Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+            {ALL_TOPICS.map((topic) => {
+              const record = conceptMastery[topic.id] || {
+                topic: topic.id,
+                masteryScore: 50,
+                currentDifficulty: 'easy' as const,
+                questionsAttempted: 0,
+                questionsSolved: 0,
+                recentAccuracy: 0,
+                averageResponseTimeMs: 0,
+                consecutiveCorrect: 0,
+                consecutiveWrong: 0,
+                needsRemediation: false,
+                lastUpdated: 0
+              };
+
+              const diffColors: Record<string, string> = {
+                easy: 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300',
+                medium: 'bg-cyan-950/40 border-cyan-500/40 text-cyan-300',
+                hard: 'bg-amber-950/40 border-amber-500/40 text-amber-300',
+                advanced: 'bg-purple-950/40 border-purple-500/40 text-purple-300',
+                extreme_hard: 'bg-rose-950/40 border-rose-500/40 text-rose-300'
+              };
+
+              const score = record.masteryScore ?? 50;
+
+              return (
+                <div
+                  key={topic.id}
+                  className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between group ${
+                    record.needsRemediation
+                      ? 'bg-rose-950/10 border-rose-900/50 hover:border-rose-700'
+                      : 'bg-clutch-surface-light border-clutch-border hover:border-clutch-violet/50'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h4 className="text-xs font-cyber font-bold text-white group-hover:text-clutch-lavender transition-colors line-clamp-1">
+                        {topic.label}
+                      </h4>
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono uppercase font-bold border ${diffColors[record.currentDifficulty] || diffColors.easy}`}>
+                        {record.currentDifficulty}
+                      </span>
+                    </div>
+
+                    {/* Mastery Bar */}
+                    <div className="space-y-1 mb-2.5">
+                      <div className="flex justify-between text-[10px] font-mono">
+                        <span className="text-clutch-subtle">Mastery</span>
+                        <span className="font-bold text-white">{score}%</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-black/40 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full transition-all duration-500 ${
+                            record.needsRemediation
+                              ? 'bg-rose-500'
+                              : score >= 80
+                              ? 'bg-emerald-400'
+                              : score >= 60
+                              ? 'bg-cyan-400'
+                              : 'bg-clutch-violet'
+                          }`}
+                          style={{ width: `${score}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Stats Row */}
+                    <div className="grid grid-cols-3 gap-1 py-1.5 border-t border-b border-clutch-border/60 text-[10px] font-mono">
+                      <div>
+                        <span className="text-clutch-subtle block">Solved</span>
+                        <span className="text-white font-bold">{record.questionsSolved}/{record.questionsAttempted}</span>
+                      </div>
+                      <div>
+                        <span className="text-clutch-subtle block">Acc.</span>
+                        <span className="text-white font-bold">{record.recentAccuracy}%</span>
+                      </div>
+                      <div>
+                        <span className="text-clutch-subtle block">Speed</span>
+                        <span className="text-white font-bold">
+                          {record.averageResponseTimeMs > 0 ? `${(record.averageResponseTimeMs / 1000).toFixed(1)}s` : '--'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Status Badge */}
+                    <div className="mt-2 flex items-center justify-between">
+                      {record.needsRemediation ? (
+                        <span className="text-[10px] font-mono text-rose-400 flex items-center gap-1 font-bold">
+                          <AlertTriangle className="w-3 h-3 text-rose-400" /> Remediation
+                        </span>
+                      ) : score >= 80 ? (
+                        <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1 font-bold">
+                          <Check className="w-3 h-3 text-emerald-400" /> Mastered
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-mono text-clutch-subtle">
+                          Progressing
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => handlePracticeTopic(topic.id)}
+                    className="mt-3 w-full clutch-btn-secondary py-1 text-[11px] font-mono flex items-center justify-center gap-1.5 group-hover:border-clutch-violet group-hover:text-white"
+                  >
+                    <span>Practice</span>
+                    <ArrowRight className="w-3 h-3 text-clutch-lavender" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* =========================================================
+            SECTION 5: SPLIT GRID (DAILY QUESTS & LEADERBOARD)
             ========================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Daily Quests & Bounties (6 cols) */}

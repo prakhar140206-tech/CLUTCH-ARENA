@@ -1,27 +1,61 @@
-export type Difficulty = 'beginner' | 'intermediate' | 'advanced' | 'expert';
+export type Difficulty =
+  | 'easy'
+  | 'medium'
+  | 'hard'
+  | 'advanced'
+  | 'extreme_hard'
+  // Legacy aliases for backward compatibility
+  | 'beginner'
+  | 'intermediate'
+  | 'expert';
 
-export type ChallengeType = 
+export type ChallengeType =
   | 'mcq'
+  | 'code_sprint'
   | 'predict_output'
   | 'bug_hunter'
   | 'complexity'
   | 'visual_puzzle'
-  | 'code_sprint';
+  | 'fill_in_blank'
+  | 'matching'
+  | 'arrange_steps'
+  | 'pseudocode'
+  | 'interactive_array';
 
 export type DSATopic =
   | 'arrays_and_strings'
   | 'searching_and_sorting'
-  | 'complexity_analysis'
   | 'linked_lists'
   | 'stacks_and_queues'
+  | 'recursion_and_backtracking'
   | 'trees_and_bst'
-  | 'heaps'
   | 'graphs'
+  | 'greedy_algorithms'
   | 'dynamic_programming'
+  | 'hashing'
+  | 'heaps_and_priority_queues'
+  | 'bit_manipulation'
+  | 'complexity_analysis'
+  // Legacy aliases
   | 'sliding_window'
-  | 'bit_manipulation';
+  | 'heaps';
 
-export type GameMode = 
+export type SupportedLanguage = 'python' | 'cpp' | 'java' | 'c' | 'javascript';
+
+export type MatchDurationMinutes = 10 | 15 | 20 | 25 | 30 | 45 | 60;
+export type PerQuestionSeconds = 10 | 15 | 20 | 30;
+
+export type ProgressiveStageLevel = 1 | 2 | 3 | 4;
+
+export interface StageTransitionPayload {
+  stage: ProgressiveStageLevel;
+  stageName: string;
+  difficulty: Difficulty;
+  message: string;
+  subtitle: string;
+}
+
+export type GameMode =
   | 'solo_quest'
   | 'ai_arena'
   | 'duel_1v1'
@@ -35,6 +69,36 @@ export interface VisualPuzzleData {
   initialState: any;
   targetGoal: any;
   allowedOperations: string[];
+}
+
+export interface MatchingPairData {
+  leftColumn: Array<{ id: string; text: string }>;
+  rightColumn: Array<{ id: string; text: string }>;
+  correctPairs?: Array<{ leftId: string; rightId: string }>;
+}
+
+export interface ArrangeStepsData {
+  items: Array<{ id: string; text: string; code?: string }>;
+  correctOrderIds?: string[];
+}
+
+export interface FillBlankData {
+  template: string; // e.g. "for i in range(n): if arr[i] > max_val: {{BLANK_1}} = {{BLANK_2}}"
+  blanks: Array<{
+    id: string;
+    label: string;
+    hint?: string;
+    acceptedAnswers?: string[];
+  }>;
+}
+
+export interface InteractiveArrayData {
+  initialArray: number[] | string[] | number[][];
+  isMatrix?: boolean;
+  pointers?: Array<{ id: string; label: string; initialIndex: number; color?: string }>;
+  targetDescription: string;
+  actionType: 'select_subarray' | 'move_pointers' | 'swap_elements' | 'find_pivot' | 'matrix_traverse';
+  validationTarget?: any;
 }
 
 export interface TestCase {
@@ -58,14 +122,28 @@ export interface Challenge {
   explanation: string;
   referenceSolution?: string;
   testCases?: TestCase[]; // for code sprint & bug hunter
-  starterCode?: Record<string, string>; // e.g. python, javascript, cpp, java
+  starterCode?: Record<string, string>; // e.g. python, javascript, cpp, java, c
   visualData?: VisualPuzzleData;
+  matchingData?: MatchingPairData;
+  arrangeStepsData?: ArrangeStepsData;
+  fillBlankData?: FillBlankData;
+  interactiveArrayData?: InteractiveArrayData;
+  languageRequirement?: SupportedLanguage[];
   timeLimitSeconds: number;
+  provenance?: 'verified_bank' | 'ai_generated_validated' | 'diagnostic';
+  hints?: string[];
 }
 
 // Client-safe view of a challenge where solutions/hidden tests are stripped
 export type ClientChallenge = Omit<Challenge, 'correctAnswer'> & {
   testCases?: Array<Omit<TestCase, 'isHidden'> & { isHidden?: boolean }>;
+  matchingData?: Omit<MatchingPairData, 'correctPairs'>;
+  arrangeStepsData?: Omit<ArrangeStepsData, 'correctOrderIds'>;
+  fillBlankData?: {
+    template: string;
+    blanks: Array<Omit<FillBlankData['blanks'][number], 'acceptedAnswers'>>;
+  };
+  interactiveArrayData?: Omit<InteractiveArrayData, 'validationTarget'>;
 };
 
 export interface AvatarLoadout {
@@ -99,18 +177,24 @@ export interface Participant {
   correctCount?: number;
   totalTimeTakenMs?: number;
   avgTimeTakenSec?: number;
+  levelStats?: Record<number, { attempted: number; solved: number; totalTimeMs: number }>;
 }
 
 export interface RoomSettings {
   maxPlayers: number;
   totalRounds: number;
   roundDurationSeconds: number;
+  matchDurationMinutes?: MatchDurationMinutes;
+  questionDurationSeconds?: PerQuestionSeconds;
   topicFilter?: DSATopic | 'all';
   difficulty?: Difficulty | 'mixed';
   mode: GameMode;
   allowSpectators: boolean;
   botFillCount?: number;
   eliminationThreshold?: number; // for last brain standing
+  isPrivate?: boolean;
+  allowedLanguages?: SupportedLanguage[];
+  progressiveDifficulty?: boolean;
 }
 
 export interface RoomState {
@@ -122,6 +206,10 @@ export interface RoomState {
   status: 'lobby' | 'countdown' | 'in_round' | 'round_review' | 'match_ended';
   currentRound: number;
   roundExpiresAt?: number;
+  matchExpiresAt?: number;
+  questionExpiresAt?: number;
+  currentStage?: ProgressiveStageLevel;
+  stageName?: string;
   activeChallenge?: ClientChallenge;
   participants: Record<string, Participant>;
   leaderboard: Array<{
@@ -136,17 +224,17 @@ export interface RoomState {
     totalTimeTakenMs?: number;
     rewardCoins?: number;
     rewardBadge?: string;
+    levelStats?: Record<number, { attempted: number; solved: number; totalTimeMs: number }>;
   }>;
   roundWinnerId?: string;
 }
-
 
 export interface SubmissionPayload {
   roomId: string;
   challengeId: string;
   roundIndex: number;
   answer: any;
-  language?: 'python' | 'javascript' | 'cpp' | 'java';
+  language?: SupportedLanguage;
   idempotencyKey: string;
   timeTakenMs: number;
 }
@@ -169,6 +257,7 @@ export interface SubmissionResponse {
   explanation?: string;
   isEliminated?: boolean;
   auraDelta?: number;
+  partialCreditRatio?: number;
 }
 
 export interface GlitchPower {
@@ -179,12 +268,46 @@ export interface GlitchPower {
   icon: string;
 }
 
+export interface DSAOnboardingPreferences {
+  userId: string;
+  languages: SupportedLanguage[];
+  experienceLevel: 'beginner' | 'intermediate' | 'advanced' | 'assess_my_level';
+  preferredTopics: DSATopic[];
+  preferredFormats: ChallengeType[];
+  goals: Array<'interview_prep' | 'competitive_programming' | 'academic_dsa' | 'casual_fun'>;
+  progressionPacing: 'steady' | 'balanced' | 'aggressive' | 'accelerated' | 'mastery_first';
+  completedAt?: number;
+  diagnosticScore?: number;
+  assessedLevel?: Difficulty;
+}
+
+export interface ConceptMasteryRecord {
+  topic: DSATopic;
+  masteryScore: number; // 0 - 100
+  currentDifficulty: Difficulty;
+  questionsAttempted: number;
+  questionsSolved: number;
+  recentAccuracy: number; // percentage 0 - 100
+  averageResponseTimeMs: number;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+  needsRemediation: boolean;
+  remediationStep?: {
+    conceptKey: string;
+    explanation: string;
+    workedExample: string;
+    practiceChallengeId?: string;
+    reassessed: boolean;
+  };
+  lastUpdated: number;
+}
+
 export interface UserProfile {
   id: string;
   username: string;
   email?: string;
   bio?: string;
-  preferredLanguage?: 'python' | 'javascript' | 'cpp' | 'java';
+  preferredLanguage?: SupportedLanguage;
   isGuest: boolean;
   avatar: AvatarLoadout;
   ratingMMR: number;
@@ -193,6 +316,8 @@ export interface UserProfile {
   equippedTitle?: string;
   equippedBadge?: string;
   rankTier: 'Novice Bit' | 'Byte Knight' | 'Algorithm Sentinel' | 'Tree Master' | 'Grandmaster Architect';
+  dsaPreferences?: DSAOnboardingPreferences;
+  conceptMastery?: Record<string, ConceptMasteryRecord>;
   stats: {
     matchesPlayed: number;
     matchesWon: number;
@@ -213,5 +338,3 @@ export interface UserProfile {
     unlockedAt?: string;
   }>;
 }
-
-

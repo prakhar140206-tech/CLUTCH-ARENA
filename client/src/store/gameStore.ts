@@ -1,8 +1,20 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { RoomState, ClientChallenge, SubmissionResponse, AvatarLoadout, UserProfile, DSATopic } from '../../../shared/types.js';
+import {
+  RoomState,
+  ClientChallenge,
+  SubmissionResponse,
+  AvatarLoadout,
+  UserProfile,
+  DSATopic,
+  MatchDurationMinutes,
+  PerQuestionSeconds,
+  ConceptMasteryRecord,
+  SupportedLanguage,
+  DSAOnboardingPreferences
+} from '../../../shared/types.js';
 
-export type ScreenState = 
+export type ScreenState =
   | 'home'
   | 'dashboard'
   | 'profile'
@@ -27,11 +39,29 @@ interface GameStore {
   loginUser: (username: string, email?: string) => void;
   logoutUser: () => void;
 
+  // DSA Onboarding & Personalization
+  onboardingOpen: boolean;
+  setOnboardingOpen: (open: boolean) => void;
+  dsaPreferences: DSAOnboardingPreferences | null;
+  setDSAPreferences: (prefs: DSAOnboardingPreferences | null) => void;
+
+  // Universal Time-Based Match Settings
+  selectedMatchDuration: MatchDurationMinutes;
+  setSelectedMatchDuration: (d: MatchDurationMinutes) => void;
+  selectedQuestionTimer: PerQuestionSeconds;
+  setSelectedQuestionTimer: (q: PerQuestionSeconds) => void;
+
+  // Concept Mastery Map
+  conceptMastery: Record<string, ConceptMasteryRecord>;
+  setConceptMastery: (m: Record<string, ConceptMasteryRecord>) => void;
+
   // Real-Time Room State
   activeRoom: RoomState | null;
   setActiveRoom: (room: RoomState | null) => void;
   countdown: number | null;
   setCountdown: (count: number | null) => void;
+  stageAnnouncement: { stage: number; stageName: string; difficulty: string; message: string; subtitle: string } | null;
+  setStageAnnouncement: (announcement: { stage: number; stageName: string; difficulty: string; message: string; subtitle: string } | null) => void;
   lastSubmissionResult: SubmissionResponse | null;
   setLastSubmissionResult: (res: SubmissionResponse | null) => void;
 
@@ -50,8 +80,8 @@ interface GameStore {
   toggleSfx: () => void;
   editorTheme: string;
   editorFontSize: number;
-  preferredLanguage: 'python' | 'javascript' | 'cpp' | 'java';
-  setEditorSettings: (settings: Partial<{ editorTheme: string; editorFontSize: number; preferredLanguage: 'python' | 'javascript' | 'cpp' | 'java' }>) => void;
+  preferredLanguage: SupportedLanguage;
+  setEditorSettings: (settings: Partial<{ editorTheme: string; editorFontSize: number; preferredLanguage: SupportedLanguage }>) => void;
 }
 
 
@@ -130,10 +160,25 @@ export const useGameStore = create<GameStore>()(
         }
       })),
 
+      onboardingOpen: false,
+      setOnboardingOpen: (onboardingOpen) => set({ onboardingOpen }),
+      dsaPreferences: null,
+      setDSAPreferences: (dsaPreferences) => set({ dsaPreferences }),
+
+      selectedMatchDuration: 10,
+      setSelectedMatchDuration: (selectedMatchDuration) => set({ selectedMatchDuration }),
+      selectedQuestionTimer: 20,
+      setSelectedQuestionTimer: (selectedQuestionTimer) => set({ selectedQuestionTimer }),
+
+      conceptMastery: {},
+      setConceptMastery: (conceptMastery) => set({ conceptMastery }),
+
       activeRoom: null,
       setActiveRoom: (room) => set({ activeRoom: room }),
       countdown: null,
       setCountdown: (countdown) => set({ countdown }),
+      stageAnnouncement: null,
+      setStageAnnouncement: (stageAnnouncement) => set({ stageAnnouncement }),
       lastSubmissionResult: null,
       setLastSubmissionResult: (lastSubmissionResult) => set({ lastSubmissionResult }),
 

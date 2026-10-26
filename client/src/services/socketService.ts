@@ -29,6 +29,18 @@ class SocketService {
       useGameStore.getState().setCountdown(countdown);
     });
 
+    this.socket.on('stage_transition', (data: { stage: any; stageName: string; difficulty: string; message: string; subtitle: string }) => {
+      const room = useGameStore.getState().activeRoom;
+      if (room) {
+        useGameStore.getState().setActiveRoom({
+          ...room,
+          currentStage: data.stage,
+          stageName: data.stageName
+        });
+      }
+      useGameStore.getState().setStageAnnouncement(data);
+    });
+
     this.socket.on('round_started', (data) => {
       useGameStore.getState().setCountdown(null);
       useGameStore.getState().setLastSubmissionResult(null);
@@ -39,7 +51,11 @@ class SocketService {
           status: 'in_round',
           currentRound: data.roundIndex,
           activeChallenge: data.challenge,
-          roundExpiresAt: data.expiresAt
+          roundExpiresAt: data.expiresAt,
+          matchExpiresAt: data.matchExpiresAt || room.matchExpiresAt,
+          questionExpiresAt: data.questionExpiresAt || data.expiresAt,
+          currentStage: data.stage || room.currentStage || 1,
+          stageName: data.stageName || room.stageName || 'Level 1: Easy'
         });
       }
     });

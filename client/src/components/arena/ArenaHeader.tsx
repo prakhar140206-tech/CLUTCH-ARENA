@@ -14,6 +14,7 @@ export const ArenaHeader: React.FC = () => {
   const toggleSfx = useGameStore((s) => s.toggleSfx);
 
   const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [matchTimeLeft, setMatchTimeLeft] = useState<number>(0);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
 
   const formatTime = (totalSeconds: number) => {
@@ -22,21 +23,27 @@ export const ArenaHeader: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Synchronized countdown timer based on server authoritative roundExpiresAt
+  // Synchronized dual countdown timers based on server authoritative matchExpiresAt & questionExpiresAt
   useEffect(() => {
-    if (!activeRoom?.roundExpiresAt) {
-      setTimeLeft(0);
-      return;
-    }
-
     const interval = setInterval(() => {
-      const remaining = Math.max(0, Math.ceil((activeRoom.roundExpiresAt! - Date.now()) / 1000));
-      setTimeLeft(remaining);
-      if (remaining <= 0) clearInterval(interval);
+      if (activeRoom?.questionExpiresAt || activeRoom?.roundExpiresAt) {
+        const qExp = activeRoom.questionExpiresAt || activeRoom.roundExpiresAt!;
+        const remainingQ = Math.max(0, Math.ceil((qExp - Date.now()) / 1000));
+        setTimeLeft(remainingQ);
+      } else {
+        setTimeLeft(0);
+      }
+
+      if (activeRoom?.matchExpiresAt) {
+        const remainingMatch = Math.max(0, Math.ceil((activeRoom.matchExpiresAt - Date.now()) / 1000));
+        setMatchTimeLeft(remainingMatch);
+      } else {
+        setMatchTimeLeft(0);
+      }
     }, 250);
 
     return () => clearInterval(interval);
-  }, [activeRoom?.roundExpiresAt]);
+  }, [activeRoom?.roundExpiresAt, activeRoom?.questionExpiresAt, activeRoom?.matchExpiresAt]);
 
   const copyRoomCode = () => {
     if (!activeRoom?.code) return;
@@ -87,19 +94,35 @@ export const ArenaHeader: React.FC = () => {
         </div>
       </div>
 
-      {/* Center: Authoritative Round Clock */}
-      <div className="flex flex-col items-center">
+      {/* Center: Authoritative Dual Clocks & Progressive Stage */}
+      <div className="flex items-center space-x-2 sm:space-x-3">
+        {/* Progressive Difficulty Stage Badge */}
+        <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-violet-950/60 border border-violet-500/50 font-mono text-xs text-violet-300 shadow-[0_0_10px_rgba(139,92,246,0.3)]">
+          <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-ping"></span>
+          <span className="font-cyber font-bold tracking-wider text-[11px] sm:text-xs">
+            {activeRoom?.stageName || `LEVEL ${activeRoom?.currentStage || 1}: EASY`}
+          </span>
+        </div>
+
+        {/* Overall Match Clock */}
+        {activeRoom?.matchExpiresAt && (
+          <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 font-mono text-xs text-cyan-300">
+            <span className="text-[10px] uppercase font-bold text-cyan-400">Match:</span>
+            <span className="font-bold">{formatTime(matchTimeLeft)}</span>
+          </div>
+        )}
+
+        {/* Per-Question Rapid Clock */}
         <div className="flex items-center gap-2">
           <span className="text-[11px] font-cyber text-clutch-lavender font-bold hidden sm:inline">
-            ROUND {activeRoom?.currentRound || 1} / {activeRoom?.settings.totalRounds || 5}
+            Q#{activeRoom?.currentRound || 1}
           </span>
-          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full font-mono font-bold text-xs sm:text-sm border ${
-            timeLeft <= 10 && timeLeft > 0
-              ? 'bg-clutch-rose/20 border-clutch-rose text-clutch-rose animate-pulse'
+          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full font-mono font-bold text-xs sm:text-sm border transition-all ${timeLeft <= 5 && timeLeft > 0
+              ? 'bg-clutch-rose/20 border-clutch-rose text-clutch-rose animate-bounce'
               : 'bg-clutch-surface-elevated border-clutch-violet/40 text-clutch-lavender'
-          }`}>
+            }`}>
             <Clock className="w-3.5 h-3.5" />
-            <span>{formatTime(timeLeft)}</span>
+            <span>{timeLeft}s</span>
           </div>
         </div>
       </div>
@@ -117,11 +140,10 @@ export const ArenaHeader: React.FC = () => {
         {/* 3D Fallback Mode Toggle */}
         <button
           onClick={toggle3DFallback}
-          className={`p-1.5 rounded-lg border text-xs transition-colors hidden sm:flex items-center justify-center ${
-            is3DFallback
+          className={`p-1.5 rounded-lg border text-xs transition-colors hidden sm:flex items-center justify-center ${is3DFallback
               ? 'bg-clutch-amber/20 border-clutch-amber/40 text-clutch-amber'
               : 'bg-clutch-surface-light border-clutch-border text-clutch-subtle hover:text-white'
-          }`}
+            }`}
           title={is3DFallback ? '2D Mode Engaged (Click for 3D)' : '3D Mode Engaged (Click for 2D)'}
         >
           <Eye className="w-3.5 h-3.5" />
@@ -133,11 +155,10 @@ export const ArenaHeader: React.FC = () => {
             toggleSfx();
             soundSynth.toggleSfx();
           }}
-          className={`p-1.5 rounded-lg border text-xs transition-colors flex items-center justify-center ${
-            sfxEnabled
+          className={`p-1.5 rounded-lg border text-xs transition-colors flex items-center justify-center ${sfxEnabled
               ? 'bg-clutch-violet/20 border-clutch-violet/40 text-clutch-lavender'
               : 'bg-clutch-surface-light border-clutch-border text-clutch-subtle'
-          }`}
+            }`}
         >
           {sfxEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
         </button>

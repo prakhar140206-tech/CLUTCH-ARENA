@@ -8,6 +8,11 @@ import { RoundReviewOverlay } from '../components/arena/RoundReviewOverlay.js';
 import { CodeSprintEditor } from '../components/challenges/CodeSprintEditor.js';
 import { VisualPuzzleWorkspace } from '../components/challenges/VisualPuzzleWorkspace.js';
 import { McqChallengeWorkspace } from '../components/challenges/McqChallengeWorkspace.js';
+import { InteractiveArrayWorkspace } from '../components/challenges/InteractiveArrayWorkspace.js';
+import { MatchingWorkspace } from '../components/challenges/MatchingWorkspace.js';
+import { ArrangeStepsWorkspace } from '../components/challenges/ArrangeStepsWorkspace.js';
+import { FillBlankWorkspace } from '../components/challenges/FillBlankWorkspace.js';
+import { PseudocodeWorkspace } from '../components/challenges/PseudocodeWorkspace.js';
 import { HypeReactionStream } from '../components/arena/HypeReactionStream.js';
 import { soundSynth } from '../services/soundSynth.js';
 import { Swords, Bot, Users, Play, CheckCircle2, Award, Clock, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
@@ -17,12 +22,24 @@ export const ArenaScreen: React.FC = () => {
   const userProfile = useGameStore((s) => s.userProfile);
   const countdown = useGameStore((s) => s.countdown);
   const setScreen = useGameStore((s) => s.setScreen);
+  const stageAnnouncement = useGameStore((s) => s.stageAnnouncement);
+  const setStageAnnouncement = useGameStore((s) => s.setStageAnnouncement);
 
   // Mobile View Switcher: 'workspace' | 'arena3d' | 'standings'
   const [mobileTab, setMobileTab] = useState<'workspace' | 'arena3d' | 'standings'>('workspace');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const roundStartTimeRef = useRef<number>(Date.now());
+
+  useEffect(() => {
+    if (stageAnnouncement) {
+      soundSynth.levelUp();
+      const timer = setTimeout(() => {
+        setStageAnnouncement(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [stageAnnouncement]);
 
   useEffect(() => {
     if (activeRoom?.status === 'in_round') {
@@ -95,30 +112,54 @@ export const ArenaScreen: React.FC = () => {
       {/* Top Arena Telemetry Header */}
       <ArenaHeader />
 
+      {/* Progressive Stage Transition Banner */}
+      {stageAnnouncement && (
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-xl animate-bounce pointer-events-auto">
+          <div className="bg-gradient-to-r from-violet-950/95 via-purple-900/95 to-cyan-950/95 border-2 border-cyan-400 p-4 rounded-2xl shadow-[0_0_35px_rgba(6,182,212,0.6)] backdrop-blur-xl flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-300 shrink-0">
+                <Zap className="w-5 h-5 fill-current" />
+              </div>
+              <div>
+                <div className="font-cyber font-black text-sm tracking-wider text-cyan-300">
+                  {stageAnnouncement.message}
+                </div>
+                <div className="text-[11px] font-mono text-purple-200">
+                  {stageAnnouncement.subtitle}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setStageAnnouncement(null)}
+              className="text-cyan-300 hover:text-white text-xs font-mono px-2 py-1 ml-2"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Segmented Navigation (Only during in_round state) */}
       {activeRoom.status === 'in_round' && (
         <div className="md:hidden flex bg-clutch-surface border-b border-clutch-border p-1 z-20 shrink-0">
           <button
             onClick={() => setMobileTab('workspace')}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
-              mobileTab === 'workspace' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
-            }`}
+            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${mobileTab === 'workspace' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
+              }`}
           >
             Challenge Code
           </button>
           <button
             onClick={() => setMobileTab('arena3d')}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
-              mobileTab === 'arena3d' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
-            }`}
+            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${mobileTab === 'arena3d' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
+              }`}
           >
             3D Arena
           </button>
           <button
             onClick={() => setMobileTab('standings')}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
-              mobileTab === 'standings' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
-            }`}
+            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${mobileTab === 'standings' ? 'bg-clutch-violet text-white' : 'text-clutch-muted'
+              }`}
           >
             Standings
           </button>
@@ -127,7 +168,7 @@ export const ArenaScreen: React.FC = () => {
 
       {/* Main Container */}
       <div className="flex-1 relative flex flex-col md:flex-row overflow-hidden">
-        
+
         {/* =========================================================
             LOBBY WAITING STAGING STATE
             ========================================================= */}
@@ -204,11 +245,10 @@ export const ArenaScreen: React.FC = () => {
                 ) : (
                   <button
                     onClick={handleToggleReady}
-                    className={`w-full py-3 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${
-                      participant?.isReady
+                    className={`w-full py-3 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${participant?.isReady
                         ? 'bg-clutch-surface-light border border-clutch-emerald text-clutch-emerald'
                         : 'clutch-btn-primary'
-                    }`}
+                      }`}
                   >
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{participant?.isReady ? 'Ready for Battle ✔' : 'Set Ready'}</span>
@@ -237,11 +277,10 @@ export const ArenaScreen: React.FC = () => {
             LEFT COLUMN: 3D ARENA & LEADERBOARD (DESKTOP)
             ========================================================= */}
         <div
-          className={`relative transition-all duration-300 ${
-            activeRoom.status === 'in_round'
+          className={`relative transition-all duration-300 ${activeRoom.status === 'in_round'
               ? 'w-full md:w-5/12 h-full'
               : 'w-full h-full'
-          } ${mobileTab !== 'arena3d' && activeRoom.status === 'in_round' ? 'hidden md:block' : ''}`}
+            } ${mobileTab !== 'arena3d' && activeRoom.status === 'in_round' ? 'hidden md:block' : ''}`}
         >
           <ArenaCanvas />
 
@@ -263,12 +302,41 @@ export const ArenaScreen: React.FC = () => {
             ========================================================= */}
         {activeRoom.status === 'in_round' && challenge && (
           <div
-            className={`w-full md:w-7/12 h-full flex flex-col p-3 sm:p-5 overflow-hidden z-10 border-l border-clutch-border bg-clutch-bg ${
-              mobileTab !== 'workspace' ? 'hidden md:flex' : 'flex'
-            }`}
+            className={`w-full md:w-7/12 h-full flex flex-col p-3 sm:p-5 overflow-hidden z-10 border-l border-clutch-border bg-clutch-bg ${mobileTab !== 'workspace' ? 'hidden md:flex' : 'flex'
+              }`}
           >
             {challenge.type === 'code_sprint' || challenge.type === 'bug_hunter' ? (
               <CodeSprintEditor
+                challenge={challenge}
+                onSubmit={handleSubmit}
+                disabled={isSubmitting}
+              />
+            ) : challenge.type === 'interactive_array' ? (
+              <InteractiveArrayWorkspace
+                challenge={challenge}
+                onSubmit={handleSubmit}
+                disabled={isSubmitting}
+              />
+            ) : challenge.type === 'matching' ? (
+              <MatchingWorkspace
+                challenge={challenge}
+                onSubmit={handleSubmit}
+                disabled={isSubmitting}
+              />
+            ) : challenge.type === 'arrange_steps' ? (
+              <ArrangeStepsWorkspace
+                challenge={challenge}
+                onSubmit={handleSubmit}
+                disabled={isSubmitting}
+              />
+            ) : challenge.type === 'fill_in_blank' ? (
+              <FillBlankWorkspace
+                challenge={challenge}
+                onSubmit={handleSubmit}
+                disabled={isSubmitting}
+              />
+            ) : challenge.type === 'pseudocode' ? (
+              <PseudocodeWorkspace
                 challenge={challenge}
                 onSubmit={handleSubmit}
                 disabled={isSubmitting}

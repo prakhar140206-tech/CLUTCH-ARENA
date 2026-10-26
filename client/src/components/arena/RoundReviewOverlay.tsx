@@ -142,15 +142,13 @@ export const RoundReviewOverlay: React.FC = () => {
                   return (
                     <div
                       key={p.id}
-                      className={`flex items-center justify-between text-xs px-3 py-1.5 rounded-lg font-mono transition-all ${
-                        isMe
+                      className={`flex items-center justify-between text-xs px-3 py-1.5 rounded-lg font-mono transition-all ${isMe
                           ? 'bg-clutch-violet/20 border border-clutch-violet text-white font-bold'
                           : 'bg-clutch-surface-light/60 text-clutch-muted'
-                      }`}
+                        }`}
                     >
-                      <span className={`w-8 text-left font-bold ${
-                        p.rank === 1 ? 'text-clutch-amber' : p.rank === 2 ? 'text-slate-300' : p.rank === 3 ? 'text-amber-600' : 'text-clutch-subtle'
-                      }`}>
+                      <span className={`w-8 text-left font-bold ${p.rank === 1 ? 'text-clutch-amber' : p.rank === 2 ? 'text-slate-300' : p.rank === 3 ? 'text-amber-600' : 'text-clutch-subtle'
+                        }`}>
                         #{p.rank}
                       </span>
                       <span className="flex-1 text-left px-2 truncate flex items-center gap-1.5">

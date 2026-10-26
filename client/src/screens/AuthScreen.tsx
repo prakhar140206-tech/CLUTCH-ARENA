@@ -20,6 +20,7 @@ export const AuthScreen: React.FC = () => {
   const setScreen = useGameStore((s) => s.setScreen);
   const loginUser = useGameStore((s) => s.loginUser);
   const updateUserProfile = useGameStore((s) => s.updateUserProfile);
+  const setOnboardingOpen = useGameStore((s) => s.setOnboardingOpen);
 
   const [tab, setTab] = useState<'login' | 'signup'>('login');
   const [handle, setHandle] = useState<string>('');
@@ -50,15 +51,19 @@ export const AuthScreen: React.FC = () => {
         // If user not registered yet or guest, allow fallback login
         loginUser(handle.trim(), email.trim() || undefined);
         setSuccessMsg('Logged in as ' + handle.trim());
+        setOnboardingOpen(true);
       } else {
         loginUser(data.profile.username, data.profile.email);
         updateUserProfile(data.profile);
         setSuccessMsg('Authentication verified. Welcome back, ' + data.profile.username + '!');
+        if (!data.profile?.dsaPreferences) {
+          setOnboardingOpen(true);
+        }
       }
       soundSynth.levelUp();
       setTimeout(() => {
         setScreen('dashboard');
-      }, 700);
+      }, 500);
     } catch {
       // Offline fallback
       loginUser(handle.trim(), email.trim() || undefined);
@@ -106,14 +111,16 @@ export const AuthScreen: React.FC = () => {
         setSuccessMsg('Callsign registered in local arena session.');
       }
       soundSynth.levelUp();
+      setOnboardingOpen(true);
       setTimeout(() => {
         setScreen('dashboard');
-      }, 900);
+      }, 500);
     } catch {
       loginUser(handle.trim(), email.trim() || `${handle.toLowerCase()}@clutch.arena`);
       soundSynth.levelUp();
       setSuccessMsg('Account registered locally.');
-      setTimeout(() => setScreen('dashboard'), 800);
+      setOnboardingOpen(true);
+      setTimeout(() => setScreen('dashboard'), 500);
     }
   };
 

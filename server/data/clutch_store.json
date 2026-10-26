@@ -661,7 +661,7 @@
         "challengesSolved": 0,
         "highestStreak": 0
       },
-      "lastActive": 1793013140548
+      "lastActive": 1793035999337
     },
     "host-auth-test": {
       "id": "host-auth-test",
@@ -1613,9 +1613,1798 @@
         "highestStreak": 0
       },
       "lastActive": 1793020517213
+    },
+    "pilot-alpha-1": {
+      "id": "pilot-alpha-1",
+      "username": "AlphaLead",
+      "ratingMMR": 1350,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 6,
+        "matchesWon": 6,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032734804
+    },
+    "pilot-beta-2": {
+      "id": "pilot-beta-2",
+      "username": "BetaRival",
+      "ratingMMR": 1225,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 1,
+        "matchesWon": 1,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032734806
+    },
+    "host-arena-lead": {
+      "id": "host-arena-lead",
+      "username": "TournamentHost",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422959
+    },
+    "player-node-2": {
+      "id": "player-node-2",
+      "username": "Contender_002",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422960
+    },
+    "player-node-3": {
+      "id": "player-node-3",
+      "username": "Contender_003",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422962
+    },
+    "player-node-4": {
+      "id": "player-node-4",
+      "username": "Contender_004",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422963
+    },
+    "player-node-5": {
+      "id": "player-node-5",
+      "username": "Contender_005",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422964
+    },
+    "player-node-6": {
+      "id": "player-node-6",
+      "username": "Contender_006",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422965
+    },
+    "player-node-7": {
+      "id": "player-node-7",
+      "username": "Contender_007",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422967
+    },
+    "player-node-8": {
+      "id": "player-node-8",
+      "username": "Contender_008",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422968
+    },
+    "player-node-9": {
+      "id": "player-node-9",
+      "username": "Contender_009",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422969
+    },
+    "player-node-10": {
+      "id": "player-node-10",
+      "username": "Contender_010",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422970
+    },
+    "player-node-11": {
+      "id": "player-node-11",
+      "username": "Contender_011",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422971
+    },
+    "player-node-12": {
+      "id": "player-node-12",
+      "username": "Contender_012",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422973
+    },
+    "player-node-13": {
+      "id": "player-node-13",
+      "username": "Contender_013",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422974
+    },
+    "player-node-14": {
+      "id": "player-node-14",
+      "username": "Contender_014",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422975
+    },
+    "player-node-15": {
+      "id": "player-node-15",
+      "username": "Contender_015",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422976
+    },
+    "player-node-16": {
+      "id": "player-node-16",
+      "username": "Contender_016",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422977
+    },
+    "player-node-17": {
+      "id": "player-node-17",
+      "username": "Contender_017",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422978
+    },
+    "player-node-18": {
+      "id": "player-node-18",
+      "username": "Contender_018",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422979
+    },
+    "player-node-19": {
+      "id": "player-node-19",
+      "username": "Contender_019",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422981
+    },
+    "player-node-20": {
+      "id": "player-node-20",
+      "username": "Contender_020",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422982
+    },
+    "player-node-21": {
+      "id": "player-node-21",
+      "username": "Contender_021",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422983
+    },
+    "player-node-22": {
+      "id": "player-node-22",
+      "username": "Contender_022",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422985
+    },
+    "player-node-23": {
+      "id": "player-node-23",
+      "username": "Contender_023",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422986
+    },
+    "player-node-24": {
+      "id": "player-node-24",
+      "username": "Contender_024",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422987
+    },
+    "player-node-25": {
+      "id": "player-node-25",
+      "username": "Contender_025",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422989
+    },
+    "player-node-26": {
+      "id": "player-node-26",
+      "username": "Contender_026",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422990
+    },
+    "player-node-27": {
+      "id": "player-node-27",
+      "username": "Contender_027",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422992
+    },
+    "player-node-28": {
+      "id": "player-node-28",
+      "username": "Contender_028",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422993
+    },
+    "player-node-29": {
+      "id": "player-node-29",
+      "username": "Contender_029",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422994
+    },
+    "player-node-30": {
+      "id": "player-node-30",
+      "username": "Contender_030",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422995
+    },
+    "player-node-31": {
+      "id": "player-node-31",
+      "username": "Contender_031",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422996
+    },
+    "player-node-32": {
+      "id": "player-node-32",
+      "username": "Contender_032",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422998
+    },
+    "player-node-33": {
+      "id": "player-node-33",
+      "username": "Contender_033",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032422999
+    },
+    "player-node-34": {
+      "id": "player-node-34",
+      "username": "Contender_034",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423000
+    },
+    "player-node-35": {
+      "id": "player-node-35",
+      "username": "Contender_035",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423001
+    },
+    "player-node-36": {
+      "id": "player-node-36",
+      "username": "Contender_036",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423002
+    },
+    "player-node-37": {
+      "id": "player-node-37",
+      "username": "Contender_037",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423003
+    },
+    "player-node-38": {
+      "id": "player-node-38",
+      "username": "Contender_038",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423005
+    },
+    "player-node-39": {
+      "id": "player-node-39",
+      "username": "Contender_039",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423006
+    },
+    "player-node-40": {
+      "id": "player-node-40",
+      "username": "Contender_040",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423009
+    },
+    "player-node-41": {
+      "id": "player-node-41",
+      "username": "Contender_041",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423010
+    },
+    "player-node-42": {
+      "id": "player-node-42",
+      "username": "Contender_042",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423011
+    },
+    "player-node-43": {
+      "id": "player-node-43",
+      "username": "Contender_043",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423012
+    },
+    "player-node-44": {
+      "id": "player-node-44",
+      "username": "Contender_044",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423014
+    },
+    "player-node-45": {
+      "id": "player-node-45",
+      "username": "Contender_045",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423015
+    },
+    "player-node-46": {
+      "id": "player-node-46",
+      "username": "Contender_046",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423016
+    },
+    "player-node-47": {
+      "id": "player-node-47",
+      "username": "Contender_047",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423017
+    },
+    "player-node-48": {
+      "id": "player-node-48",
+      "username": "Contender_048",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423019
+    },
+    "player-node-49": {
+      "id": "player-node-49",
+      "username": "Contender_049",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423020
+    },
+    "player-node-50": {
+      "id": "player-node-50",
+      "username": "Contender_050",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423021
+    },
+    "player-node-51": {
+      "id": "player-node-51",
+      "username": "Contender_051",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423022
+    },
+    "player-node-52": {
+      "id": "player-node-52",
+      "username": "Contender_052",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423023
+    },
+    "player-node-53": {
+      "id": "player-node-53",
+      "username": "Contender_053",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423025
+    },
+    "player-node-54": {
+      "id": "player-node-54",
+      "username": "Contender_054",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423026
+    },
+    "player-node-55": {
+      "id": "player-node-55",
+      "username": "Contender_055",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423028
+    },
+    "player-node-56": {
+      "id": "player-node-56",
+      "username": "Contender_056",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423029
+    },
+    "player-node-57": {
+      "id": "player-node-57",
+      "username": "Contender_057",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423031
+    },
+    "player-node-58": {
+      "id": "player-node-58",
+      "username": "Contender_058",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423032
+    },
+    "player-node-59": {
+      "id": "player-node-59",
+      "username": "Contender_059",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423033
+    },
+    "player-node-60": {
+      "id": "player-node-60",
+      "username": "Contender_060",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423034
+    },
+    "player-node-61": {
+      "id": "player-node-61",
+      "username": "Contender_061",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423035
+    },
+    "player-node-62": {
+      "id": "player-node-62",
+      "username": "Contender_062",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423037
+    },
+    "player-node-63": {
+      "id": "player-node-63",
+      "username": "Contender_063",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423038
+    },
+    "player-node-64": {
+      "id": "player-node-64",
+      "username": "Contender_064",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423039
+    },
+    "player-node-65": {
+      "id": "player-node-65",
+      "username": "Contender_065",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423040
+    },
+    "player-node-66": {
+      "id": "player-node-66",
+      "username": "Contender_066",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423041
+    },
+    "player-node-67": {
+      "id": "player-node-67",
+      "username": "Contender_067",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423042
+    },
+    "player-node-68": {
+      "id": "player-node-68",
+      "username": "Contender_068",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423043
+    },
+    "player-node-69": {
+      "id": "player-node-69",
+      "username": "Contender_069",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423045
+    },
+    "player-node-70": {
+      "id": "player-node-70",
+      "username": "Contender_070",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423046
+    },
+    "player-node-71": {
+      "id": "player-node-71",
+      "username": "Contender_071",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423047
+    },
+    "player-node-72": {
+      "id": "player-node-72",
+      "username": "Contender_072",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423049
+    },
+    "player-node-73": {
+      "id": "player-node-73",
+      "username": "Contender_073",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423050
+    },
+    "player-node-74": {
+      "id": "player-node-74",
+      "username": "Contender_074",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423052
+    },
+    "player-node-75": {
+      "id": "player-node-75",
+      "username": "Contender_075",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423053
+    },
+    "player-node-76": {
+      "id": "player-node-76",
+      "username": "Contender_076",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423054
+    },
+    "player-node-77": {
+      "id": "player-node-77",
+      "username": "Contender_077",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423056
+    },
+    "player-node-78": {
+      "id": "player-node-78",
+      "username": "Contender_078",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423057
+    },
+    "player-node-79": {
+      "id": "player-node-79",
+      "username": "Contender_079",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423058
+    },
+    "player-node-80": {
+      "id": "player-node-80",
+      "username": "Contender_080",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423060
+    },
+    "player-node-81": {
+      "id": "player-node-81",
+      "username": "Contender_081",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423061
+    },
+    "player-node-82": {
+      "id": "player-node-82",
+      "username": "Contender_082",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423062
+    },
+    "player-node-83": {
+      "id": "player-node-83",
+      "username": "Contender_083",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423064
+    },
+    "player-node-84": {
+      "id": "player-node-84",
+      "username": "Contender_084",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423065
+    },
+    "player-node-85": {
+      "id": "player-node-85",
+      "username": "Contender_085",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423066
+    },
+    "player-node-86": {
+      "id": "player-node-86",
+      "username": "Contender_086",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423068
+    },
+    "player-node-87": {
+      "id": "player-node-87",
+      "username": "Contender_087",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423069
+    },
+    "player-node-88": {
+      "id": "player-node-88",
+      "username": "Contender_088",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423071
+    },
+    "player-node-89": {
+      "id": "player-node-89",
+      "username": "Contender_089",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423072
+    },
+    "player-node-90": {
+      "id": "player-node-90",
+      "username": "Contender_090",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423073
+    },
+    "player-node-91": {
+      "id": "player-node-91",
+      "username": "Contender_091",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423075
+    },
+    "player-node-92": {
+      "id": "player-node-92",
+      "username": "Contender_092",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423076
+    },
+    "player-node-93": {
+      "id": "player-node-93",
+      "username": "Contender_093",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423078
+    },
+    "player-node-94": {
+      "id": "player-node-94",
+      "username": "Contender_094",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423079
+    },
+    "player-node-95": {
+      "id": "player-node-95",
+      "username": "Contender_095",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423080
+    },
+    "player-node-96": {
+      "id": "player-node-96",
+      "username": "Contender_096",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423082
+    },
+    "player-node-97": {
+      "id": "player-node-97",
+      "username": "Contender_097",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423083
+    },
+    "player-node-98": {
+      "id": "player-node-98",
+      "username": "Contender_098",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423085
+    },
+    "player-node-99": {
+      "id": "player-node-99",
+      "username": "Contender_099",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423086
+    },
+    "player-node-100": {
+      "id": "player-node-100",
+      "username": "Contender_100",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793032423088
+    },
+    "usr-2b23094001fa94e5": {
+      "id": "usr-2b23094001fa94e5",
+      "username": "Piyush Gupta",
+      "ratingMMR": 1200,
+      "auraPoints": 5000,
+      "auraTitle": "Novice Coder",
+      "rankTier": "Byte Scout",
+      "stats": {
+        "matchesPlayed": 0,
+        "matchesWon": 0,
+        "challengesSolved": 0,
+        "highestStreak": 0
+      },
+      "lastActive": 1793037711146,
+      "email": "0251csml070@niet.co.in",
+      "passwordHash": "0b559d848459361348f31d0a7ba0c53d:a715749ab1add3c844a83ef3da2cd407b1637a90275afae40c054b2043ea7a57bd7e2751079e21fd5d201c0aa7e263890be522fde60667227343935cdd5f29c4"
     }
   },
   "matchHistory": [
+    {
+      "id": "390cca06-51a0-4b8a-94fd-12dc789ed6c1",
+      "timestamp": 1793034237787,
+      "mode": "solo_quest",
+      "durationMs": 1500000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
+    {
+      "id": "123c12d9-f067-4952-bebf-784c9dc8ca6b",
+      "timestamp": 1793033637789,
+      "mode": "duel_1v1",
+      "durationMs": 900000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
+    {
+      "id": "29d27a08-f144-4e0d-986a-df3c78ebe84d",
+      "timestamp": 1793033337801,
+      "mode": "duel_1v1",
+      "durationMs": 600000,
+      "winner": {
+        "id": "pilot-beta-2",
+        "username": "BetaRival",
+        "score": 0
+      },
+      "participantsCount": 2,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-beta-2",
+          "username": "BetaRival",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 4000,
+          "avgTimeTakenSec": 4,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        }
+      ]
+    },
+    {
+      "id": "cdb57d79-1848-48f1-8832-660210d27436",
+      "timestamp": 1793033337796,
+      "mode": "duel_1v1",
+      "durationMs": 600000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
+    {
+      "id": "49ec32c1-804d-487b-bdf5-6291f2c446cf",
+      "timestamp": 1793032734802,
+      "mode": "duel_1v1",
+      "durationMs": 600000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
+    {
+      "id": "a3be3068-db18-401f-9ed6-7a012f23a305",
+      "timestamp": 1793032211484,
+      "mode": "duel_1v1",
+      "durationMs": 600000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
+    {
+      "id": "3019a0c2-94e2-450e-ab2d-8610ca45941f",
+      "timestamp": 1793032187428,
+      "mode": "duel_1v1",
+      "durationMs": 600000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
+    {
+      "id": "42ba597b-573e-45f9-8954-4097b00b0557",
+      "timestamp": 1793032104319,
+      "mode": "ai_arena",
+      "durationMs": 600000,
+      "winner": {
+        "id": "bot-2183934e",
+        "username": "AlgoSpark_AI#322",
+        "score": 4389
+      },
+      "participantsCount": 2,
+      "leaderboardSnippet": [
+        {
+          "id": "bot-2183934e",
+          "username": "AlgoSpark_AI#322",
+          "score": 4389,
+          "rank": 1,
+          "combo": 6,
+          "isEliminated": false,
+          "correctCount": 26,
+          "totalTimeTakenMs": 303610,
+          "avgTimeTakenSec": 10.47,
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "guest-s5j8w1o",
+          "username": "CyberNinja_604",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 31713,
+          "avgTimeTakenSec": 10.57,
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        }
+      ]
+    },
     {
       "id": "match_idempotent_1793018958576",
       "timestamp": 1793018958577,
@@ -3006,6 +4795,12 @@
       "rankTier": "Byte Scout"
     },
     {
+      "id": "pilot-alpha-1",
+      "username": "AlphaLead",
+      "ratingMMR": 1350,
+      "rankTier": "Byte Scout"
+    },
+    {
       "id": "host-user-0",
       "username": "ArenaHost_0",
       "ratingMMR": 1275,
@@ -3056,6 +4851,12 @@
     {
       "id": "soak-host-4",
       "username": "SoakHost_4",
+      "ratingMMR": 1225,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "pilot-beta-2",
+      "username": "BetaRival",
       "ratingMMR": 1225,
       "rankTier": "Byte Scout"
     },
@@ -3622,9 +5423,706 @@
       "username": "GuestAgent",
       "ratingMMR": 1200,
       "rankTier": "Byte Scout"
+    },
+    {
+      "id": "host-arena-lead",
+      "username": "TournamentHost",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-2",
+      "username": "Contender_002",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-3",
+      "username": "Contender_003",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-4",
+      "username": "Contender_004",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-5",
+      "username": "Contender_005",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-6",
+      "username": "Contender_006",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-7",
+      "username": "Contender_007",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-8",
+      "username": "Contender_008",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-9",
+      "username": "Contender_009",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-10",
+      "username": "Contender_010",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-11",
+      "username": "Contender_011",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-12",
+      "username": "Contender_012",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-13",
+      "username": "Contender_013",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-14",
+      "username": "Contender_014",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-15",
+      "username": "Contender_015",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-16",
+      "username": "Contender_016",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-17",
+      "username": "Contender_017",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-18",
+      "username": "Contender_018",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-19",
+      "username": "Contender_019",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-20",
+      "username": "Contender_020",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-21",
+      "username": "Contender_021",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-22",
+      "username": "Contender_022",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-23",
+      "username": "Contender_023",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-24",
+      "username": "Contender_024",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-25",
+      "username": "Contender_025",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-26",
+      "username": "Contender_026",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-27",
+      "username": "Contender_027",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-28",
+      "username": "Contender_028",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-29",
+      "username": "Contender_029",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-30",
+      "username": "Contender_030",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-31",
+      "username": "Contender_031",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-32",
+      "username": "Contender_032",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-33",
+      "username": "Contender_033",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-34",
+      "username": "Contender_034",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-35",
+      "username": "Contender_035",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-36",
+      "username": "Contender_036",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-37",
+      "username": "Contender_037",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-38",
+      "username": "Contender_038",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-39",
+      "username": "Contender_039",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-40",
+      "username": "Contender_040",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-41",
+      "username": "Contender_041",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-42",
+      "username": "Contender_042",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-43",
+      "username": "Contender_043",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-44",
+      "username": "Contender_044",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-45",
+      "username": "Contender_045",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-46",
+      "username": "Contender_046",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-47",
+      "username": "Contender_047",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-48",
+      "username": "Contender_048",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-49",
+      "username": "Contender_049",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-50",
+      "username": "Contender_050",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-51",
+      "username": "Contender_051",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-52",
+      "username": "Contender_052",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-53",
+      "username": "Contender_053",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-54",
+      "username": "Contender_054",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-55",
+      "username": "Contender_055",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-56",
+      "username": "Contender_056",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-57",
+      "username": "Contender_057",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-58",
+      "username": "Contender_058",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-59",
+      "username": "Contender_059",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-60",
+      "username": "Contender_060",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-61",
+      "username": "Contender_061",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-62",
+      "username": "Contender_062",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-63",
+      "username": "Contender_063",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-64",
+      "username": "Contender_064",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-65",
+      "username": "Contender_065",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-66",
+      "username": "Contender_066",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-67",
+      "username": "Contender_067",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-68",
+      "username": "Contender_068",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-69",
+      "username": "Contender_069",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-70",
+      "username": "Contender_070",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-71",
+      "username": "Contender_071",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-72",
+      "username": "Contender_072",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-73",
+      "username": "Contender_073",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-74",
+      "username": "Contender_074",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-75",
+      "username": "Contender_075",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-76",
+      "username": "Contender_076",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-77",
+      "username": "Contender_077",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-78",
+      "username": "Contender_078",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-79",
+      "username": "Contender_079",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-80",
+      "username": "Contender_080",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-81",
+      "username": "Contender_081",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-82",
+      "username": "Contender_082",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-83",
+      "username": "Contender_083",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-84",
+      "username": "Contender_084",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-85",
+      "username": "Contender_085",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-86",
+      "username": "Contender_086",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-87",
+      "username": "Contender_087",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-88",
+      "username": "Contender_088",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-89",
+      "username": "Contender_089",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-90",
+      "username": "Contender_090",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-91",
+      "username": "Contender_091",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-92",
+      "username": "Contender_092",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-93",
+      "username": "Contender_093",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-94",
+      "username": "Contender_094",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-95",
+      "username": "Contender_095",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-96",
+      "username": "Contender_096",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-97",
+      "username": "Contender_097",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-98",
+      "username": "Contender_098",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-99",
+      "username": "Contender_099",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "player-node-100",
+      "username": "Contender_100",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "usr-2b23094001fa94e5",
+      "username": "Piyush Gupta",
+      "ratingMMR": 1200,
+      "rankTier": "Byte Scout"
     }
   ],
   "questCompletions": {
     "user_concurrent_quest_1793018958573_challenge_bfs_traversal": true
+  },
+  "conceptMastery": {},
+  "dsaPreferences": {
+    "pilot-eval-adaptive-99": {
+      "userId": "pilot-eval-adaptive-99",
+      "languages": [
+        "python",
+        "cpp",
+        "java"
+      ],
+      "experienceLevel": "intermediate",
+      "preferredTopics": [
+        "arrays_and_strings",
+        "dynamic_programming",
+        "trees_and_bst"
+      ],
+      "preferredFormats": [
+        "mcq",
+        "code_sprint",
+        "fill_in_blank",
+        "matching"
+      ],
+      "goals": [
+        "interview_prep",
+        "competitive_programming"
+      ],
+      "progressionPacing": "balanced",
+      "diagnosticScore": 2,
+      "assessedLevel": "medium",
+      "completedAt": 1793032290897
+    },
+    "guest-s5j8w1o": {
+      "userId": "guest-s5j8w1o",
+      "languages": [
+        "cpp",
+        "python",
+        "java",
+        "c"
+      ],
+      "experienceLevel": "intermediate",
+      "preferredTopics": [
+        "arrays_and_strings",
+        "searching_and_sorting",
+        "trees_and_bst"
+      ],
+      "preferredFormats": [
+        "mcq",
+        "code_sprint",
+        "predict_output",
+        "interactive_array"
+      ],
+      "goals": [
+        "interview_prep"
+      ],
+      "progressionPacing": "steady",
+      "completedAt": 1793036128757
+    },
+    "usr-2b23094001fa94e5": {
+      "userId": "usr-2b23094001fa94e5",
+      "languages": [
+        "python",
+        "cpp"
+      ],
+      "experienceLevel": "beginner",
+      "preferredTopics": [
+        "arrays_and_strings",
+        "searching_and_sorting",
+        "trees_and_bst",
+        "heaps_and_priority_queues",
+        "graphs",
+        "linked_lists",
+        "stacks_and_queues",
+        "bit_manipulation",
+        "hashing",
+        "recursion_and_backtracking",
+        "complexity_analysis",
+        "dynamic_programming"
+      ],
+      "preferredFormats": [
+        "mcq",
+        "code_sprint",
+        "predict_output",
+        "interactive_array"
+      ],
+      "goals": [
+        "interview_prep",
+        "competitive_programming"
+      ],
+      "progressionPacing": "steady",
+      "completedAt": 1793037696495
+    }
   }
 }
