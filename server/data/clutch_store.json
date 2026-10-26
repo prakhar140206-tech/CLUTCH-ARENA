@@ -1617,32 +1617,32 @@
     "pilot-alpha-1": {
       "id": "pilot-alpha-1",
       "username": "AlphaLead",
-      "ratingMMR": 1350,
+      "ratingMMR": 1425,
       "auraPoints": 5000,
       "auraTitle": "Novice Coder",
       "rankTier": "Byte Scout",
       "stats": {
-        "matchesPlayed": 6,
-        "matchesWon": 6,
+        "matchesPlayed": 9,
+        "matchesWon": 9,
         "challengesSolved": 0,
         "highestStreak": 0
       },
-      "lastActive": 1793032734804
+      "lastActive": 1793037279242
     },
     "pilot-beta-2": {
       "id": "pilot-beta-2",
       "username": "BetaRival",
-      "ratingMMR": 1225,
+      "ratingMMR": 1250,
       "auraPoints": 5000,
       "auraTitle": "Novice Coder",
       "rankTier": "Byte Scout",
       "stats": {
-        "matchesPlayed": 1,
-        "matchesWon": 1,
+        "matchesPlayed": 2,
+        "matchesWon": 2,
         "challengesSolved": 0,
         "highestStreak": 0
       },
-      "lastActive": 1793032734806
+      "lastActive": 1793037279243
     },
     "host-arena-lead": {
       "id": "host-arena-lead",
@@ -3143,26 +3143,240 @@
         "highestStreak": 0
       },
       "lastActive": 1793032423088
-    },
-    "usr-2b23094001fa94e5": {
-      "id": "usr-2b23094001fa94e5",
-      "username": "Piyush Gupta",
-      "ratingMMR": 1200,
-      "auraPoints": 5000,
-      "auraTitle": "Novice Coder",
-      "rankTier": "Byte Scout",
-      "stats": {
-        "matchesPlayed": 0,
-        "matchesWon": 0,
-        "challengesSolved": 0,
-        "highestStreak": 0
-      },
-      "lastActive": 1793037711146,
-      "email": "0251csml070@niet.co.in",
-      "passwordHash": "0b559d848459361348f31d0a7ba0c53d:a715749ab1add3c844a83ef3da2cd407b1637a90275afae40c054b2043ea7a57bd7e2751079e21fd5d201c0aa7e263890be522fde60667227343935cdd5f29c4"
     }
   },
   "matchHistory": [
+    {
+      "id": "4fabecf7-593d-486a-bf69-78e694b7f099",
+      "timestamp": 1793038175579,
+      "mode": "duel_1v1",
+      "durationMs": 900000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "levelStats": {
+            "1": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "2": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "3": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "4": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            }
+          },
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
+    {
+      "id": "1563e60d-409c-451f-90a5-1a643e69131e",
+      "timestamp": 1793037864305,
+      "mode": "duel_1v1",
+      "durationMs": 600000,
+      "winner": {
+        "id": "pilot-beta-2",
+        "username": "BetaRival",
+        "score": 0
+      },
+      "participantsCount": 2,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-beta-2",
+          "username": "BetaRival",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "levelStats": {
+            "1": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "2": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "3": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "4": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            }
+          },
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        },
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 2,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 4000,
+          "avgTimeTakenSec": 4,
+          "levelStats": {
+            "1": {
+              "attempted": 1,
+              "solved": 0,
+              "totalTimeMs": 4000
+            },
+            "2": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "3": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "4": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            }
+          },
+          "rewardCoins": 10000,
+          "rewardBadge": "🥈 Master Mind"
+        }
+      ]
+    },
+    {
+      "id": "69972117-d80f-4bfd-810e-73c96779801d",
+      "timestamp": 1793037864303,
+      "mode": "duel_1v1",
+      "durationMs": 600000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "levelStats": {
+            "1": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "2": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "3": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "4": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            }
+          },
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
+    {
+      "id": "57d17f3f-7e9d-4a03-bff2-ed2adb7496b1",
+      "timestamp": 1793037279241,
+      "mode": "duel_1v1",
+      "durationMs": 600000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "levelStats": {
+            "1": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "2": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "3": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "4": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            }
+          },
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
     {
       "id": "390cca06-51a0-4b8a-94fd-12dc789ed6c1",
       "timestamp": 1793034237787,
@@ -4797,7 +5011,7 @@
     {
       "id": "pilot-alpha-1",
       "username": "AlphaLead",
-      "ratingMMR": 1350,
+      "ratingMMR": 1425,
       "rankTier": "Byte Scout"
     },
     {
@@ -4822,6 +5036,12 @@
       "id": "host-user-3",
       "username": "ArenaHost_3",
       "ratingMMR": 1275,
+      "rankTier": "Byte Scout"
+    },
+    {
+      "id": "pilot-beta-2",
+      "username": "BetaRival",
+      "ratingMMR": 1250,
       "rankTier": "Byte Scout"
     },
     {
@@ -4851,12 +5071,6 @@
     {
       "id": "soak-host-4",
       "username": "SoakHost_4",
-      "ratingMMR": 1225,
-      "rankTier": "Byte Scout"
-    },
-    {
-      "id": "pilot-beta-2",
-      "username": "BetaRival",
       "ratingMMR": 1225,
       "rankTier": "Byte Scout"
     },
@@ -6023,12 +6237,6 @@
       "username": "Contender_100",
       "ratingMMR": 1200,
       "rankTier": "Byte Scout"
-    },
-    {
-      "id": "usr-2b23094001fa94e5",
-      "username": "Piyush Gupta",
-      "ratingMMR": 1200,
-      "rankTier": "Byte Scout"
     }
   ],
   "questCompletions": {
@@ -6089,40 +6297,6 @@
       ],
       "progressionPacing": "steady",
       "completedAt": 1793036128757
-    },
-    "usr-2b23094001fa94e5": {
-      "userId": "usr-2b23094001fa94e5",
-      "languages": [
-        "python",
-        "cpp"
-      ],
-      "experienceLevel": "beginner",
-      "preferredTopics": [
-        "arrays_and_strings",
-        "searching_and_sorting",
-        "trees_and_bst",
-        "heaps_and_priority_queues",
-        "graphs",
-        "linked_lists",
-        "stacks_and_queues",
-        "bit_manipulation",
-        "hashing",
-        "recursion_and_backtracking",
-        "complexity_analysis",
-        "dynamic_programming"
-      ],
-      "preferredFormats": [
-        "mcq",
-        "code_sprint",
-        "predict_output",
-        "interactive_array"
-      ],
-      "goals": [
-        "interview_prep",
-        "competitive_programming"
-      ],
-      "progressionPacing": "steady",
-      "completedAt": 1793037696495
     }
   }
 }
