@@ -47,12 +47,14 @@ jobs:
           npm --prefix client run build
 
       - name: Run Concurrency & Data Integrity Suite
+        working-directory: server
         run: |
-          npx --prefix server tsx test/concurrencyIntegrityTest.ts
+          npx tsx test/concurrencyIntegrityTest.ts
 
       - name: Run Adversarial Security Suite
+        working-directory: server
         run: |
-          npx --prefix server tsx test/adversarialRunnerTest.ts
+          npx tsx test/adversarialRunnerTest.ts
 
   # ----------------------------------------------------------------------------
   # Job 2: Real Linux, Docker Container Sandbox & PostgreSQL Verification Gate
@@ -126,11 +128,12 @@ jobs:
           npm --prefix server ci
 
       - name: Execute Live Infrastructure Verification Suite (Strict CI Mode)
+        working-directory: server
         env:
           DATABASE_URL: postgres://clutch_admin:clutch_secure_db_password_2026@localhost:5432/clutch_db
           FAIL_ON_BLOCKED: "true"
         run: |
-          npx --prefix server tsx test/liveInfrastructureGateTest.ts
+          npx tsx test/liveInfrastructureGateTest.ts
 
       - name: Verify Fail-Closed Gate (Stop PostgreSQL & Check 503)
         run: |
