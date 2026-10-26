@@ -287,3 +287,66 @@ html, body {
     animation: none !important;
   }
 }
+
+/* Logo Loading Animations */
+@keyframes cyber-scanline {
+  0% {
+    top: -10%;
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    top: 110%;
+    opacity: 0;
+  }
+}
+
+@keyframes cyber-radar-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cyber-radar-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes cyber-pulse-ring {
+  0%, 100% {
+    transform: scale(0.96);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.85;
+  }
+}
+
+.animate-scanline {
+  animation: cyber-scanline 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-radar-spin {
+  animation: cyber-radar-spin 10s linear infinite;
+}
+
+.animate-radar-reverse {
+  animation: cyber-radar-reverse 7s linear infinite;
+}
+
+.animate-pulse-ring {
+  animation: cyber-pulse-ring 2.2s ease-in-out infinite;
+}
