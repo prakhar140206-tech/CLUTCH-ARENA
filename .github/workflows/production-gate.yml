@@ -101,7 +101,7 @@ jobs:
           echo "DATABASE_URL=postgres://clutch_admin:$DB_PASS@127.0.0.1:5432/clutch_db" >> $GITHUB_ENV
           echo "RUNNER_SERVICE_SECRET=$(openssl rand -hex 32)" >> $GITHUB_ENV
           echo "JWT_SECRET=$(openssl rand -hex 32)" >> $GITHUB_ENV
-          echo "ALLOWED_ORIGINS=https://clutch.arena,http://localhost" >> $GITHUB_ENV
+          echo "ALLOWED_ORIGINS=https://clutch.arena" >> $GITHUB_ENV
 
       - name: Launch Hardened Architecture A Microservice Stack
         run: |
