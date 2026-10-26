@@ -18,6 +18,7 @@ import { MatchingWorkspace } from '../components/challenges/MatchingWorkspace.js
 import { ArrangeStepsWorkspace } from '../components/challenges/ArrangeStepsWorkspace.js';
 import { FillBlankWorkspace } from '../components/challenges/FillBlankWorkspace.js';
 import { PseudocodeWorkspace } from '../components/challenges/PseudocodeWorkspace.js';
+import { HypeReactionStream } from '../components/arena/HypeReactionStream.js';
 import { AppShell } from '../components/navigation/AppShell.js';
 import { soundSynth } from '../services/soundSynth.js';
 import confetti from 'canvas-confetti';
@@ -654,6 +655,8 @@ export const SoloQuestScreen: React.FC = () => {
           </div>
         )}
 
+        {/* AuraBot Single-Button Reactions & Sound Controls */}
+        {matchStarted && !matchEnded && <HypeReactionStream />}
       </div>
     </AppShell>
   );

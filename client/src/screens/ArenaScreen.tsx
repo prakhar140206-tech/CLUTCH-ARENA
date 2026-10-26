@@ -366,8 +366,8 @@ export const ArenaScreen: React.FC = () => {
         )}
       </div>
 
-      {/* Responsive AuraBot Reaction Stream & Bottom Toolbar */}
-      <HypeReactionStream isDockedMobile={true} />
+      {/* Single-Button Expandable AuraBot Reaction Stream */}
+      <HypeReactionStream />
     </div>
   );
 };
