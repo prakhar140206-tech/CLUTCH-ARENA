@@ -9,6 +9,7 @@ import {
   ConceptMasteryRecord 
 } from '../../../shared/types.js';
 import { API_BASE_URL } from '../config/api.js';
+import { CLIENT_FALLBACK_CHALLENGES } from '../data/defaultChallenges.js';
 import { CodeSprintEditor } from '../components/challenges/CodeSprintEditor.js';
 import { VisualPuzzleWorkspace } from '../components/challenges/VisualPuzzleWorkspace.js';
 import { McqChallengeWorkspace } from '../components/challenges/McqChallengeWorkspace.js';
@@ -56,7 +57,7 @@ export const SoloQuestScreen: React.FC = () => {
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number>(20);
 
   // Challenge & Progression State
-  const [challenges, setChallenges] = useState<ClientChallenge[]>([]);
+  const [challenges, setChallenges] = useState<ClientChallenge[]>(CLIENT_FALLBACK_CHALLENGES);
   const [currentChallenge, setCurrentChallenge] = useState<ClientChallenge | null>(null);
   const [questionIndex, setQuestionIndex] = useState<number>(1);
   const [selectedTopic, setSelectedTopic] = useState<string>('all');
@@ -91,7 +92,7 @@ export const SoloQuestScreen: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Fetch initial challenge bank
+  // Fetch initial challenge bank (with client fallback)
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/challenges`)
       .then(res => res.json())
@@ -100,7 +101,10 @@ export const SoloQuestScreen: React.FC = () => {
           setChallenges(data.challenges);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        // Retain CLIENT_FALLBACK_CHALLENGES if offline or static deployment
+        setChallenges(CLIENT_FALLBACK_CHALLENGES);
+      });
   }, []);
 
   // Match countdown & per-question timer tick
@@ -292,7 +296,63 @@ export const SoloQuestScreen: React.FC = () => {
         }, 2000);
       }
     } catch (err) {
-      console.error('Error verifying answer:', err);
+      // Offline / Static Deployment Evaluation Fallback
+      const cleanAnswer = typeof answer === 'string' ? answer.trim() : JSON.stringify(answer);
+      const cleanExpected = typeof currentChallenge.correctAnswer === 'string'
+        ? currentChallenge.correctAnswer.trim()
+        : JSON.stringify(currentChallenge.correctAnswer);
+      const isCorrect = cleanAnswer.toLowerCase() === cleanExpected.toLowerCase();
+
+      setStats(prev => {
+        const topicStats = prev.topicResults[currentChallenge.topic] || { attempted: 0, solved: 0 };
+        return {
+          ...prev,
+          attempted: prev.attempted + 1,
+          solved: isCorrect ? prev.solved + 1 : prev.solved,
+          totalTimeMs: prev.totalTimeMs + elapsedMs,
+          topicResults: {
+            ...prev.topicResults,
+            [currentChallenge.topic]: {
+              attempted: topicStats.attempted + 1,
+              solved: isCorrect ? topicStats.solved + 1 : topicStats.solved
+            }
+          }
+        };
+      });
+
+      if (isCorrect) {
+        soundSynth.levelUp();
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
+        markSoloSolved(currentChallenge.id);
+        const newStreak = streak + 1;
+        setStreak(newStreak);
+        setConsecutiveErrors(0);
+        setScore(prev => prev + 100);
+
+        setFeedback({
+          isCorrect: true,
+          message: 'Correct! +100 pts (Practice Mode)',
+          explanation: currentChallenge.explanation
+        });
+
+        setTimeout(() => {
+          selectNextQuestion(difficulty, selectedTopic);
+        }, 1500);
+      } else {
+        soundSynth.vineBoom();
+        setStreak(0);
+        setConsecutiveErrors(prev => prev + 1);
+
+        setFeedback({
+          isCorrect: false,
+          message: 'Incorrect answer. Review explanation below.',
+          explanation: currentChallenge.explanation
+        });
+
+        setTimeout(() => {
+          selectNextQuestion(difficulty, selectedTopic);
+        }, 2000);
+      }
     } finally {
       setIsSubmitting(false);
     }

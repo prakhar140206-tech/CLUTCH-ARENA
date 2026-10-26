@@ -19,6 +19,16 @@ class SocketService {
 
     this.socket.on('connect', () => {
       console.log('[Socket] Connected to DSA Arena Server:', this.socket?.id);
+      useGameStore.getState().setServerConnected(true);
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('[Socket] Disconnected from DSA Arena Server');
+      useGameStore.getState().setServerConnected(false);
+    });
+
+    this.socket.on('connect_error', () => {
+      useGameStore.getState().setServerConnected(false);
     });
 
     this.socket.on('room_updated', (room) => {

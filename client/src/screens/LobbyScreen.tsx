@@ -33,6 +33,7 @@ export const LobbyScreen: React.FC = () => {
   const setScreen = useGameStore((s) => s.setScreen);
   const userProfile = useGameStore((s) => s.userProfile);
   const activeRoom = useGameStore((s) => s.activeRoom);
+  const serverConnected = useGameStore((s) => s.serverConnected);
 
   const [joinCodeInput, setJoinCodeInput] = useState<string>('');
   const [isJoining, setIsJoining] = useState<boolean>(false);
@@ -73,6 +74,10 @@ export const LobbyScreen: React.FC = () => {
   };
 
   const handleQuickPlay = async (mode: any, maxPlayers: number = 2) => {
+    if (!serverConnected) {
+      setErrorMessage('Multiplayer matchmaking requires an active backend server. Please play Solo Quest in offline practice mode!');
+      return;
+    }
     try {
       soundSynth.click();
       setIsJoining(true);
@@ -99,6 +104,10 @@ export const LobbyScreen: React.FC = () => {
   const handleJoinByCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!joinCodeInput.trim()) return;
+    if (!serverConnected) {
+      setErrorMessage('Joining online rooms requires an active backend server. Try Solo Quest for offline practice!');
+      return;
+    }
 
     try {
       soundSynth.click();
@@ -147,6 +156,24 @@ export const LobbyScreen: React.FC = () => {
               <span>{errorMessage}</span>
             </div>
             <button onClick={() => setErrorMessage('')} className="text-clutch-muted hover:text-white">✕</button>
+          </div>
+        )}
+
+        {!serverConnected && (
+          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-300 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-in">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">📡</span>
+              <div>
+                <p className="font-bold text-amber-200">Practice Mode (GitHub Pages Static Host)</p>
+                <p className="text-gray-300">Live 1v1 and 70-player multiplayer arenas require an active Node.js server. Solo Quest and Adaptive DSA Practice work locally right now!</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setScreen('solo_quest')}
+              className="px-4 py-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 font-mono text-xs font-bold whitespace-nowrap transition"
+            >
+              Play Solo Quest ⚡
+            </button>
           </div>
         )}
 

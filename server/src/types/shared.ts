@@ -136,14 +136,15 @@ export interface Challenge {
 
 // Client-safe view of a challenge where solutions/hidden tests are stripped
 export type ClientChallenge = Omit<Challenge, 'correctAnswer'> & {
+  correctAnswer?: string | number | string[] | any;
   testCases?: Array<Omit<TestCase, 'isHidden'> & { isHidden?: boolean }>;
-  matchingData?: Omit<MatchingPairData, 'correctPairs'>;
-  arrangeStepsData?: Omit<ArrangeStepsData, 'correctOrderIds'>;
+  matchingData?: Omit<MatchingPairData, 'correctPairs'> & { correctPairs?: Array<{ leftId: string; rightId: string }> };
+  arrangeStepsData?: Omit<ArrangeStepsData, 'correctOrderIds'> & { correctOrderIds?: string[] };
   fillBlankData?: {
     template: string;
-    blanks: Array<Omit<FillBlankData['blanks'][number], 'acceptedAnswers'>>;
+    blanks: Array<Omit<FillBlankData['blanks'][number], 'acceptedAnswers'> & { acceptedAnswers?: string[] }>;
   };
-  interactiveArrayData?: Omit<InteractiveArrayData, 'validationTarget'>;
+  interactiveArrayData?: Omit<InteractiveArrayData, 'validationTarget'> & { validationTarget?: any };
 };
 
 export interface AvatarLoadout {

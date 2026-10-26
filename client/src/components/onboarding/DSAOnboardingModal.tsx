@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useGameStore } from '../../store/gameStore.js';
 import { API_BASE_URL } from '../../config/api.js';
+import { CLIENT_DIAGNOSTIC_QUESTIONS } from '../../data/defaultChallenges.js';
 import { 
   SupportedLanguage, 
   DSATopic, 
@@ -97,7 +98,7 @@ export const DSAOnboardingModal: React.FC = () => {
   const [pacing, setPacing] = useState<'steady' | 'accelerated' | 'mastery_first'>('steady');
 
   // Diagnostic calibration state
-  const [diagnosticQuestions, setDiagnosticQuestions] = useState<DiagnosticQuestion[]>([]);
+  const [diagnosticQuestions, setDiagnosticQuestions] = useState<DiagnosticQuestion[]>(CLIENT_DIAGNOSTIC_QUESTIONS);
   const [diagnosticAnswers, setDiagnosticAnswers] = useState<Record<string, string>>({});
   const [isAssessing, setIsAssessing] = useState<boolean>(false);
   const [assessedResult, setAssessedResult] = useState<{ level: Difficulty; score: number } | null>(null);
@@ -105,13 +106,15 @@ export const DSAOnboardingModal: React.FC = () => {
 
   useEffect(() => {
     if (onboardingOpen) {
-      // Fetch diagnostic calibration questions
+      // Fetch diagnostic calibration questions (with client fallback)
       fetch(`${API_BASE_URL}/api/diagnostic-questions`)
         .then(res => res.json())
         .then(data => {
-          if (data.questions) setDiagnosticQuestions(data.questions);
+          if (data.questions && data.questions.length > 0) setDiagnosticQuestions(data.questions);
         })
-        .catch(() => {});
+        .catch(() => {
+          setDiagnosticQuestions(CLIENT_DIAGNOSTIC_QUESTIONS);
+        });
     }
   }, [onboardingOpen]);
 

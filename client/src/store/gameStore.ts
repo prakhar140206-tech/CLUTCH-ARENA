@@ -65,6 +65,10 @@ interface GameStore {
   lastSubmissionResult: SubmissionResponse | null;
   setLastSubmissionResult: (res: SubmissionResponse | null) => void;
 
+  // Connection State
+  serverConnected: boolean;
+  setServerConnected: (connected: boolean) => void;
+
   // Solo Campaign State
   soloTopic: DSATopic | 'all';
   setSoloTopic: (topic: DSATopic | 'all') => void;
@@ -181,6 +185,9 @@ export const useGameStore = create<GameStore>()(
       setStageAnnouncement: (stageAnnouncement) => set({ stageAnnouncement }),
       lastSubmissionResult: null,
       setLastSubmissionResult: (lastSubmissionResult) => set({ lastSubmissionResult }),
+
+      serverConnected: false,
+      setServerConnected: (serverConnected) => set({ serverConnected }),
 
       soloTopic: 'all',
       setSoloTopic: (soloTopic) => set({ soloTopic }),

@@ -1617,13 +1617,13 @@
     "pilot-alpha-1": {
       "id": "pilot-alpha-1",
       "username": "AlphaLead",
-      "ratingMMR": 1425,
+      "ratingMMR": 1450,
       "auraPoints": 5000,
       "auraTitle": "Novice Coder",
       "rankTier": "Byte Scout",
       "stats": {
-        "matchesPlayed": 9,
-        "matchesWon": 9,
+        "matchesPlayed": 10,
+        "matchesWon": 10,
         "challengesSolved": 0,
         "highestStreak": 0
       },
@@ -3146,6 +3146,55 @@
     }
   },
   "matchHistory": [
+    {
+      "id": "4fcb6565-0bf8-4b47-8010-c25bc53c8285",
+      "timestamp": 1793039833381,
+      "mode": "solo_quest",
+      "durationMs": 1500000,
+      "winner": {
+        "id": "pilot-alpha-1",
+        "username": "AlphaLead",
+        "score": 0
+      },
+      "participantsCount": 1,
+      "leaderboardSnippet": [
+        {
+          "id": "pilot-alpha-1",
+          "username": "AlphaLead",
+          "score": 0,
+          "rank": 1,
+          "combo": 0,
+          "isEliminated": false,
+          "correctCount": 0,
+          "totalTimeTakenMs": 0,
+          "avgTimeTakenSec": 0,
+          "levelStats": {
+            "1": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "2": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "3": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            },
+            "4": {
+              "attempted": 0,
+              "solved": 0,
+              "totalTimeMs": 0
+            }
+          },
+          "rewardCoins": 15000,
+          "rewardBadge": "👑 Grand Champion"
+        }
+      ]
+    },
     {
       "id": "4fabecf7-593d-486a-bf69-78e694b7f099",
       "timestamp": 1793038175579,
@@ -5011,7 +5060,7 @@
     {
       "id": "pilot-alpha-1",
       "username": "AlphaLead",
-      "ratingMMR": 1425,
+      "ratingMMR": 1450,
       "rankTier": "Byte Scout"
     },
     {
