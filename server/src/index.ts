@@ -33,7 +33,9 @@ const PORT = process.env.PORT || 4000;
 const rawOrigins = process.env.ALLOWED_ORIGINS;
 const corsOrigins = rawOrigins
   ? rawOrigins.split(',').map(s => s.trim())
-  : (process.env.NODE_ENV === 'production' ? [] : ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000']);
+  : (process.env.NODE_ENV === 'production' 
+      ? [] 
+      : ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'https://prakhar140206-tech.github.io']);
 
 // Security Headers (Defense in depth)
 app.use((_req, res, next) => {
