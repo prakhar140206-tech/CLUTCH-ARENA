@@ -376,7 +376,7 @@ export class IsolatedExecutionWorker {
       fs.writeFileSync(path.join(hostTmp, scriptName), scriptContent, 'utf-8');
 
       const dockerArgs = [
-        'run', '--rm', '-i',
+        'run', '--rm',
         '--user', this.config.unprivilegedUser,
         '--network', 'none', // Strict network isolation
         '--read-only', // Read-only root
@@ -393,6 +393,12 @@ export class IsolatedExecutionWorker {
 
       return await new Promise<any>((resolve) => {
         const proc = spawn('docker', dockerArgs, { timeout: this.config.wallClockTimeoutMs });
+        proc.stdin?.end(); // Ensure non-interactive execution does not block on stdin
+
+        const hardKillTimer = setTimeout(() => {
+          try { proc.kill('SIGKILL'); } catch {}
+        }, this.config.wallClockTimeoutMs + 1500);
+
         let stdout = '';
         let stderr = '';
 
@@ -400,6 +406,7 @@ export class IsolatedExecutionWorker {
         proc.stderr?.on('data', d => { if (stderr.length < 50000) stderr += d.toString(); });
 
         proc.on('close', (exitCode) => {
+          clearTimeout(hardKillTimer);
           if (exitCode === 137 || exitCode === 124) {
             resolve({ passed: false, status: 'TIME_LIMIT_EXCEEDED', error: 'Container execution timed out or OOM killed' });
           } else if (exitCode !== 0) {
@@ -411,6 +418,7 @@ export class IsolatedExecutionWorker {
         });
 
         proc.on('error', (err) => {
+          clearTimeout(hardKillTimer);
           resolve({ passed: false, status: 'RUNTIME_ERROR', error: `Docker error: ${err.message}` });
         });
       });

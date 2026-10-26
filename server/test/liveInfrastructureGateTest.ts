@@ -261,13 +261,13 @@ async function runLiveInfrastructureGateSuite() {
       console.log(`     ✅ Docker engine is available: ${dockerCheck.stdout.split('\n')[0]}`);
       
       // 1. Verify unprivileged UID (non-root UID 1000)
-      const uidCheck = spawnSync('docker', ['run', '--rm', '--user', '1000:1000', 'clutch-sandbox-runner:latest', 'id -u'], { encoding: 'utf-8', timeout: 5000 });
+      const uidCheck = spawnSync('docker', ['run', '--rm', '--user', '1000:1000', 'clutch-sandbox-runner:latest', 'id', '-u'], { encoding: 'utf-8', timeout: 5000 });
       const uid = (uidCheck.stdout || '').trim();
       assert.ok(uid.includes('1000') && !uid.includes('uid=0'), `Expected container execution under UID 1000, got UID ${uid}`);
       console.log(`     ✅ Container User Isolation Verified: UID = 1000 (non-root sandbox user)`);
 
       // 2. Verify read-only root filesystem
-      const roCheck = spawnSync('docker', ['run', '--rm', '--read-only', 'clutch-sandbox-runner:latest', 'touch /test_ro.txt'], { encoding: 'utf-8', timeout: 5000 });
+      const roCheck = spawnSync('docker', ['run', '--rm', '--read-only', 'clutch-sandbox-runner:latest', 'touch', '/test_ro.txt'], { encoding: 'utf-8', timeout: 5000 });
       assert.notStrictEqual(roCheck.status, 0, 'Writing to root filesystem in read-only container must fail');
       assert.ok((roCheck.stderr || '').toLowerCase().includes('read-only'), 'Error must specify read-only file system');
       console.log('     ✅ Container Filesystem Isolation Verified: Root is strictly read-only.');
@@ -276,7 +276,7 @@ async function runLiveInfrastructureGateSuite() {
       const netCheck = spawnSync('docker', [
         'run', '--rm', '--network', 'none',
         'clutch-sandbox-runner:latest',
-        'python3 -c "import urllib.request; urllib.request.urlopen(\'http://1.1.1.1\', timeout=1)"'
+        'python3', '-c', 'import urllib.request; urllib.request.urlopen("http://1.1.1.1", timeout=1)'
       ], { encoding: 'utf-8', timeout: 5000 });
       assert.notStrictEqual(netCheck.status, 0, 'Network request must fail under network isolation');
       console.log('     ✅ Container Network Isolation Verified: Outbound access is blocked (--network none).');

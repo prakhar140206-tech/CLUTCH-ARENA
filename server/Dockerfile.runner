@@ -32,6 +32,5 @@ RUN chown -R sandbox:sandbox /app
 # Switch to unprivileged user by default
 USER sandbox:sandbox
 
-# Container entrypoint
-ENTRYPOINT ["/bin/sh", "-c"]
-CMD ["echo 'CLUTCH Sandbox Execution Worker Ready'"]
+# Default command
+CMD ["echo", "CLUTCH Sandbox Execution Worker Ready"]
