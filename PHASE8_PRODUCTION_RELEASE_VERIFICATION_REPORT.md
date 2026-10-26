@@ -27,7 +27,10 @@ All release gates have been **100% verified with actual live execution logs** in
 | **RG-7** | Production Fail-Closed Safety | API Server | **PASS** | Unreachable dependencies block untrusted execution rather than exposing host |
 | **RG-8** | Live PostgreSQL Persistence | Ubuntu 22.04 + PG 16 | **PASS** | PostgreSQL 16 Alpine container online, migration executed, live connection verified |
 | **RG-9** | Docker Sandbox Container Isolation | Docker Engine Linux | **PASS** | Non-root UID 1000, read-only rootfs, zero network access, real Kadane execution |
-| **RG-10** | Public Production Release Clearance | End-to-End Stack | **CLEARED** | **APPROVED FOR PUBLIC PRODUCTION DEPLOYMENT** |
+| **RG-10** | Public Production Release Clearance | End-to-End Stack | **ON HOLD** | **CI Verified Candidate; Public Launch Held Pending Socket Proxy/Microservice** |
+
+> [!IMPORTANT]
+> **Release Candidate Status:** CI pipeline verification is **100% complete and passed** on Linux (both Attempt 1 and Attempt 2 verified green on GitHub Actions). However, in accordance with the security threat model audit, **public production launch is held** until the Docker daemon socket is decoupled from the web API via a dedicated runner microservice or restricted socket proxy.
 
 ---
 
@@ -140,34 +143,33 @@ All release gates have been **100% verified with actual live execution logs** in
 
 ---
 
-## 5. Deployment Instructions for Production Host
+## 5. Production Hardening: Docker Daemon Socket Security Architecture
 
-To launch CLUTCH on any production Linux server (e.g. AWS EC2, DigitalOcean Droplet, GCP Compute Engine, Ubuntu 22.04 LTS):
+### 5.1 Threat Model Analysis: Direct `/var/run/docker.sock` Exposure
+On Linux hosts, write access to `/var/run/docker.sock` confers root-equivalent capabilities. If an attacker breaches an internet-facing API container that mounts the raw Docker daemon socket, they could potentially invoke Docker API endpoints to mount host directories (`-v /:/host`), spawn privileged containers, or compromise the host kernel.
 
-```bash
-# 1. Clone repository
-git clone https://github.com/prakhar140206-tech/CLUTCH-ARENA.git clutch-arena
-cd clutch-arena
+> [!CAUTION]
+> **Production Boundary Rule:** Never mount the raw host `/var/run/docker.sock` directly into an internet-facing container in production, and never execute `chmod 666 /var/run/docker.sock` on a permanent production host. (The `chmod 666` step in the CI pipeline was strictly an ephemeral testing harness on disposable single-tenant GitHub Actions runner VMs destroyed immediately after job execution.)
 
-# 2. Configure environment
-cp server/.env.example server/.env
-# Update JWT_SECRET and DATABASE_URL in server/.env if using external credentials
+### 5.2 Hardened Production Deployment Architectures
 
-# 3. Build & start production stack
-sudo chmod 666 /var/run/docker.sock
-docker compose up -d --build
+#### Architecture A: Dedicated Runner Microservice (Recommended)
+Decouple untrusted code execution completely from the API server:
+1. `clutch-api` has **zero** access to Docker and does not mount `/var/run/docker.sock`.
+2. A separate, non-public `clutch-runner-service` is deployed on an internal, private subnet.
+3. The API server dispatches code execution payloads via `RUNNER_SERVICE_URL=http://internal-runner:5050/execute`.
+4. The runner service alone manages ephemeral container lifecycles on an isolated host or worker node.
 
-# 4. Migrate database records to PostgreSQL
-docker compose exec -T clutch-api node dist/storage/migrateJsonToPostgres.js
-
-# 5. Verify deployment health
-curl http://localhost:4000/api/health
-curl http://localhost:4000/api/ready
-curl -I http://localhost/
-```
+#### Architecture B: Tightly Restricted Docker Socket Proxy
+If running on a single production host:
+1. Deploy `tecnativa/docker-socket-proxy` listening exclusively on an internal Docker network with `CONTAINERS=1`, `POST=1` (allowed only for `/containers/create`, `/containers/start`, `/containers/wait`), and `EXEC=0`, `VOLUMES=0`, `BUILDS=0`, `SECRETS=0` strictly disabled.
+2. The `clutch-api` server connects via `DOCKER_HOST=tcp://docker-proxy:2375`.
 
 ---
 
-## 6. Conclusion
+## 6. Conclusion & Release Decision
 
-CLUTCH is officially **cleared for public release**. Both technical blockers (RG-8 and RG-9) have been definitively resolved with verifiable GitHub Actions pipeline runs. All 10 release gates have achieved full compliance.
+- **CI Verification Candidate Status:** **PASSED on Linux**  
+  All functional gates, build scripts, PostgreSQL migrations, and isolated runner properties have been independently verified in GitHub Actions Run [`40335515714`](https://github.com/prakhar140206-tech/CLUTCH-ARENA/actions/runs/40335515714) (both Attempt 1 and Attempt 2 confirmed green).
+- **Public Production Release Status:** **ON HOLD**  
+  In alignment with the security threat model audit, unrestricted public registration remains on hold until the production deployment environment implements Architecture A (dedicated runner microservice) or Architecture B (restricted socket proxy).

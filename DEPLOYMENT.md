@@ -157,3 +157,47 @@ server {
   ```
 - **Readiness Probe**: `GET /api/ready` -> returns HTTP 200 `{ "ready": true }`
 - **Language Availability**: `GET /api/languages` -> reports available compilers and execution modes.
+
+---
+
+## 7. Production Hardening: Docker Daemon Socket Threat Model & Isolation Architecture
+
+### 7.1 Threat Model Analysis: Direct `/var/run/docker.sock` Exposure
+In Linux environments, anyone with write access to the Docker daemon socket (`/var/run/docker.sock`) possesses effective root-equivalent control over the host operating system. If an attacker breaches a web-facing API server that mounts the raw Docker socket, they could instruct the Docker daemon to mount host root directories (`-v /:/host`), spawn privileged containers, or escape container boundaries.
+
+> [!CAUTION]
+> **Production Requirement:** Never mount the raw host `/var/run/docker.sock` directly into an internet-facing API container in production, and never run `chmod 666 /var/run/docker.sock` on a shared or permanent production host. (The `chmod 666` directive in `.github/workflows/production-gate.yml` is strictly an ephemeral CI testing convenience on single-tenant, disposable GitHub Actions runner VMs destroyed immediately upon job completion.)
+
+### 7.2 Hardened Production Architectures
+
+#### Architecture A: Dedicated Runner Microservice (Recommended for Production)
+Decouple untrusted code execution completely from the API server:
+1. The `clutch-api` container does NOT mount `/var/run/docker.sock`.
+2. A separate, non-public `clutch-runner-service` is deployed on an internal, private subnet.
+3. The API server dispatches execution payloads to the runner service via `RUNNER_SERVICE_URL=http://internal-runner:5050/execute`.
+4. Even if the API server is compromised, the attacker has zero access to the host Docker daemon.
+
+#### Architecture B: Tightly Restricted Docker Socket Proxy
+If running all services on a single production host:
+1. Deploy `tecnativa/docker-socket-proxy` listening exclusively on an internal docker network:
+   ```yaml
+   docker-proxy:
+     image: tecnativa/docker-socket-proxy
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock:ro
+     environment:
+       - CONTAINERS=1
+       - POST=1 # Allowed only for /containers/create, /containers/start, /containers/wait
+       - BUILD=0
+       - COMMIT=0
+       - EXEC=0 # Prevents injecting commands into running containers
+       - VOLUMES=0 # Prevents mounting arbitrary host paths
+       - NETWORKS=0
+       - SECRETS=0
+       - SWARM=0
+   ```
+2. The `clutch-api` server connects to `DOCKER_HOST=tcp://docker-proxy:2375` instead of mounting `/var/run/docker.sock`.
+
+### 7.3 Public Production Release Status
+**Public launch is held** until the target production infrastructure is configured with either Architecture A (dedicated runner microservice) or Architecture B (restricted socket proxy).
+
