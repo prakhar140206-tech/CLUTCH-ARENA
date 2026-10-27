@@ -13,7 +13,6 @@ import { MatchingWorkspace } from '../components/challenges/MatchingWorkspace.js
 import { ArrangeStepsWorkspace } from '../components/challenges/ArrangeStepsWorkspace.js';
 import { FillBlankWorkspace } from '../components/challenges/FillBlankWorkspace.js';
 import { PseudocodeWorkspace } from '../components/challenges/PseudocodeWorkspace.js';
-import { HypeReactionStream } from '../components/arena/HypeReactionStream.js';
 import { soundSynth } from '../services/soundSynth.js';
 import { Swords, Bot, Users, Play, CheckCircle2, Award, Clock, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 
@@ -398,8 +397,6 @@ export const ArenaScreen: React.FC = () => {
         )}
       </div>
 
-      {/* Single-Button Expandable AuraBot Reaction Stream */}
-      <HypeReactionStream />
     </div>
   );
 };
