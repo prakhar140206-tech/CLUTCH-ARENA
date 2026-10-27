@@ -548,7 +548,7 @@ export const SoloQuestScreen: React.FC = () => {
             )}
 
             {/* Dynamic Question Workspace by Format */}
-            <div className="min-h-[500px]">
+            <div className="h-[75vh] min-h-[480px] max-h-[720px] w-full max-w-full">
               {currentChallenge.type === 'code_sprint' || currentChallenge.type === 'bug_hunter' ? (
                 <CodeSprintEditor
                   challenge={currentChallenge}
