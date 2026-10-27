@@ -74,12 +74,17 @@ export const AppShell: React.FC<AppShellProps> = ({
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-  const bottomNavItems = [
-    { id: 'dashboard' as ScreenState, label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'solo_quest' as ScreenState, label: 'Practice', icon: Compass },
-    { id: 'lobby' as ScreenState, label: 'Arena', icon: Swords },
-    { id: 'brainrot_shorts' as ScreenState, label: 'Shorts', icon: Smartphone },
-    { id: 'profile' as ScreenState, label: 'Profile', icon: User },
+  const bottomNavItems: Array<{
+    id: ScreenState;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    badge?: string;
+  }> = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'solo_quest', label: 'Practice', icon: Compass },
+    { id: 'lobby', label: 'Arena', icon: Swords },
+    { id: 'brainrot_shorts', label: 'Shorts', icon: Smartphone, badge: '⚡' },
+    { id: 'profile', label: 'Profile', icon: User },
   ];
 
   return (
@@ -300,30 +305,90 @@ export const AppShell: React.FC<AppShellProps> = ({
         </main>
 
         {/* =========================================================
-            MOBILE BOTTOM NAVIGATION BAR
+            MOBILE 3D FLOATING CYBER-DOCK NAVIGATION
             ========================================================= */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 min-h-[4rem] pb-[max(0.25rem,env(safe-area-inset-bottom))] bg-clutch-surface/95 border-t border-clutch-border backdrop-blur-2xl grid grid-cols-5 items-center px-1 z-40 shadow-2xl">
+        <nav
+          aria-label="Mobile Navigation"
+          className="md:hidden fixed bottom-2 inset-x-2.5 sm:inset-x-4 max-w-lg mx-auto z-50 rounded-2xl bg-gradient-to-b from-[#161a3f]/95 via-[#0d102b]/95 to-[#060818]/98 backdrop-blur-2xl border border-violet-500/30 border-t-violet-400/50 shadow-[0_12px_36px_rgba(0,0,0,0.85),0_0_24px_rgba(124,58,237,0.25),inset_0_1px_1px_rgba(255,255,255,0.25)] p-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-end justify-items-center gap-1"
+        >
           {bottomNavItems.map((item) => {
             const Icon = item.icon;
             const isCurrent = active === item.id;
+            const isArenaHero = item.id === 'lobby';
+
+            if (isArenaHero) {
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleNav(item.id)}
+                  className="flex flex-col items-center justify-end -mt-5 group relative focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 rounded-xl"
+                  title="Enter Arena"
+                >
+                  {/* Hero Elevated 3D Battle Button */}
+                  <div
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 relative ${
+                      isCurrent
+                        ? 'bg-gradient-to-tr from-violet-600 via-purple-500 to-cyan-400 text-white shadow-[0_8px_20px_rgba(124,58,237,0.7),0_0_16px_rgba(6,182,212,0.6),inset_0_1px_2px_rgba(255,255,255,0.8)] border-b-2 border-indigo-950 scale-105 -translate-y-1'
+                        : 'bg-gradient-to-tr from-violet-900/90 via-purple-800/80 to-indigo-900/90 text-clutch-lavender shadow-[0_6px_16px_rgba(0,0,0,0.7),0_0_12px_rgba(124,58,237,0.35),inset_0_1px_1px_rgba(255,255,255,0.3)] border border-violet-400/40 border-b-2 border-indigo-950 hover:scale-105'
+                    } active:translate-y-0.5 active:scale-95`}
+                  >
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-transparent via-white/10 to-white/30 pointer-events-none" />
+                    <Icon className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+                    {/* Pulsing Aura Ping */}
+                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-400 border border-slate-900 shadow-[0_0_6px_#22d3ee]"></span>
+                    </span>
+                  </div>
+                  <span className={`text-[9.5px] font-cyber font-black tracking-wider mt-1 transition-colors ${
+                    isCurrent ? 'text-cyan-300 drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]' : 'text-clutch-muted group-hover:text-white'
+                  }`}>
+                    ARENA
+                  </span>
+                </button>
+              );
+            }
+
             return (
               <button
                 key={item.id}
                 onClick={() => handleNav(item.id)}
-                className={`flex flex-col items-center justify-center py-1 transition-all text-center ${
-                  isCurrent
-                    ? 'text-clutch-lavender font-bold'
-                    : 'text-clutch-subtle hover:text-clutch-muted'
-                }`}
+                className={`w-full flex flex-col items-center justify-center py-1 transition-all duration-200 group relative rounded-xl focus:outline-none focus-visible:ring-1 focus-visible:ring-violet-400 active:scale-95 active:translate-y-0.5`}
               >
+                {/* 3D Isometric Icon Plate */}
                 <div
-                  className={`p-1 rounded-md transition-colors ${
-                    isCurrent ? 'bg-clutch-violet/25' : ''
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 relative ${
+                    isCurrent
+                      ? 'bg-gradient-to-b from-violet-500 via-purple-600 to-indigo-700 text-white shadow-[0_6px_14px_rgba(124,58,237,0.55),inset_0_1px_1px_rgba(255,255,255,0.45)] border-t border-white/40 border-b-2 border-purple-950 -translate-y-1'
+                      : 'bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-slate-400 border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_5px_rgba(0,0,0,0.4)] group-hover:text-white group-hover:border-violet-500/40'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className={`w-4 h-4 transition-transform duration-200 ${
+                    isCurrent ? 'scale-110 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]' : 'group-hover:scale-105'
+                  }`} />
+                  
+                  {item.badge && (
+                    <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[8px] font-black font-mono text-white shadow-[0_0_8px_rgba(244,63,94,0.8)] border border-rose-300/40">
+                      {item.badge}
+                    </span>
+                  )}
                 </div>
-                <span className="text-[9px] sm:text-[10px] tracking-tight">{item.label}</span>
+
+                {/* Label with 3D text styling */}
+                <span
+                  className={`text-[9px] font-mono tracking-tight mt-1 transition-colors ${
+                    isCurrent
+                      ? 'text-violet-200 font-bold drop-shadow-[0_0_8px_rgba(196,181,253,0.5)]'
+                      : 'text-slate-400 group-hover:text-slate-200'
+                  }`}
+                >
+                  {item.label}
+                </span>
+
+                {/* Active Neon Laser Dot */}
+                {isCurrent && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse mt-0.5" />
+                )}
               </button>
             );
           })}

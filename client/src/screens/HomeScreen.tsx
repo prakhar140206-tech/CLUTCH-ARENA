@@ -248,61 +248,80 @@ export const HomeScreen: React.FC = () => {
       </footer>
 
       {/* Mobile Android Bottom Dock (Only on phones < sm) */}
+      {/* Mobile 3D Floating Cyber-Dock (Phones < sm) */}
       <nav
         aria-label="Mobile Navigation Bar"
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-clutch-surface/95 border-t border-clutch-border backdrop-blur-xl px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_25px_rgba(0,0,0,0.6)] pb-[max(0.35rem,env(safe-area-inset-bottom))]"
+        className="sm:hidden fixed bottom-2 inset-x-2.5 max-w-lg mx-auto z-50 rounded-2xl bg-gradient-to-b from-[#161a3f]/95 via-[#0d102b]/95 to-[#060818]/98 backdrop-blur-2xl border border-violet-500/30 border-t-violet-400/50 shadow-[0_12px_36px_rgba(0,0,0,0.85),0_0_24px_rgba(124,58,237,0.25),inset_0_1px_1px_rgba(255,255,255,0.25)] p-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-end justify-items-center gap-1"
       >
         <button
           onClick={() => handleNav('home' as any)}
-          className="flex flex-col items-center justify-center py-1 px-3 min-w-[56px] text-clutch-lavender font-bold"
+          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-200 group relative rounded-xl active:scale-95 active:translate-y-0.5"
         >
-          <Home className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px] font-mono">Home</span>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-b from-violet-500 via-purple-600 to-indigo-700 text-white shadow-[0_6px_14px_rgba(124,58,237,0.55),inset_0_1px_1px_rgba(255,255,255,0.45)] border-t border-white/40 border-b-2 border-purple-950 -translate-y-1">
+            <Home className="w-4 h-4 scale-110 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
+          </div>
+          <span className="text-[9px] font-mono tracking-tight mt-1 text-violet-200 font-bold drop-shadow-[0_0_8px_rgba(196,181,253,0.5)]">
+            Home
+          </span>
+          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse mt-0.5" />
         </button>
 
         <button
           onClick={() => handleNav('solo_quest')}
-          className="flex flex-col items-center justify-center py-1 px-3 min-w-[56px] text-clutch-muted hover:text-white transition-colors"
+          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-200 group relative rounded-xl active:scale-95 active:translate-y-0.5"
         >
-          <Compass className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px] font-mono">Practice</span>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-slate-400 border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_5px_rgba(0,0,0,0.4)] group-hover:text-white">
+            <Compass className="w-4 h-4" />
+          </div>
+          <span className="text-[9px] font-mono tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+            Practice
+          </span>
         </button>
 
-        {/* Center Action: Enter Arena */}
+        {/* Center Hero Action: 3D Elevated Arena Battle Token */}
         <button
           onClick={() => handleNav('lobby')}
-          className="flex flex-col items-center justify-center py-1 px-3 min-w-[56px] text-clutch-violet-light font-bold"
+          className="flex flex-col items-center justify-end -mt-5 group relative focus:outline-none rounded-xl"
         >
-          <div className="w-8 h-8 rounded-xl bg-clutch-violet/30 border border-clutch-violet/50 flex items-center justify-center text-white shadow-[0_0_12px_rgba(124,58,237,0.4)]">
-            <Swords className="w-4 h-4 text-clutch-lavender" />
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-tr from-violet-600 via-purple-500 to-cyan-400 text-white shadow-[0_8px_20px_rgba(124,58,237,0.7),0_0_16px_rgba(6,182,212,0.6),inset_0_1px_2px_rgba(255,255,255,0.8)] border-b-2 border-indigo-950 scale-105 -translate-y-1 active:translate-y-0.5 active:scale-95 transition-all duration-300 relative">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-transparent via-white/10 to-white/30 pointer-events-none" />
+            <Swords className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-400 border border-slate-900 shadow-[0_0_6px_#22d3ee]"></span>
+            </span>
           </div>
-          <span className="text-[9.5px] font-cyber mt-0.5">ARENA</span>
+          <span className="text-[9.5px] font-cyber font-black tracking-wider mt-1 text-cyan-300 drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]">
+            ARENA
+          </span>
         </button>
 
         {/* DSA Blitz Shorts */}
         <button
           onClick={() => handleNav('brainrot_shorts')}
-          className="flex flex-col items-center justify-center py-1 px-3 min-w-[56px] text-clutch-muted hover:text-white transition-colors"
+          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-200 group relative rounded-xl active:scale-95 active:translate-y-0.5"
         >
-          <Smartphone className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px] font-mono">Shorts</span>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-slate-400 border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_5px_rgba(0,0,0,0.4)] group-hover:text-white relative">
+            <Smartphone className="w-4 h-4" />
+            <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[8px] font-black font-mono text-white shadow-[0_0_8px_rgba(244,63,94,0.8)] border border-rose-300/40">
+              ⚡
+            </span>
+          </div>
+          <span className="text-[9px] font-mono tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+            Shorts
+          </span>
         </button>
 
         <button
           onClick={() => handleNav(userProfile.isGuest ? 'auth' : 'dashboard')}
-          className="flex flex-col items-center justify-center py-1 px-3 min-w-[56px] text-clutch-muted hover:text-white transition-colors"
+          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-200 group relative rounded-xl active:scale-95 active:translate-y-0.5"
         >
-          {userProfile.isGuest ? (
-            <>
-              <LogIn className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] font-mono">Sign In</span>
-            </>
-          ) : (
-            <>
-              <LayoutDashboard className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] font-mono">Dash</span>
-            </>
-          )}
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-slate-400 border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_5px_rgba(0,0,0,0.4)] group-hover:text-white">
+            {userProfile.isGuest ? <LogIn className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />}
+          </div>
+          <span className="text-[9px] font-mono tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+            {userProfile.isGuest ? 'Sign In' : 'Dash'}
+          </span>
         </button>
       </nav>
     </div>
