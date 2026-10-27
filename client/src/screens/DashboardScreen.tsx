@@ -348,7 +348,7 @@ export const DashboardScreen: React.FC = () => {
 
   return (
     <AppShell activeScreen="dashboard">
-      <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-6 py-3 sm:py-6 flex flex-col gap-4 sm:gap-8 pb-28 md:pb-12 overflow-x-hidden min-w-0">
+      <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-6 py-3 sm:py-6 flex flex-col gap-4 sm:gap-8 pb-6 sm:pb-12 overflow-x-hidden min-w-0">
         
         {/* =========================================================
             SECTION 1: TACTICAL HERO / ARENA LAUNCH COMMAND

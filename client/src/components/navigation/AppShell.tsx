@@ -299,17 +299,20 @@ export const AppShell: React.FC<AppShellProps> = ({
           </div>
         </header>
 
-        {/* Content Area with Independent Scroll */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-6 relative z-10">
+        {/* Content Area with Independent Scroll - Strictly terminates above the bottom nav dock */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full min-h-0 relative z-10">
           {children}
         </main>
 
         {/* =========================================================
-            MOBILE UNIFIED 3D GLASS DOCK NAVIGATION
+            MOBILE COMPACT FIXED DOCK NAVIGATION
+            - Fixed flex child (shrink-0) at bottom of screen
+            - All content starts and scrolls cleanly strictly ABOVE it
+            - Never overlaps or lets cards scroll into its background
             ========================================================= */}
         <nav
           aria-label="Mobile Navigation"
-          className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#080b1e]/95 backdrop-blur-2xl border-t border-violet-500/25 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] px-1.5 py-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
+          className="md:hidden shrink-0 z-40 bg-[#070919] border-t border-violet-500/25 shadow-[0_-4px_20px_rgba(0,0,0,0.7)] px-1 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
         >
           {bottomNavItems.map((item) => {
             const Icon = item.icon;
@@ -319,30 +322,30 @@ export const AppShell: React.FC<AppShellProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleNav(item.id)}
-                className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
+                className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
               >
-                {/* 3D Capsule Plate */}
+                {/* Sleek Compact Capsule */}
                 <div
-                  className={`w-12 h-8 rounded-xl flex items-center justify-center transition-all duration-200 relative ${
+                  className={`w-9 h-6 rounded-lg flex items-center justify-center transition-all duration-150 relative ${
                     isCurrent
-                      ? 'bg-gradient-to-b from-violet-600/40 via-purple-700/30 to-violet-900/40 border border-violet-400/50 shadow-[0_2px_12px_rgba(124,58,237,0.4),inset_0_1px_1px_rgba(255,255,255,0.25)] text-violet-200'
+                      ? 'bg-gradient-to-b from-violet-600/50 via-purple-700/40 to-violet-900/50 border border-violet-400/60 shadow-[0_1px_8px_rgba(124,58,237,0.4)] text-white'
                       : 'bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04]'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 transition-transform duration-200 ${
-                    isCurrent ? 'scale-110 text-white drop-shadow-[0_0_8px_rgba(196,181,253,0.8)]' : ''
+                  <Icon className={`w-3.5 h-3.5 transition-transform duration-150 ${
+                    isCurrent ? 'scale-110 text-white drop-shadow-[0_0_6px_rgba(196,181,253,0.9)]' : ''
                   }`} />
                   
                   {item.badge && (
-                    <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[8px] font-black font-mono text-white shadow-[0_0_6px_rgba(244,63,94,0.8)]">
+                    <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[7px] font-black font-mono text-white shadow-[0_0_4px_rgba(244,63,94,0.8)]">
                       {item.badge}
                     </span>
                   )}
                 </div>
 
-                {/* Harmonious Clean Label */}
+                {/* Compact Clean Label */}
                 <span
-                  className={`text-[10px] tracking-tight mt-1 transition-colors ${
+                  className={`text-[9px] tracking-tight mt-0.5 leading-none transition-colors ${
                     isCurrent
                       ? 'text-white font-cyber font-bold tracking-wider'
                       : 'text-slate-400 font-mono group-hover:text-slate-200 font-medium'
@@ -351,11 +354,11 @@ export const AppShell: React.FC<AppShellProps> = ({
                   {item.label}
                 </span>
 
-                {/* Symmetrical Neon Micro-bar */}
+                {/* Sleek Micro-dot Indicator */}
                 <div
-                  className={`w-4 h-0.5 rounded-full mt-0.5 transition-all duration-200 ${
+                  className={`w-3 h-0.5 rounded-full mt-0.5 transition-all duration-150 ${
                     isCurrent
-                      ? 'bg-gradient-to-r from-violet-400 to-cyan-300 shadow-[0_0_8px_#a78bfa] opacity-100'
+                      ? 'bg-gradient-to-r from-violet-400 to-cyan-300 shadow-[0_0_6px_#a78bfa] opacity-100'
                       : 'bg-transparent opacity-0'
                   }`}
                 />

@@ -33,7 +33,7 @@ export const HomeScreen: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-full min-h-screen min-h-[100dvh] flex flex-col bg-clutch-bg text-clutch-text overflow-x-hidden select-none relative font-sans pb-16 sm:pb-0">
+    <div className="w-full max-w-full h-screen h-[100dvh] flex flex-col bg-clutch-bg text-clutch-text overflow-hidden select-none relative font-sans">
       {/* 3D Perspective Ground Grid - Strictly contained */}
       <div className="cyber-grid-floor" />
 
@@ -41,7 +41,7 @@ export const HomeScreen: React.FC = () => {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[700px] h-[340px] sm:h-[700px] bg-clutch-violet/5 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Top Navbar - Mobile Friendly & Guaranteed Zero Overflow */}
-      <header className="w-full bg-clutch-surface/95 border-b border-clutch-border backdrop-blur-xl px-3 sm:px-8 py-3 z-40 sticky top-0 shrink-0">
+      <header className="w-full bg-clutch-surface/95 border-b border-clutch-border backdrop-blur-xl px-3 sm:px-8 py-3 z-40 shrink-0">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Logo Brand */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -105,7 +105,9 @@ export const HomeScreen: React.FC = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Main Scrollable Viewport - Content strictly stays within here and terminates above bottom nav */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full min-h-0 relative z-10">
+        {/* Hero Section */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-12 pb-10 sm:pb-16 flex flex-col items-center text-center z-10 w-full">
         {/* Holographic Pill Badge */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-clutch-violet/15 border border-clutch-violet/30 text-clutch-lavender text-[10px] sm:text-xs font-mono mb-3 sm:mb-5 max-w-[90vw]">
@@ -246,83 +248,88 @@ export const HomeScreen: React.FC = () => {
           </div>
         </div>
       </footer>
+      </main>
 
-      {/* Mobile Unified 3D Glass Dock (Phones < sm) */}
+      {/* Mobile Compact Fixed Dock Navigation
+          - Fixed flex child (shrink-0) at bottom of screen
+          - All content strictly stays and scrolls ABOVE it
+          - Never overlaps or lets cards scroll into its background
+      */}
       <nav
         aria-label="Mobile Navigation Bar"
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#080b1e]/95 backdrop-blur-2xl border-t border-violet-500/25 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] px-1.5 py-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
+        className="sm:hidden shrink-0 z-40 bg-[#070919] border-t border-violet-500/25 shadow-[0_-4px_20px_rgba(0,0,0,0.7)] px-1 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
       >
         {/* 1. Home (Active) */}
         <button
           onClick={() => handleNav('home' as any)}
-          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-gradient-to-b from-violet-600/40 via-purple-700/30 to-violet-900/40 border border-violet-400/50 shadow-[0_2px_12px_rgba(124,58,237,0.4),inset_0_1px_1px_rgba(255,255,255,0.25)] text-violet-200">
-            <Home className="w-4 h-4 scale-110 text-white drop-shadow-[0_0_8px_rgba(196,181,253,0.8)]" />
+          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-gradient-to-b from-violet-600/50 via-purple-700/40 to-violet-900/50 border border-violet-400/60 shadow-[0_1px_8px_rgba(124,58,237,0.4)] text-white">
+            <Home className="w-3.5 h-3.5 scale-110 text-white drop-shadow-[0_0_6px_rgba(196,181,253,0.9)]" />
           </div>
-          <span className="text-[10px] tracking-wider mt-1 text-white font-cyber font-bold">
+          <span className="text-[9px] tracking-wider mt-0.5 leading-none text-white font-cyber font-bold">
             Home
           </span>
-          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-gradient-to-r from-violet-400 to-cyan-300 shadow-[0_0_8px_#a78bfa]" />
+          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-gradient-to-r from-violet-400 to-cyan-300 shadow-[0_0_6px_#a78bfa]" />
         </button>
 
         {/* 2. Practice */}
         <button
           onClick={() => handleNav('solo_quest')}
-          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
-            <Compass className="w-4 h-4" />
+          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
+            <Compass className="w-3.5 h-3.5" />
           </div>
-          <span className="text-[10px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+          <span className="text-[9px] font-mono font-medium tracking-tight mt-0.5 leading-none text-slate-400 group-hover:text-slate-200">
             Practice
           </span>
-          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
+          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
 
         {/* 3. Arena */}
         <button
           onClick={() => handleNav('lobby')}
-          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
-            <Swords className="w-4 h-4" />
+          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
+            <Swords className="w-3.5 h-3.5" />
           </div>
-          <span className="text-[10px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+          <span className="text-[9px] font-mono font-medium tracking-tight mt-0.5 leading-none text-slate-400 group-hover:text-slate-200">
             Arena
           </span>
-          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
+          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
 
         {/* 4. Shorts */}
         <button
           onClick={() => handleNav('brainrot_shorts')}
-          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all relative">
-            <Smartphone className="w-4 h-4" />
-            <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[8px] font-black font-mono text-white shadow-[0_0_6px_rgba(244,63,94,0.8)]">
+          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all relative">
+            <Smartphone className="w-3.5 h-3.5" />
+            <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[7px] font-black font-mono text-white shadow-[0_0_4px_rgba(244,63,94,0.8)]">
               ⚡
             </span>
           </div>
-          <span className="text-[10px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+          <span className="text-[9px] font-mono font-medium tracking-tight mt-0.5 leading-none text-slate-400 group-hover:text-slate-200">
             Shorts
           </span>
-          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
+          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
 
         {/* 5. Profile / Dashboard */}
         <button
           onClick={() => handleNav(userProfile.isGuest ? 'auth' : 'dashboard')}
-          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
-            {userProfile.isGuest ? <LogIn className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />}
+          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
+            {userProfile.isGuest ? <LogIn className="w-3.5 h-3.5" /> : <LayoutDashboard className="w-3.5 h-3.5" />}
           </div>
-          <span className="text-[10px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+          <span className="text-[9px] font-mono font-medium tracking-tight mt-0.5 leading-none text-slate-400 group-hover:text-slate-200">
             {userProfile.isGuest ? 'Sign In' : 'Dash'}
           </span>
-          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
+          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
       </nav>
     </div>
