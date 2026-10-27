@@ -247,81 +247,82 @@ export const HomeScreen: React.FC = () => {
         </div>
       </footer>
 
-      {/* Mobile Android Bottom Dock (Only on phones < sm) */}
-      {/* Mobile 3D Floating Cyber-Dock (Phones < sm) */}
+      {/* Mobile Unified 3D Glass Dock (Phones < sm) */}
       <nav
         aria-label="Mobile Navigation Bar"
-        className="sm:hidden fixed bottom-2 inset-x-2.5 max-w-lg mx-auto z-50 rounded-2xl bg-gradient-to-b from-[#161a3f]/95 via-[#0d102b]/95 to-[#060818]/98 backdrop-blur-2xl border border-violet-500/30 border-t-violet-400/50 shadow-[0_12px_36px_rgba(0,0,0,0.85),0_0_24px_rgba(124,58,237,0.25),inset_0_1px_1px_rgba(255,255,255,0.25)] p-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-end justify-items-center gap-1"
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#080b1e]/95 backdrop-blur-2xl border-t border-violet-500/25 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] px-1.5 py-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
       >
+        {/* 1. Home (Active) */}
         <button
           onClick={() => handleNav('home' as any)}
-          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-200 group relative rounded-xl active:scale-95 active:translate-y-0.5"
+          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-b from-violet-500 via-purple-600 to-indigo-700 text-white shadow-[0_6px_14px_rgba(124,58,237,0.55),inset_0_1px_1px_rgba(255,255,255,0.45)] border-t border-white/40 border-b-2 border-purple-950 -translate-y-1">
-            <Home className="w-4 h-4 scale-110 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
+          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-gradient-to-b from-violet-600/40 via-purple-700/30 to-violet-900/40 border border-violet-400/50 shadow-[0_2px_12px_rgba(124,58,237,0.4),inset_0_1px_1px_rgba(255,255,255,0.25)] text-violet-200">
+            <Home className="w-4 h-4 scale-110 text-white drop-shadow-[0_0_8px_rgba(196,181,253,0.8)]" />
           </div>
-          <span className="text-[9px] font-mono tracking-tight mt-1 text-violet-200 font-bold drop-shadow-[0_0_8px_rgba(196,181,253,0.5)]">
+          <span className="text-[10px] tracking-wider mt-1 text-white font-cyber font-bold">
             Home
           </span>
-          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse mt-0.5" />
+          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-gradient-to-r from-violet-400 to-cyan-300 shadow-[0_0_8px_#a78bfa]" />
         </button>
 
+        {/* 2. Practice */}
         <button
           onClick={() => handleNav('solo_quest')}
-          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-200 group relative rounded-xl active:scale-95 active:translate-y-0.5"
+          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-slate-400 border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_5px_rgba(0,0,0,0.4)] group-hover:text-white">
+          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
             <Compass className="w-4 h-4" />
           </div>
-          <span className="text-[9px] font-mono tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+          <span className="text-[10px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
             Practice
           </span>
+          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
 
-        {/* Center Hero Action: 3D Elevated Arena Battle Token */}
+        {/* 3. Arena */}
         <button
           onClick={() => handleNav('lobby')}
-          className="flex flex-col items-center justify-end -mt-5 group relative focus:outline-none rounded-xl"
+          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-tr from-violet-600 via-purple-500 to-cyan-400 text-white shadow-[0_8px_20px_rgba(124,58,237,0.7),0_0_16px_rgba(6,182,212,0.6),inset_0_1px_2px_rgba(255,255,255,0.8)] border-b-2 border-indigo-950 scale-105 -translate-y-1 active:translate-y-0.5 active:scale-95 transition-all duration-300 relative">
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-transparent via-white/10 to-white/30 pointer-events-none" />
-            <Swords className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
-            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-400 border border-slate-900 shadow-[0_0_6px_#22d3ee]"></span>
-            </span>
+          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
+            <Swords className="w-4 h-4" />
           </div>
-          <span className="text-[9.5px] font-cyber font-black tracking-wider mt-1 text-cyan-300 drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]">
-            ARENA
+          <span className="text-[10px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+            Arena
           </span>
+          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
 
-        {/* DSA Blitz Shorts */}
+        {/* 4. Shorts */}
         <button
           onClick={() => handleNav('brainrot_shorts')}
-          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-200 group relative rounded-xl active:scale-95 active:translate-y-0.5"
+          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-slate-400 border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_5px_rgba(0,0,0,0.4)] group-hover:text-white relative">
+          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all relative">
             <Smartphone className="w-4 h-4" />
-            <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[8px] font-black font-mono text-white shadow-[0_0_8px_rgba(244,63,94,0.8)] border border-rose-300/40">
+            <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[8px] font-black font-mono text-white shadow-[0_0_6px_rgba(244,63,94,0.8)]">
               ⚡
             </span>
           </div>
-          <span className="text-[9px] font-mono tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+          <span className="text-[10px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
             Shorts
           </span>
+          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
 
+        {/* 5. Profile / Dashboard */}
         <button
           onClick={() => handleNav(userProfile.isGuest ? 'auth' : 'dashboard')}
-          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-200 group relative rounded-xl active:scale-95 active:translate-y-0.5"
+          className="w-full flex flex-col items-center justify-center py-1 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-slate-400 border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_5px_rgba(0,0,0,0.4)] group-hover:text-white">
+          <div className="w-12 h-8 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
             {userProfile.isGuest ? <LogIn className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />}
           </div>
-          <span className="text-[9px] font-mono tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+          <span className="text-[10px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
             {userProfile.isGuest ? 'Sign In' : 'Dash'}
           </span>
+          <div className="w-4 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
       </nav>
     </div>
