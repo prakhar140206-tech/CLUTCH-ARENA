@@ -24,15 +24,18 @@ export const App: React.FC = () => {
     socketService.connect();
   }, []);
 
+  // During boot loading, render ONLY the full-screen loading animation (no menu bar or background screens)
+  if (isBootLoading) {
+    return (
+      <LogoLoadingScreen
+        onFinish={() => setIsBootLoading(false)}
+        durationMs={2100}
+      />
+    );
+  }
+
   return (
     <>
-      {/* Starting Platform Logo Loading Animation */}
-      {isBootLoading && (
-        <LogoLoadingScreen
-          onFinish={() => setIsBootLoading(false)}
-          durationMs={2100}
-        />
-      )}
 
       {(currentScreen === 'home' || currentScreen === 'cinematic') ? (
         <div className="w-full max-w-full h-screen h-[100dvh] bg-clutch-bg text-clutch-text flex flex-col overflow-x-hidden overflow-y-auto">

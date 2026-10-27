@@ -61,7 +61,7 @@ export const LogoLoadingScreen: React.FC<LogoLoadingScreenProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-clutch-bg select-none transition-all duration-500 overflow-hidden ${
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#060713] select-none transition-all duration-500 overflow-hidden ${
         isFadingOut ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
