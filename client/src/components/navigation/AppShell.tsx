@@ -305,14 +305,11 @@ export const AppShell: React.FC<AppShellProps> = ({
         </main>
 
         {/* =========================================================
-            MOBILE COMPACT FIXED DOCK NAVIGATION
-            - Fixed flex child (shrink-0) at bottom of screen
-            - All content starts and scrolls cleanly strictly ABOVE it
-            - Never overlaps or lets cards scroll into its background
+            MOBILE DOCK NAVIGATION (MATCHING REFERENCE DESIGN)
             ========================================================= */}
         <nav
           aria-label="Mobile Navigation"
-          className="md:hidden shrink-0 z-40 bg-[#070919] border-t border-violet-500/25 shadow-[0_-4px_20px_rgba(0,0,0,0.7)] px-1 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
+          className="md:hidden shrink-0 z-40 bg-[#070919] border-t border-violet-500/20 shadow-[0_-4px_20px_rgba(0,0,0,0.7)] px-1 py-1.5 pb-[max(0.35rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
         >
           {bottomNavItems.map((item) => {
             const Icon = item.icon;
@@ -324,16 +321,16 @@ export const AppShell: React.FC<AppShellProps> = ({
                 onClick={() => handleNav(item.id)}
                 className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
               >
-                {/* Sleek Compact Capsule */}
+                {/* Rounded Square Container (Active has soft violet plate matching user reference) */}
                 <div
-                  className={`w-9 h-6 rounded-lg flex items-center justify-center transition-all duration-150 relative ${
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative ${
                     isCurrent
-                      ? 'bg-gradient-to-b from-violet-600/50 via-purple-700/40 to-violet-900/50 border border-violet-400/60 shadow-[0_1px_8px_rgba(124,58,237,0.4)] text-white'
+                      ? 'bg-violet-600/35 border border-violet-400/40 text-white shadow-[0_0_12px_rgba(124,58,237,0.35)]'
                       : 'bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04]'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 transition-transform duration-150 ${
-                    isCurrent ? 'scale-110 text-white drop-shadow-[0_0_6px_rgba(196,181,253,0.9)]' : ''
+                  <Icon className={`w-4 h-4 transition-transform duration-150 ${
+                    isCurrent ? 'scale-110 text-white drop-shadow-[0_0_8px_rgba(196,181,253,0.9)]' : ''
                   }`} />
                   
                   {item.badge && (
@@ -343,25 +340,16 @@ export const AppShell: React.FC<AppShellProps> = ({
                   )}
                 </div>
 
-                {/* Compact Clean Label */}
+                {/* Clean Label directly below icon */}
                 <span
-                  className={`text-[9px] tracking-tight mt-0.5 leading-none transition-colors ${
+                  className={`text-[10px] sm:text-[11px] tracking-tight mt-1 leading-none transition-colors ${
                     isCurrent
-                      ? 'text-white font-cyber font-bold tracking-wider'
+                      ? 'text-white font-cyber font-bold tracking-wide'
                       : 'text-slate-400 font-mono group-hover:text-slate-200 font-medium'
                   }`}
                 >
                   {item.label}
                 </span>
-
-                {/* Sleek Micro-dot Indicator */}
-                <div
-                  className={`w-3 h-0.5 rounded-full mt-0.5 transition-all duration-150 ${
-                    isCurrent
-                      ? 'bg-gradient-to-r from-violet-400 to-cyan-300 shadow-[0_0_6px_#a78bfa] opacity-100'
-                      : 'bg-transparent opacity-0'
-                  }`}
-                />
               </button>
             );
           })}

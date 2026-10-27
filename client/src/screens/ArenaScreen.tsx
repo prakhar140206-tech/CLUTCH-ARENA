@@ -14,7 +14,7 @@ import { ArrangeStepsWorkspace } from '../components/challenges/ArrangeStepsWork
 import { FillBlankWorkspace } from '../components/challenges/FillBlankWorkspace.js';
 import { PseudocodeWorkspace } from '../components/challenges/PseudocodeWorkspace.js';
 import { soundSynth } from '../services/soundSynth.js';
-import { Swords, Bot, Users, Play, CheckCircle2, Award, Clock, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Swords, Bot, Users, Play, CheckCircle2, Award, Clock, ArrowRight, ShieldCheck, Zap, LayoutDashboard, Compass, Smartphone, User } from 'lucide-react';
 
 export const ArenaScreen: React.FC = () => {
   const activeRoom = useGameStore((s) => s.activeRoom);
@@ -397,6 +397,74 @@ export const ArenaScreen: React.FC = () => {
         )}
       </div>
 
+      {/* Mobile Bottom Navigation Dock (Matching Reference Design) */}
+      <nav
+        aria-label="Mobile Navigation"
+        className="md:hidden shrink-0 z-40 bg-[#070919] border-t border-violet-500/20 shadow-[0_-4px_20px_rgba(0,0,0,0.7)] px-1 py-1.5 pb-[max(0.35rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
+      >
+        <button
+          onClick={() => { soundSynth.click(); setScreen('dashboard'); }}
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
+        >
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200">
+            <LayoutDashboard className="w-4 h-4" />
+          </div>
+          <span className="text-[10px] sm:text-[11px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+            Dashboard
+          </span>
+        </button>
+
+        <button
+          onClick={() => { soundSynth.click(); setScreen('solo_quest'); }}
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
+        >
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200">
+            <Compass className="w-4 h-4" />
+          </div>
+          <span className="text-[10px] sm:text-[11px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+            Practice
+          </span>
+        </button>
+
+        <button
+          onClick={() => { soundSynth.click(); }}
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
+        >
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-violet-600/35 border border-violet-400/40 text-white shadow-[0_0_12px_rgba(124,58,237,0.35)]">
+            <Swords className="w-4 h-4 scale-110 text-white drop-shadow-[0_0_8px_rgba(196,181,253,0.9)]" />
+          </div>
+          <span className="text-[10px] sm:text-[11px] tracking-wide mt-1 text-white font-cyber font-bold">
+            Arena
+          </span>
+        </button>
+
+        <button
+          onClick={() => { soundSynth.click(); setScreen('brainrot_shorts'); }}
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
+        >
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 relative">
+            <Smartphone className="w-4 h-4" />
+            <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[7px] font-black font-mono text-white shadow-[0_0_4px_rgba(244,63,94,0.8)]">
+              ⚡
+            </span>
+          </div>
+          <span className="text-[10px] sm:text-[11px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+            Shorts
+          </span>
+        </button>
+
+        <button
+          onClick={() => { soundSynth.click(); setScreen('profile'); }}
+          className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
+        >
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200">
+            <User className="w-4 h-4" />
+          </div>
+          <span className="text-[10px] sm:text-[11px] font-mono font-medium tracking-tight mt-1 text-slate-400 group-hover:text-slate-200">
+            Profile
+          </span>
+        </button>
+      </nav>
     </div>
   );
 };

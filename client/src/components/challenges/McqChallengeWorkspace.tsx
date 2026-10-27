@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ClientChallenge } from '../../../../shared/types.js';
 import { soundSynth } from '../../services/soundSynth.js';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, XCircle, Terminal, Sparkles, Lock, ShieldAlert, Award, Lightbulb, AlertTriangle, ArrowRight } from 'lucide-react';
+import { CheckCircle2, XCircle, Terminal, Sparkles, Send, Award, Lightbulb, AlertTriangle } from 'lucide-react';
 
 interface McqChallengeWorkspaceProps {
   challenge: ClientChallenge;
@@ -16,8 +16,9 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
   disabled = false
 }) => {
   const [attemptsRemaining, setAttemptsRemaining] = useState<number>(2);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedIdx, setSelectedIdx] = useState<number>(-1);
   const [wrongOptions, setWrongOptions] = useState<string[]>([]);
-  const [lockedOption, setLockedOption] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [feedbackBanner, setFeedbackBanner] = useState<{ type: 'info' | 'warning' | 'success' | 'error'; message: string } | null>(null);
@@ -25,13 +26,14 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
   // Reset state when challenge changes
   useEffect(() => {
     setAttemptsRemaining(2);
+    setSelectedOption(null);
+    setSelectedIdx(-1);
     setWrongOptions([]);
-    setLockedOption(null);
     setIsAnswered(false);
     setIsCorrect(null);
     setFeedbackBanner({
       type: 'info',
-      message: 'Tap an option to lock in your answer • You have 2 chances'
+      message: 'Select an option and click Submit Answer • You have 2 chances'
     });
   }, [challenge.id]);
 
@@ -48,21 +50,38 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
     const cleanExpected = normalize(challenge.correctAnswer);
     const letter = String.fromCharCode(65 + idx).toLowerCase();
 
-    // Check exact text match, letter match, or substring match
-    return cleanOpt === cleanExpected || cleanExpected === letter || cleanExpected === `[${letter}]` || cleanExpected === `${letter})` || cleanOpt.includes(cleanExpected);
+    return (
+      cleanOpt === cleanExpected ||
+      cleanExpected === letter ||
+      cleanExpected === `[${letter}]` ||
+      cleanExpected === `${letter})` ||
+      cleanOpt.includes(cleanExpected)
+    );
   };
 
   // Find the correct option text for revealing solutions
-  const correctOptionText = challenge.options?.find((opt, idx) => isOptionCorrect(opt, idx)) || (typeof challenge.correctAnswer === 'string' ? challenge.correctAnswer : '');
+  const correctOptionText =
+    challenge.options?.find((opt, idx) => isOptionCorrect(opt, idx)) ||
+    (typeof challenge.correctAnswer === 'string' ? challenge.correctAnswer : '');
 
-  // Handle immediate lock-in when clicking an option
+  // Handle selecting an option candidate
   const handleSelectOption = (opt: string, idx: number) => {
     if (disabled || isAnswered || wrongOptions.includes(opt)) return;
+    soundSynth.click();
+    setSelectedOption(opt);
+    setSelectedIdx(idx);
+    setFeedbackBanner({
+      type: 'info',
+      message: `Selected [${String.fromCharCode(65 + idx)}] • Click "Submit Answer" to confirm`
+    });
+  };
+
+  // Handle explicit submission via the Submit Button (for both PC/Desktop and Mobile)
+  const handleSubmitAnswer = () => {
+    if (!selectedOption || disabled || isAnswered) return;
 
     soundSynth.click();
-    setLockedOption(opt);
-
-    const isMatch = isOptionCorrect(opt, idx);
+    const isMatch = isOptionCorrect(selectedOption, selectedIdx);
 
     if (isMatch) {
       // SUCCESS!
@@ -78,20 +97,18 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
       if (attemptsRemaining === 2) {
         setFeedbackBanner({
           type: 'success',
-          message: '🏆 CORRECT ON 1ST CHANCE! Answer locked in • Full Points Awarded'
+          message: '🏆 CORRECT ON 1ST CHANCE! Answer confirmed • Full Points Awarded'
         });
       } else {
         setFeedbackBanner({
           type: 'success',
-          message: '⚡ CORRECT ON 2ND CHANCE! Answer locked in • Bonus Points Awarded'
+          message: '⚡ CORRECT ON 2ND CHANCE! Answer confirmed • Bonus Points Awarded'
         });
       }
 
-      // Submit immediately
       setTimeout(() => {
-        onSubmit(opt);
+        onSubmit(selectedOption);
       }, 900);
-
     } else {
       // INCORRECT!
       try {
@@ -100,29 +117,31 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
         // sound optional
       }
 
+      const failedOption = selectedOption;
+
       if (attemptsRemaining === 2) {
         // Used 1st chance -> 1 chance remains
         setAttemptsRemaining(1);
-        setWrongOptions((prev) => [...prev, opt]);
-        setLockedOption(null);
+        setWrongOptions((prev) => [...prev, failedOption]);
+        setSelectedOption(null);
+        setSelectedIdx(-1);
         setFeedbackBanner({
           type: 'warning',
-          message: '❌ INCORRECT! 1 CHANCE REMAINING — CHOOSE CAREFULLY!'
+          message: '❌ INCORRECT! 1 CHANCE REMAINING — CHOOSE ANOTHER OPTION AND SUBMIT!'
         });
       } else {
         // Used 2nd chance -> 0 chances left, question finished
         setAttemptsRemaining(0);
-        setWrongOptions((prev) => [...prev, opt]);
+        setWrongOptions((prev) => [...prev, failedOption]);
         setIsAnswered(true);
         setIsCorrect(false);
         setFeedbackBanner({
           type: 'error',
-          message: '🔒 0 CHANCES LEFT! Answer locked as incorrect • Solution revealed below'
+          message: '🔒 0 CHANCES LEFT! Answer incorrect • Solution revealed below'
         });
 
-        // Submit answer as failed after showing solution
         setTimeout(() => {
-          onSubmit(opt);
+          onSubmit(failedOption);
         }, 1800);
       }
     }
@@ -195,7 +214,7 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
           {feedbackBanner.type === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
           {feedbackBanner.type === 'warning' && <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />}
           {feedbackBanner.type === 'error' && <XCircle className="w-4 h-4 text-rose-400 shrink-0" />}
-          {feedbackBanner.type === 'info' && <Lock className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
+          {feedbackBanner.type === 'info' && <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
           <span className="font-semibold">{feedbackBanner.message}</span>
         </div>
       )}
@@ -216,28 +235,32 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
         </div>
       )}
 
-      {/* Interactive Options List - Instant Lock-in on Click */}
+      {/* Options List */}
       <div className="space-y-2.5 sm:space-y-3 flex-1 py-1">
         {challenge.options?.map((opt, idx) => {
           const letter = String.fromCharCode(65 + idx);
           const isWrong = wrongOptions.includes(opt);
-          const isSelected = lockedOption === opt;
+          const isSelected = selectedOption === opt;
           const isCorrectAnswer = isAnswered && isOptionCorrect(opt, idx);
 
-          let optionStyle = 'bg-clutch-surface-light border-clutch-border text-clutch-muted hover:border-clutch-violet/60 hover:text-white hover:bg-clutch-surface-elevated';
+          let optionStyle =
+            'bg-clutch-surface-light border-clutch-border text-clutch-muted hover:border-clutch-violet/60 hover:text-white hover:bg-clutch-surface-elevated';
           let letterStyle = 'bg-clutch-surface text-clutch-subtle';
 
           if (isCorrectAnswer) {
-            // Correct answer revealed or selected
-            optionStyle = 'bg-emerald-950/60 border-emerald-400 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.35)] ring-1 ring-emerald-400';
+            // Correct answer revealed
+            optionStyle =
+              'bg-emerald-950/60 border-emerald-400 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.35)] ring-1 ring-emerald-400';
             letterStyle = 'bg-emerald-500 text-black font-black';
           } else if (isWrong) {
             // Wrong attempt
-            optionStyle = 'bg-rose-950/40 border-rose-500/50 text-rose-300 line-through opacity-60 cursor-not-allowed';
+            optionStyle =
+              'bg-rose-950/40 border-rose-500/50 text-rose-300 line-through opacity-60 cursor-not-allowed';
             letterStyle = 'bg-rose-500/30 text-rose-300 font-bold';
           } else if (isSelected) {
-            // Currently locked in
-            optionStyle = 'bg-violet-900/40 border-violet-400 text-white shadow-[0_0_15px_rgba(124,58,237,0.4)] ring-1 ring-violet-400';
+            // Selected candidate (waiting for Submit button)
+            optionStyle =
+              'bg-violet-900/40 border-violet-400 text-white shadow-[0_0_15px_rgba(124,58,237,0.4)] ring-1 ring-violet-400';
             letterStyle = 'bg-violet-600 text-white font-bold';
           }
 
@@ -249,7 +272,9 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
               className={`w-full p-3 sm:p-3.5 rounded-xl border text-left text-xs font-mono transition-all duration-150 flex items-center justify-between min-h-[48px] focus-visible:ring-2 focus-visible:ring-clutch-lavender focus-visible:outline-none touch-manipulation relative group ${optionStyle}`}
             >
               <div className="flex items-center gap-3 min-w-0 flex-1">
-                <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${letterStyle}`}>
+                <span
+                  className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${letterStyle}`}
+                >
                   {isCorrectAnswer ? '✓' : isWrong ? '✕' : letter}
                 </span>
                 <span className="break-words leading-relaxed">{opt}</span>
@@ -269,9 +294,9 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
                     <span>INCORRECT</span>
                   </span>
                 )}
-                {!isCorrectAnswer && !isWrong && !isAnswered && (
-                  <span className="text-[10px] font-mono text-clutch-subtle opacity-0 group-hover:opacity-100 transition-opacity">
-                    Click to Lock
+                {isSelected && !isAnswered && (
+                  <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-violet-300 px-2 py-0.5 rounded bg-violet-500/20 border border-violet-500/40">
+                    <span>SELECTED</span>
                   </span>
                 )}
               </div>
@@ -311,11 +336,34 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
                     : '0 Points (Review Concept)'}
                 </span>
               </span>
-              <span className="text-clutch-muted animate-pulse">
-                Advancing to Round Standings...
-              </span>
+              <span className="text-clutch-muted animate-pulse">Advancing to Round Standings...</span>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Explicit Submit Answer Bar - Desktop / PC and Mobile */}
+      {!isAnswered && (
+        <div className="mt-4 pt-3 border-t border-clutch-border flex items-center justify-between gap-3 shrink-0 bg-clutch-panel/90 backdrop-blur-sm -mx-1 px-1">
+          <div className="text-xs font-mono text-clutch-subtle truncate max-w-[140px] sm:max-w-xs">
+            Selected:{' '}
+            <strong className={selectedOption ? 'text-cyan-300 font-bold' : 'text-slate-400 font-normal'}>
+              {selectedOption ? selectedOption.slice(0, 26) + (selectedOption.length > 26 ? '...' : '') : 'None'}
+            </strong>
+          </div>
+
+          <button
+            onClick={handleSubmitAnswer}
+            disabled={!selectedOption || disabled || isAnswered}
+            className={`px-5 sm:px-6 py-2.5 rounded-xl font-cyber font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 min-h-[44px] shadow-lg ${
+              selectedOption && !isAnswered && !disabled
+                ? 'bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-[0_0_20px_rgba(124,58,237,0.5)] border border-violet-400/50 active:scale-95 cursor-pointer'
+                : 'bg-clutch-surface-light border border-clutch-border text-clutch-muted opacity-50 cursor-not-allowed'
+            }`}
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>Submit Answer</span>
+          </button>
         </div>
       )}
     </div>

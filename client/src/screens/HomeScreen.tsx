@@ -257,20 +257,19 @@ export const HomeScreen: React.FC = () => {
       */}
       <nav
         aria-label="Mobile Navigation Bar"
-        className="sm:hidden shrink-0 z-40 bg-[#070919] border-t border-violet-500/25 shadow-[0_-4px_20px_rgba(0,0,0,0.7)] px-1 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
+        className="sm:hidden shrink-0 z-40 bg-[#070919] border-t border-violet-500/20 shadow-[0_-4px_20px_rgba(0,0,0,0.7)] px-1 py-1.5 pb-[max(0.35rem,env(safe-area-inset-bottom))] grid grid-cols-5 items-center justify-items-center w-full"
       >
         {/* 1. Home (Active) */}
         <button
           onClick={() => handleNav('home' as any)}
           className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-gradient-to-b from-violet-600/50 via-purple-700/40 to-violet-900/50 border border-violet-400/60 shadow-[0_1px_8px_rgba(124,58,237,0.4)] text-white">
-            <Home className="w-3.5 h-3.5 scale-110 text-white drop-shadow-[0_0_6px_rgba(196,181,253,0.9)]" />
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-violet-600/35 border border-violet-400/40 text-white shadow-[0_0_12px_rgba(124,58,237,0.35)]">
+            <Home className="w-4 h-4 scale-110 text-white drop-shadow-[0_0_8px_rgba(196,181,253,0.9)]" />
           </div>
-          <span className="text-[9px] tracking-wider mt-0.5 leading-none text-white font-cyber font-bold">
+          <span className="text-[10px] sm:text-[11px] tracking-wide mt-1 leading-none text-white font-cyber font-bold">
             Home
           </span>
-          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-gradient-to-r from-violet-400 to-cyan-300 shadow-[0_0_6px_#a78bfa]" />
         </button>
 
         {/* 2. Practice */}
@@ -278,13 +277,12 @@ export const HomeScreen: React.FC = () => {
           onClick={() => handleNav('solo_quest')}
           className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
-            <Compass className="w-3.5 h-3.5" />
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
+            <Compass className="w-4 h-4" />
           </div>
-          <span className="text-[9px] font-mono font-medium tracking-tight mt-0.5 leading-none text-slate-400 group-hover:text-slate-200">
+          <span className="text-[10px] sm:text-[11px] font-mono font-medium tracking-tight mt-1 leading-none text-slate-400 group-hover:text-slate-200">
             Practice
           </span>
-          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
 
         {/* 3. Arena */}
@@ -292,13 +290,12 @@ export const HomeScreen: React.FC = () => {
           onClick={() => handleNav('lobby')}
           className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
-            <Swords className="w-3.5 h-3.5" />
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
+            <Swords className="w-4 h-4" />
           </div>
-          <span className="text-[9px] font-mono font-medium tracking-tight mt-0.5 leading-none text-slate-400 group-hover:text-slate-200">
+          <span className="text-[10px] sm:text-[11px] font-mono font-medium tracking-tight mt-1 leading-none text-slate-400 group-hover:text-slate-200">
             Arena
           </span>
-          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
 
         {/* 4. Shorts */}
@@ -306,16 +303,15 @@ export const HomeScreen: React.FC = () => {
           onClick={() => handleNav('brainrot_shorts')}
           className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all relative">
-            <Smartphone className="w-3.5 h-3.5" />
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all relative">
+            <Smartphone className="w-4 h-4" />
             <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-rose-500 text-[7px] font-black font-mono text-white shadow-[0_0_4px_rgba(244,63,94,0.8)]">
               ⚡
             </span>
           </div>
-          <span className="text-[9px] font-mono font-medium tracking-tight mt-0.5 leading-none text-slate-400 group-hover:text-slate-200">
+          <span className="text-[10px] sm:text-[11px] font-mono font-medium tracking-tight mt-1 leading-none text-slate-400 group-hover:text-slate-200">
             Shorts
           </span>
-          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
 
         {/* 5. Profile / Dashboard */}
@@ -323,13 +319,12 @@ export const HomeScreen: React.FC = () => {
           onClick={() => handleNav(userProfile.isGuest ? 'auth' : 'dashboard')}
           className="w-full flex flex-col items-center justify-center py-0.5 transition-all duration-150 group relative focus:outline-none active:scale-95"
         >
-          <div className="w-9 h-6 rounded-lg flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
-            {userProfile.isGuest ? <LogIn className="w-3.5 h-3.5" /> : <LayoutDashboard className="w-3.5 h-3.5" />}
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent text-slate-400 group-hover:text-slate-200 group-hover:bg-white/[0.04] transition-all">
+            {userProfile.isGuest ? <LogIn className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />}
           </div>
-          <span className="text-[9px] font-mono font-medium tracking-tight mt-0.5 leading-none text-slate-400 group-hover:text-slate-200">
+          <span className="text-[10px] sm:text-[11px] font-mono font-medium tracking-tight mt-1 leading-none text-slate-400 group-hover:text-slate-200">
             {userProfile.isGuest ? 'Sign In' : 'Dash'}
           </span>
-          <div className="w-3 h-0.5 rounded-full mt-0.5 bg-transparent opacity-0" />
         </button>
       </nav>
     </div>
