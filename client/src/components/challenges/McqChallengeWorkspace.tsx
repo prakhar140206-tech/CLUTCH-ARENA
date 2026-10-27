@@ -148,22 +148,22 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full clutch-panel rounded-2xl overflow-y-auto p-3.5 sm:p-5 font-sans border border-clutch-border select-none">
+    <div className="flex flex-col h-full clutch-panel rounded-2xl overflow-y-auto overflow-x-hidden p-2.5 sm:p-5 font-sans border border-clutch-border select-none w-full max-w-full min-w-0">
       {/* Top Header: Topic, Difficulty, and 2-Chances Indicator */}
-      <div className="flex items-center justify-between gap-2 mb-3 shrink-0 flex-wrap">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-cyber tracking-wider text-clutch-lavender uppercase font-bold flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>{challenge.topic.replace(/_/g, ' ')}</span>
+      <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3 shrink-0 flex-wrap">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="text-[11px] sm:text-xs font-cyber tracking-wider text-clutch-lavender uppercase font-bold flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+            <span className="truncate max-w-[160px] xs:max-w-none">{challenge.topic.replace(/_/g, ' ')}</span>
           </span>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-clutch-violet/20 text-clutch-lavender border border-clutch-violet/30 uppercase font-semibold">
+          <span className="text-[9px] sm:text-[10px] font-mono px-2 py-0.5 rounded bg-clutch-violet/20 text-clutch-lavender border border-clutch-violet/30 uppercase font-semibold">
             {challenge.difficulty}
           </span>
         </div>
 
         {/* 2-Chances Counter Badge */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-clutch-surface-light border border-clutch-border">
-          <span className="text-[10px] font-mono text-clutch-subtle font-bold uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-clutch-surface-light border border-clutch-border shrink-0">
+          <span className="text-[9px] sm:text-[10px] font-mono text-clutch-subtle font-bold uppercase tracking-wider">
             Chances:
           </span>
           <div className="flex items-center gap-1">
@@ -185,7 +185,7 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
             />
           </div>
           <span
-            className={`text-[10px] font-mono font-bold ml-0.5 ${
+            className={`text-[9px] sm:text-[10px] font-mono font-bold ml-0.5 ${
               attemptsRemaining === 2
                 ? 'text-cyan-300'
                 : attemptsRemaining === 1
@@ -201,7 +201,7 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
       {/* Dynamic Feedback Banner */}
       {feedbackBanner && (
         <div
-          className={`mb-3 px-3 py-2 rounded-xl border text-xs font-mono flex items-center gap-2 transition-all duration-300 ${
+          className={`mb-2.5 sm:mb-3 px-3 py-2 rounded-xl border text-[11px] sm:text-xs font-mono flex items-center gap-2 transition-all duration-300 max-w-full ${
             feedbackBanner.type === 'success'
               ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
               : feedbackBanner.type === 'warning'
@@ -215,28 +215,28 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
           {feedbackBanner.type === 'warning' && <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />}
           {feedbackBanner.type === 'error' && <XCircle className="w-4 h-4 text-rose-400 shrink-0" />}
           {feedbackBanner.type === 'info' && <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
-          <span className="font-semibold">{feedbackBanner.message}</span>
+          <span className="font-semibold break-words flex-1 min-w-0">{feedbackBanner.message}</span>
         </div>
       )}
 
-      {/* Question Prompt */}
-      <div className="text-slate-100 text-sm sm:text-base font-semibold mb-3 leading-relaxed shrink-0">
+      {/* Question Prompt - Fluid Responsive Typography */}
+      <div className="text-slate-100 text-xs xs:text-sm sm:text-base font-semibold mb-2.5 sm:mb-3 leading-snug sm:leading-relaxed break-words shrink-0 max-w-full">
         {challenge.prompt}
       </div>
 
-      {/* Code Snippet if applicable */}
+      {/* Code Snippet if applicable - Containment & Fluid Scrolling */}
       {challenge.codeSnippet && (
-        <div className="mb-4 bg-clutch-bg rounded-xl border border-clutch-border p-3 sm:p-3.5 font-mono text-xs text-clutch-lavender overflow-x-auto relative shrink-0">
-          <div className="flex items-center gap-1.5 text-[10px] text-clutch-subtle mb-2 border-b border-clutch-border pb-1">
+        <div className="mb-3 sm:mb-4 bg-clutch-bg rounded-xl border border-clutch-border p-2.5 sm:p-3.5 font-mono text-[11px] sm:text-xs text-clutch-lavender overflow-x-auto relative shrink-0 max-w-full">
+          <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] text-clutch-subtle mb-1.5 border-b border-clutch-border pb-1">
             <Terminal className="w-3 h-3 text-clutch-lavender" />
             <span>ALGORITHM REFERENCE</span>
           </div>
-          <pre className="leading-relaxed">{challenge.codeSnippet}</pre>
+          <pre className="leading-relaxed whitespace-pre font-mono">{challenge.codeSnippet}</pre>
         </div>
       )}
 
-      {/* Options List */}
-      <div className="space-y-2.5 sm:space-y-3 flex-1 py-1">
+      {/* Options List - Fully responsive with zero truncation */}
+      <div className="space-y-2 sm:space-y-2.5 flex-1 py-1 max-w-full">
         {challenge.options?.map((opt, idx) => {
           const letter = String.fromCharCode(65 + idx);
           const isWrong = wrongOptions.includes(opt);
@@ -269,33 +269,35 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
               key={opt}
               onClick={() => handleSelectOption(opt, idx)}
               disabled={disabled || isAnswered || isWrong}
-              className={`w-full p-3 sm:p-3.5 rounded-xl border text-left text-xs font-mono transition-all duration-150 flex items-center justify-between min-h-[48px] focus-visible:ring-2 focus-visible:ring-clutch-lavender focus-visible:outline-none touch-manipulation relative group ${optionStyle}`}
+              className={`w-full p-2.5 sm:p-3 rounded-xl border text-left text-xs sm:text-sm font-mono transition-all duration-150 flex items-start justify-between min-h-[44px] sm:min-h-[48px] focus-visible:ring-2 focus-visible:ring-clutch-lavender focus-visible:outline-none touch-manipulation relative group max-w-full ${optionStyle}`}
             >
-              <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="flex items-start gap-2.5 sm:gap-3 min-w-0 flex-1">
                 <span
-                  className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${letterStyle}`}
+                  className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 transition-colors ${letterStyle}`}
                 >
                   {isCorrectAnswer ? '✓' : isWrong ? '✕' : letter}
                 </span>
-                <span className="break-words leading-relaxed">{opt}</span>
+                <span className="break-words whitespace-normal leading-snug sm:leading-relaxed flex-1 min-w-0 pr-1">
+                  {opt}
+                </span>
               </div>
 
               {/* Status Indicator Badges */}
-              <div className="shrink-0 ml-2">
+              <div className="shrink-0 ml-1.5 sm:ml-2 mt-0.5">
                 {isCorrectAnswer && (
-                  <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span className="flex items-center gap-1 text-[9px] sm:text-[10px] font-mono font-bold text-emerald-400 px-1.5 sm:px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40">
+                    <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     <span>CORRECT</span>
                   </span>
                 )}
                 {isWrong && (
-                  <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-rose-400 px-2 py-0.5 rounded bg-rose-500/20 border border-rose-500/40">
-                    <XCircle className="w-3.5 h-3.5" />
-                    <span>INCORRECT</span>
+                  <span className="flex items-center gap-1 text-[9px] sm:text-[10px] font-mono font-bold text-rose-400 px-1.5 sm:px-2 py-0.5 rounded bg-rose-500/20 border border-rose-500/40">
+                    <XCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                    <span>WRONG</span>
                   </span>
                 )}
                 {isSelected && !isAnswered && (
-                  <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-violet-300 px-2 py-0.5 rounded bg-violet-500/20 border border-violet-500/40">
+                  <span className="flex items-center gap-1 text-[9px] sm:text-[10px] font-mono font-bold text-violet-300 px-1.5 sm:px-2 py-0.5 rounded bg-violet-500/20 border border-violet-500/40">
                     <span>SELECTED</span>
                   </span>
                 )}
@@ -307,25 +309,25 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
 
       {/* Authoritative Question Solution & Explanation (Revealed when answered or out of chances) */}
       {isAnswered && (
-        <div className="mt-4 pt-4 border-t border-clutch-border animate-in fade-in duration-300 shrink-0">
-          <div className="bg-gradient-to-r from-violet-950/60 via-purple-950/40 to-slate-900/60 border border-violet-500/30 p-3.5 sm:p-4 rounded-xl text-left font-mono">
+        <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-clutch-border animate-in fade-in duration-300 shrink-0 max-w-full">
+          <div className="bg-gradient-to-r from-violet-950/60 via-purple-950/40 to-slate-900/60 border border-violet-500/30 p-3 sm:p-4 rounded-xl text-left font-mono max-w-full">
             <div className="flex items-center gap-2 text-xs font-cyber font-bold text-cyan-300 mb-2">
               <Lightbulb className="w-4 h-4 text-cyan-400 shrink-0" />
               <span>QUESTION SOLUTION &amp; ALGORITHMIC EXPLANATION</span>
             </div>
 
             {correctOptionText && (
-              <div className="text-xs text-white mb-2 pb-2 border-b border-violet-500/20">
+              <div className="text-xs text-white mb-2 pb-2 border-b border-violet-500/20 break-words">
                 <span className="text-clutch-muted font-bold">Answer: </span>
-                <strong className="text-emerald-300">{correctOptionText}</strong>
+                <strong className="text-emerald-300 break-words">{correctOptionText}</strong>
               </div>
             )}
 
-            <p className="text-xs text-slate-300 leading-relaxed font-sans font-normal">
+            <p className="text-xs text-slate-300 leading-relaxed font-sans font-normal break-words">
               {challenge.explanation}
             </p>
 
-            <div className="mt-3 flex items-center justify-between text-[10px] text-clutch-subtle pt-2 border-t border-white/5 font-mono">
+            <div className="mt-3 flex items-center justify-between text-[10px] text-clutch-subtle pt-2 border-t border-white/5 font-mono flex-wrap gap-2">
               <span className="flex items-center gap-1 text-cyan-400">
                 <Award className="w-3 h-3" />
                 <span>
@@ -342,20 +344,20 @@ export const McqChallengeWorkspace: React.FC<McqChallengeWorkspaceProps> = ({
         </div>
       )}
 
-      {/* Explicit Submit Answer Bar - Desktop / PC and Mobile */}
+      {/* Explicit Submit Answer Bar - Desktop / PC and Mobile (Sticky at bottom) */}
       {!isAnswered && (
-        <div className="mt-4 pt-3 border-t border-clutch-border flex items-center justify-between gap-3 shrink-0 bg-clutch-panel/90 backdrop-blur-sm -mx-1 px-1">
-          <div className="text-xs font-mono text-clutch-subtle truncate max-w-[140px] sm:max-w-xs">
+        <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-clutch-border flex flex-col xs:flex-row items-stretch xs:items-center justify-between gap-2 sm:gap-3 shrink-0 bg-clutch-panel/95 backdrop-blur-md -mx-1 px-1 sticky bottom-0 z-20">
+          <div className="text-[11px] sm:text-xs font-mono text-clutch-subtle truncate flex-1 min-w-0">
             Selected:{' '}
             <strong className={selectedOption ? 'text-cyan-300 font-bold' : 'text-slate-400 font-normal'}>
-              {selectedOption ? selectedOption.slice(0, 26) + (selectedOption.length > 26 ? '...' : '') : 'None'}
+              {selectedOption ? selectedOption.slice(0, 32) + (selectedOption.length > 32 ? '...' : '') : 'None'}
             </strong>
           </div>
 
           <button
             onClick={handleSubmitAnswer}
             disabled={!selectedOption || disabled || isAnswered}
-            className={`px-5 sm:px-6 py-2.5 rounded-xl font-cyber font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 min-h-[44px] shadow-lg ${
+            className={`w-full xs:w-auto px-5 sm:px-6 py-2.5 rounded-xl font-cyber font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 min-h-[42px] sm:min-h-[44px] shadow-lg ${
               selectedOption && !isAnswered && !disabled
                 ? 'bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-[0_0_20px_rgba(124,58,237,0.5)] border border-violet-400/50 active:scale-95 cursor-pointer'
                 : 'bg-clutch-surface-light border border-clutch-border text-clutch-muted opacity-50 cursor-not-allowed'
