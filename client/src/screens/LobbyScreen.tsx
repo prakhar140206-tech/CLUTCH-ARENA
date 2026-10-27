@@ -75,10 +75,6 @@ export const LobbyScreen: React.FC = () => {
   };
 
   const handleQuickPlay = async (mode: any, maxPlayers: number = 2) => {
-    if (!serverConnected) {
-      setErrorMessage('Multiplayer matchmaking requires an active backend server. Please play Solo Quest in offline practice mode!');
-      return;
-    }
     try {
       soundSynth.click();
       setIsJoining(true);
@@ -105,10 +101,6 @@ export const LobbyScreen: React.FC = () => {
   const handleJoinByCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!joinCodeInput.trim()) return;
-    if (!serverConnected) {
-      setErrorMessage('Joining online rooms requires an active backend server. Try Solo Quest for offline practice!');
-      return;
-    }
 
     try {
       soundSynth.click();

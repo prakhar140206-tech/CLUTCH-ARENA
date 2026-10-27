@@ -50,18 +50,32 @@ export const ArenaScreen: React.FC = () => {
 
   if (!activeRoom) {
     return (
-      <div className="w-screen h-screen flex flex-col items-center justify-center bg-clutch-bg text-white p-6">
-        <div className="w-16 h-16 rounded-2xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender mb-4">
+      <div className="w-full max-w-full min-h-screen min-h-[100dvh] flex flex-col items-center justify-center bg-clutch-bg text-white p-6">
+        <div className="w-16 h-16 rounded-2xl bg-clutch-violet/20 border border-clutch-violet/40 flex items-center justify-center text-clutch-lavender mb-4 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
           <Swords className="w-8 h-8" />
         </div>
         <h2 className="font-cyber font-bold text-xl mb-2">NO ACTIVE ARENA MATCH</h2>
-        <p className="text-xs font-mono text-clutch-muted mb-6">You are not connected to an arena room session.</p>
-        <button
-          onClick={() => setScreen('lobby')}
-          className="clutch-btn-primary px-6 py-2.5 text-xs"
-        >
-          Return to Lobby
-        </button>
+        <p className="text-xs font-mono text-clutch-muted mb-6 text-center max-w-sm">
+          Select an arena queue from the lobby or start an instant 1v1 algorithmic duel against an AI bot.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <button
+            onClick={() => setScreen('lobby')}
+            className="clutch-btn-secondary px-5 py-2.5 text-xs"
+          >
+            Return to Lobby
+          </button>
+          <button
+            onClick={async () => {
+              const room = await socketService.createRoom(userProfile, { mode: 'ai_arena', totalRounds: 3 });
+              await socketService.addBot(room.id, 'balanced');
+            }}
+            className="clutch-btn-primary px-5 py-2.5 text-xs flex items-center gap-1.5 shadow-[0_0_15px_rgba(124,58,237,0.4)]"
+          >
+            <Bot className="w-3.5 h-3.5" />
+            <span>Launch Instant AI Duel</span>
+          </button>
+        </div>
       </div>
     );
   }
@@ -108,7 +122,7 @@ export const ArenaScreen: React.FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen h-[100dvh] flex flex-col bg-clutch-bg text-clutch-text overflow-hidden relative font-sans">
+    <div className="w-full max-w-full h-screen h-[100dvh] flex flex-col bg-clutch-bg text-clutch-text overflow-hidden relative font-sans">
       {/* Top Arena Telemetry Header */}
       <ArenaHeader />
 

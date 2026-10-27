@@ -302,13 +302,25 @@ export const AuthScreen: React.FC = () => {
               <span>{tab === 'login' ? 'Authenticate & Enter' : 'Register Callsign'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                soundSynth.click();
+                setScreen('dashboard');
+              }}
+              className="w-full mt-2 py-2.5 rounded-xl border border-clutch-border bg-clutch-surface-light hover:bg-clutch-surface-elevated text-clutch-lavender hover:text-white text-xs font-mono transition-all flex items-center justify-center gap-1.5"
+            >
+              <span>Play as Guest Pilot</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </form>
 
-          {/* Mandatory Authentication Notice */}
-          <div className="mt-6 pt-5 border-t border-clutch-border text-center">
+          {/* Authentication Notice */}
+          <div className="mt-5 pt-4 border-t border-clutch-border text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-clutch-surface-light border border-clutch-border text-[11px] font-mono text-clutch-muted">
               <Lock className="w-3.5 h-3.5 text-clutch-violet" />
-              <span>Mandatory Gateway: Sign Up or Log In to access CLUTCH ARENA</span>
+              <span>Create an account to save your global Elo & rating MMR</span>
             </div>
           </div>
         </div>

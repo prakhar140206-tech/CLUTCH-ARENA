@@ -218,6 +218,57 @@ class SoundSynthesizer {
   }
 
   /**
+   * 3-2-1 Countdown Beep
+   */
+  public countdownBeep() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(660, now);
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.13);
+  }
+
+  /**
+   * Match Start Horn / Go Sound
+   */
+  public matchStart() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(880, now);
+    osc.frequency.exponentialRampToValueAtTime(1320, now + 0.25);
+
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.36);
+  }
+
+  /**
    * AI Voice Hype Caster commentary using Web Speech Synthesis
    */
   public speakHype(text: string, mood: 'hype' | 'roast' | 'sigma' | 'normal' = 'hype') {

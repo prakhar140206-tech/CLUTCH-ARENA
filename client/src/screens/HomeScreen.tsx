@@ -19,20 +19,17 @@ import {
   User,
   Radio,
   Code2,
-  Users
+  Users,
+  Smartphone
 } from 'lucide-react';
 
 export const HomeScreen: React.FC = () => {
   const setScreen = useGameStore((s) => s.setScreen);
   const userProfile = useGameStore((s) => s.userProfile);
 
-  const handleNav = (target: 'auth' | 'lobby' | 'solo_quest' | 'dashboard' | 'profile' | 'settings') => {
+  const handleNav = (target: any) => {
     soundSynth.click();
-    if (userProfile.isGuest && target !== 'solo_quest') {
-      setScreen('auth');
-    } else {
-      setScreen(target);
-    }
+    setScreen(target);
   };
 
   return (
@@ -280,6 +277,15 @@ export const HomeScreen: React.FC = () => {
             <Swords className="w-4 h-4 text-clutch-lavender" />
           </div>
           <span className="text-[9.5px] font-cyber mt-0.5">ARENA</span>
+        </button>
+
+        {/* DSA Blitz Shorts */}
+        <button
+          onClick={() => handleNav('brainrot_shorts')}
+          className="flex flex-col items-center justify-center py-1 px-3 min-w-[56px] text-clutch-muted hover:text-white transition-colors"
+        >
+          <Smartphone className="w-4 h-4 mb-0.5" />
+          <span className="text-[10px] font-mono">Shorts</span>
         </button>
 
         <button
