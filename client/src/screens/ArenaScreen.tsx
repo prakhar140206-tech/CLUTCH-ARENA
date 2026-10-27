@@ -58,19 +58,19 @@ export const ArenaScreen: React.FC = () => {
         <p className="text-xs font-mono text-clutch-muted mb-6 text-center max-w-sm">
           Select an arena queue from the lobby or start an instant 1v1 algorithmic duel against an AI bot.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 w-full max-w-xs sm:max-w-md">
           <button
             onClick={() => setScreen('lobby')}
-            className="clutch-btn-secondary px-5 py-2.5 text-xs"
+            className="clutch-btn-secondary px-5 py-2.5 text-xs w-full sm:w-auto text-center"
           >
             Return to Lobby
           </button>
           <button
             onClick={async () => {
-              const room = await socketService.createRoom(userProfile, { mode: 'ai_arena', totalRounds: 3 });
+              const room = await socketService.createRoom(userProfile, { mode: 'ai_arena', maxPlayers: 2, totalRounds: 3 });
               await socketService.addBot(room.id, 'balanced');
             }}
-            className="clutch-btn-primary px-5 py-2.5 text-xs flex items-center gap-1.5 shadow-[0_0_15px_rgba(124,58,237,0.4)]"
+            className="clutch-btn-primary px-5 py-2.5 text-xs flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(124,58,237,0.4)] w-full sm:w-auto"
           >
             <Bot className="w-3.5 h-3.5" />
             <span>Launch Instant AI Duel</span>

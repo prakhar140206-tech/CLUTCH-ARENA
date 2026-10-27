@@ -63,42 +63,42 @@ export const ArenaHeader: React.FC = () => {
   const participant = activeRoom?.participants[userProfile.id];
 
   return (
-    <header className="w-full flex items-center justify-between px-4 sm:px-6 py-3 bg-clutch-surface/95 border-b border-clutch-border backdrop-blur-xl z-30 select-none shrink-0 font-sans">
+    <header className="w-full max-w-full overflow-x-hidden flex items-center justify-between px-2.5 sm:px-6 py-2 sm:py-3 bg-clutch-surface/95 border-b border-clutch-border backdrop-blur-xl z-30 select-none shrink-0 font-sans">
       {/* Left: Brand, Room Name & Invite Code */}
-      <div className="flex items-center gap-3">
-        <button onClick={handleLeave} title="Exit Arena" className="hover:opacity-80 transition-opacity">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <button onClick={handleLeave} title="Exit Arena" className="hover:opacity-80 transition-opacity shrink-0">
           <img
             src={CLUTCH_LOGO}
             alt="CLUTCH"
-            className="w-7 h-7 object-contain"
+            className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
           />
         </button>
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <span className="font-cyber font-bold text-white text-xs sm:text-sm tracking-wide">
+        <div className="flex flex-col min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <span className="font-cyber font-bold text-white text-xs sm:text-sm tracking-wide truncate max-w-[80px] xs:max-w-[130px] sm:max-w-none">
               {activeRoom?.name || 'CLUTCH ARENA'}
             </span>
             {activeRoom?.code && (
               <button
                 onClick={copyRoomCode}
-                className="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-clutch-surface-light border border-clutch-border text-clutch-lavender hover:border-clutch-violet transition-colors"
+                className="flex items-center gap-1 text-[9.5px] sm:text-[10px] font-mono px-1.5 sm:px-2 py-0.5 rounded bg-clutch-surface-light border border-clutch-border text-clutch-lavender hover:border-clutch-violet transition-colors shrink-0"
                 title="Copy Room Code to Invite"
               >
-                <span>CODE: {activeRoom.code}</span>
+                <span>{activeRoom.code}</span>
                 {copiedCode ? <Check className="w-3 h-3 text-clutch-emerald" /> : <Copy className="w-3 h-3" />}
               </button>
             )}
           </div>
-          <span className="text-[10px] text-clutch-muted font-mono hidden sm:inline">
+          <span className="text-[9.5px] sm:text-[10px] text-clutch-muted font-mono hidden sm:inline">
             MODE: {activeRoom?.settings.mode.toUpperCase()} • PLAYERS: {Object.keys(activeRoom?.participants || {}).length}/{activeRoom?.settings.maxPlayers || 16}
           </span>
         </div>
       </div>
 
-      {/* Center: Authoritative Dual Clocks & Progressive Stage */}
-      <div className="flex items-center space-x-2 sm:space-x-3">
-        {/* Progressive Difficulty Stage Badge */}
-        <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-violet-950/60 border border-violet-500/50 font-mono text-xs text-violet-300 shadow-[0_0_10px_rgba(139,92,246,0.3)]">
+      {/* Center: Dual Clocks */}
+      <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
+        {/* Progressive Difficulty Stage Badge (Desktop only to prevent mobile clutter) */}
+        <div className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-violet-950/60 border border-violet-500/50 font-mono text-xs text-violet-300 shadow-[0_0_10px_rgba(139,92,246,0.3)]">
           <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-ping"></span>
           <span className="font-cyber font-bold tracking-wider text-[11px] sm:text-xs">
             {activeRoom?.stageName || `LEVEL ${activeRoom?.currentStage || 1}: EASY`}
@@ -107,22 +107,22 @@ export const ArenaHeader: React.FC = () => {
 
         {/* Overall Match Clock */}
         {activeRoom?.matchExpiresAt && (
-          <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 font-mono text-xs text-cyan-300">
-            <span className="text-[10px] uppercase font-bold text-cyan-400">Match:</span>
+          <div className="flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 font-mono text-[11px] sm:text-xs text-cyan-300">
+            <span className="text-[9px] sm:text-[10px] uppercase font-bold text-cyan-400 hidden xs:inline">Match:</span>
             <span className="font-bold">{formatTime(matchTimeLeft)}</span>
           </div>
         )}
 
         {/* Per-Question Rapid Clock */}
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-cyber text-clutch-lavender font-bold hidden sm:inline">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <span className="text-[10px] sm:text-[11px] font-cyber text-clutch-lavender font-bold hidden xs:inline sm:inline">
             Q#{activeRoom?.currentRound || 1}
           </span>
-          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full font-mono font-bold text-xs sm:text-sm border transition-all ${timeLeft <= 5 && timeLeft > 0
+          <div className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full font-mono font-bold text-xs sm:text-sm border transition-all ${timeLeft <= 5 && timeLeft > 0
               ? 'bg-clutch-rose/20 border-clutch-rose text-clutch-rose animate-bounce'
               : 'bg-clutch-surface-elevated border-clutch-violet/40 text-clutch-lavender'
             }`}>
-            <Clock className="w-3.5 h-3.5" />
+            <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             <span>{timeLeft}s</span>
           </div>
         </div>

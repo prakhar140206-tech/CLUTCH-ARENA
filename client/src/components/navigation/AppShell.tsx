@@ -200,9 +200,9 @@ export const AppShell: React.FC<AppShellProps> = ({
       {/* =========================================================
           MAIN APPLICATION VIEWPORT
           ========================================================= */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
+      <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0 w-full max-w-full">
         {/* Top Header Bar */}
-        <header className="h-16 border-b border-clutch-border bg-clutch-surface/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between gap-4 z-20 shrink-0">
+        <header className="h-14 sm:h-16 border-b border-clutch-border bg-clutch-surface/90 backdrop-blur-xl px-2.5 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 z-20 shrink-0 w-full max-w-full">
           {/* Mobile Brand Logo */}
           <div className="flex items-center gap-2 md:hidden">
             <button
@@ -295,7 +295,7 @@ export const AppShell: React.FC<AppShellProps> = ({
         </header>
 
         {/* Content Area with Independent Scroll */}
-        <main className="flex-1 overflow-y-auto pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-6 relative z-10">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-6 relative z-10">
           {children}
         </main>
 

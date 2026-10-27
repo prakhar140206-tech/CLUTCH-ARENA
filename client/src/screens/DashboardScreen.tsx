@@ -348,7 +348,7 @@ export const DashboardScreen: React.FC = () => {
 
   return (
     <AppShell activeScreen="dashboard">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 flex flex-col gap-5 sm:gap-8 pb-28 md:pb-12">
+      <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-6 py-3 sm:py-6 flex flex-col gap-4 sm:gap-8 pb-28 md:pb-12 overflow-x-hidden min-w-0">
         
         {/* =========================================================
             SECTION 1: TACTICAL HERO / ARENA LAUNCH COMMAND
@@ -373,22 +373,22 @@ export const DashboardScreen: React.FC = () => {
                 Compete in real-time synchronized coding duels, master complex data structures through interactive puzzles, and advance your algorithmic tier.
               </p>
 
-              {/* Primary & Secondary Actions - Full width touch friendly on mobile */}
-              <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+              {/* Primary & Secondary Actions - Full touch-friendly responsive on mobile */}
+              <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
                 <button
                   onClick={handleLaunchMultiplayer}
-                  className="clutch-btn-primary py-2.5 sm:py-3 px-3 sm:px-6 text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto shadow-[0_0_20px_rgba(124,58,237,0.35)]"
+                  className="clutch-btn-primary py-2.5 sm:py-3 px-4 sm:px-6 text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(124,58,237,0.35)] font-bold whitespace-nowrap"
                 >
                   <Swords className="w-4 h-4 shrink-0" />
-                  <span className="truncate">Enter Arena</span>
+                  <span>Enter Arena</span>
                 </button>
 
                 <button
                   onClick={handleLaunchSoloQuest}
-                  className="clutch-btn-secondary py-2.5 sm:py-3 px-3 sm:px-6 text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto"
+                  className="clutch-btn-secondary py-2.5 sm:py-3 px-4 sm:px-6 text-xs sm:text-sm flex items-center justify-center gap-2 font-bold whitespace-nowrap"
                 >
                   <Compass className="w-4 h-4 text-clutch-lavender shrink-0" />
-                  <span className="truncate">Practice Solo</span>
+                  <span>Practice Solo</span>
                 </button>
               </div>
             </div>
@@ -962,20 +962,20 @@ export const DashboardScreen: React.FC = () => {
               mobileBottomTab === 'leaderboard' ? 'block' : 'hidden lg:flex'
             }`}>
               <div>
-                <div className="flex items-center justify-between mb-3.5 pb-2.5 border-b border-clutch-border gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <Trophy className="w-4 h-4 text-clutch-amber" />
+                <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between mb-3.5 pb-2.5 border-b border-clutch-border gap-2">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <Trophy className="w-4 h-4 text-clutch-amber shrink-0" />
                     <h3 className="font-cyber font-bold text-xs sm:text-sm text-white tracking-wide truncate">
                       VERIFIED LEADERBOARD
                     </h3>
                   </div>
 
                   {/* Filter Tabs */}
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-1 self-stretch xs:self-auto justify-end">
                     {leaderboardFilter === 'friends' && (
                       <button
                         onClick={() => setFriendsModalOpen(true)}
-                        className="px-2 py-0.5 rounded bg-clutch-violet/20 hover:bg-clutch-violet/30 border border-clutch-violet/40 text-[9px] font-mono text-clutch-lavender flex items-center gap-1 transition-colors"
+                        className="px-2 py-0.5 rounded bg-clutch-violet/20 hover:bg-clutch-violet/30 border border-clutch-violet/40 text-[9px] font-mono text-clutch-lavender flex items-center gap-1 transition-colors shrink-0"
                         title="Manage Friends"
                       >
                         <Users className="w-3 h-3 text-clutch-lavender" />
@@ -985,24 +985,24 @@ export const DashboardScreen: React.FC = () => {
                     <div className="flex items-center gap-0.5 bg-clutch-surface-light p-0.5 rounded-lg border border-clutch-border text-[10px] sm:text-[11px] font-mono">
                       <button
                         onClick={() => setLeaderboardFilter('global')}
-                        className={`px-1.5 sm:px-2 py-0.5 rounded ${
-                          leaderboardFilter === 'global' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted'
+                        className={`px-2 py-0.5 rounded transition-colors ${
+                          leaderboardFilter === 'global' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted hover:text-white'
                         }`}
                       >
                         Global
                       </button>
                       <button
                         onClick={() => setLeaderboardFilter('friends')}
-                        className={`px-1.5 sm:px-2 py-0.5 rounded ${
-                          leaderboardFilter === 'friends' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted'
+                        className={`px-2 py-0.5 rounded transition-colors ${
+                          leaderboardFilter === 'friends' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted hover:text-white'
                         }`}
                       >
                         Friends
                       </button>
                       <button
                         onClick={() => setLeaderboardFilter('tier')}
-                        className={`px-1.5 sm:px-2 py-0.5 rounded ${
-                          leaderboardFilter === 'tier' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted'
+                        className={`px-2 py-0.5 rounded transition-colors ${
+                          leaderboardFilter === 'tier' ? 'bg-clutch-violet text-white font-bold' : 'text-clutch-muted hover:text-white'
                         }`}
                       >
                         Tier
