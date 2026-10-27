@@ -86,8 +86,12 @@ export class RoomManager {
       code = this.generateRoomCode();
     }
 
+    const determinedMaxPlayers = customSettings?.maxPlayers
+      ? Number(customSettings.maxPlayers)
+      : (customSettings?.mode === 'duel_1v1' || customSettings?.mode === 'ai_arena' ? 2 : (customSettings?.mode === 'mega_arena_100' ? 70 : 16));
+
     const defaultSettings: RoomSettings = {
-      maxPlayers: customSettings?.maxPlayers || 16,
+      maxPlayers: determinedMaxPlayers,
       totalRounds: customSettings?.totalRounds || 9999, // Endless: continues until overall timer expires
       roundDurationSeconds: customSettings?.questionDurationSeconds || 20,
       matchDurationMinutes: customSettings?.matchDurationMinutes || 25,

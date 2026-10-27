@@ -83,6 +83,10 @@ export const ArenaScreen: React.FC = () => {
   const isHost = activeRoom.hostId === userProfile.id;
   const participant = activeRoom.participants[userProfile.id];
   const challenge = activeRoom.activeChallenge;
+  const participantCount = Object.keys(activeRoom.participants).length;
+  const roomMode = activeRoom.settings?.mode as string;
+  const maxPlayers = activeRoom.settings?.maxPlayers || (roomMode === 'duel_1v1' || roomMode === 'ai_arena' ? 2 : 10);
+  const isRoomFull = participantCount >= maxPlayers;
 
   const handleStartMatch = async () => {
     soundSynth.levelUp();
@@ -90,6 +94,7 @@ export const ArenaScreen: React.FC = () => {
   };
 
   const handleAddBot = async (diff: any) => {
+    if (isRoomFull) return;
     soundSynth.click();
     await socketService.addBot(activeRoom.id, diff);
   };
@@ -204,7 +209,14 @@ export const ArenaScreen: React.FC = () => {
               {/* Combatants List */}
               <div className="w-full mb-6 text-left">
                 <div className="flex items-center justify-between text-xs font-mono text-clutch-muted mb-2">
-                  <span>COMBATANTS ({Object.keys(activeRoom.participants).length}/{activeRoom.settings.maxPlayers})</span>
+                  <span className="flex items-center gap-2">
+                    <span>COMBATANTS ({participantCount}/{maxPlayers})</span>
+                    {isRoomFull && (
+                      <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">
+                        ROOM FULL
+                      </span>
+                    )}
+                  </span>
                   <span>STATUS</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
@@ -253,10 +265,16 @@ export const ArenaScreen: React.FC = () => {
 
                     <button
                       onClick={() => handleAddBot('balanced')}
-                      className="clutch-btn-secondary py-3 px-4 text-xs flex items-center justify-center gap-1.5"
+                      disabled={isRoomFull}
+                      title={isRoomFull ? `Maximum capacity of ${maxPlayers} combatants reached` : 'Add an AI opponent'}
+                      className={`py-3 px-4 text-xs flex items-center justify-center gap-1.5 rounded-lg font-bold transition-all ${
+                        isRoomFull
+                          ? 'bg-clutch-surface/40 text-clutch-muted border border-clutch-border/40 cursor-not-allowed opacity-50'
+                          : 'clutch-btn-secondary'
+                      }`}
                     >
                       <Bot className="w-4 h-4 text-clutch-lavender" />
-                      <span>Add AI Bot</span>
+                      <span>{isRoomFull ? `Room Full (${participantCount}/${maxPlayers})` : 'Add AI Bot'}</span>
                     </button>
                   </>
                 ) : (

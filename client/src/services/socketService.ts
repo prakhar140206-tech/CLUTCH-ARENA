@@ -194,7 +194,17 @@ class SocketService {
     const localRoomId = `room_${Date.now()}`;
     const code = (settings?.code || Math.random().toString(36).substring(2, 7)).toUpperCase();
     const challenge = CLIENT_FALLBACK_CHALLENGES[Math.floor(Math.random() * CLIENT_FALLBACK_CHALLENGES.length)];
-    const roundDurationSecs = settings?.roundDurationSeconds || settings?.questionDurationSeconds || 30;
+    const roundDurationSecs = settings?.roundDurationSeconds || settings?.questionDurationSeconds || 20;
+
+    // Strictly enforce maxPlayers according to user configuration or mode
+    let effectiveMaxPlayers = 2;
+    if (settings?.maxPlayers) {
+      effectiveMaxPlayers = Math.max(2, Number(settings.maxPlayers));
+    } else if (settings?.mode === 'mega_arena_100') {
+      effectiveMaxPlayers = 70;
+    } else if (settings?.mode === 'duel_1v1' || settings?.mode === 'ai_arena') {
+      effectiveMaxPlayers = 2;
+    }
 
     const hostParticipant: any = {
       id: user.id || 'user-pilot',
@@ -223,12 +233,12 @@ class SocketService {
     const initialRoom: any = {
       id: localRoomId,
       code,
-      name: settings?.name || 'CLUTCH Arena Battle',
-      mode: settings?.mode || 'mega_arena_100',
+      name: settings?.name || (effectiveMaxPlayers === 2 ? '1v1 Combat Duel' : `CLUTCH Arena (${effectiveMaxPlayers} Players)`),
+      mode: settings?.mode || (effectiveMaxPlayers === 2 ? 'duel_1v1' : 'mega_arena_100'),
       hostId: hostParticipant.id,
       status: 'lobby',
       currentRound: 1,
-      totalRounds: settings?.totalRounds || 3,
+      totalRounds: settings?.totalRounds || 9999,
       currentStage: 1,
       stageName: 'Stage 1: Core Algorithmic Sprint',
       participants: {
@@ -246,12 +256,16 @@ class SocketService {
       roundExpiresAt: Date.now() + roundDurationSecs * 1000,
       matchExpiresAt: Date.now() + (settings?.matchDurationMinutes || 10) * 60 * 1000,
       questionExpiresAt: Date.now() + roundDurationSecs * 1000,
-      settings: settings || {
-        maxPlayers: 10,
-        totalRounds: 3,
-        roundDurationSeconds: 30,
-        mode: 'mega_arena_100',
-        allowSpectators: false
+      settings: {
+        totalRounds: settings?.totalRounds || 9999,
+        roundDurationSeconds: roundDurationSecs,
+        matchDurationMinutes: settings?.matchDurationMinutes || 10,
+        questionDurationSeconds: roundDurationSecs,
+        mode: settings?.mode || (effectiveMaxPlayers === 2 ? 'duel_1v1' : 'mega_arena_100'),
+        allowSpectators: settings?.allowSpectators || false,
+        name: settings?.name || (effectiveMaxPlayers === 2 ? '1v1 Combat Duel' : `CLUTCH Arena (${effectiveMaxPlayers} Players)`),
+        ...settings,
+        maxPlayers: effectiveMaxPlayers
       }
     };
 
@@ -264,14 +278,18 @@ class SocketService {
    * Join Room with autonomous fallback
    */
   public joinRoom(roomCode: string, user: any): Promise<any> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       let resolved = false;
 
       if (this.socket && this.socket.connected) {
         const timeout = setTimeout(() => {
           if (!resolved) {
             resolved = true;
-            resolve(this.joinLocalRoom(roomCode, user));
+            try {
+              resolve(this.joinLocalRoom(roomCode, user));
+            } catch (err) {
+              reject(err);
+            }
           }
         }, 1200);
 
@@ -279,18 +297,44 @@ class SocketService {
           if (!resolved) {
             resolved = true;
             clearTimeout(timeout);
-            if (res?.success) resolve(res.room);
-            else resolve(this.joinLocalRoom(roomCode, user));
+            if (res?.success) {
+              resolve(res.room);
+            } else if (res?.error && res.error.includes('full')) {
+              reject(new Error(res.error));
+            } else {
+              try {
+                resolve(this.joinLocalRoom(roomCode, user));
+              } catch (err) {
+                reject(err);
+              }
+            }
           }
         });
       } else {
-        resolve(this.joinLocalRoom(roomCode, user));
+        try {
+          resolve(this.joinLocalRoom(roomCode, user));
+        } catch (err) {
+          reject(err);
+        }
       }
     });
   }
 
   private joinLocalRoom(roomCode: string, user: any): any {
     const room = this.localRoom || this.createLocalRoom(user, { code: roomCode, name: `Arena #${roomCode}` });
+    const maxPlayers = room.settings?.maxPlayers || 2;
+    const currentCount = Object.keys(room.participants).length;
+
+    // If user already in room, allow reconnect
+    if (room.participants[user.id]) {
+      return room;
+    }
+
+    // Capacity limit check
+    if (currentCount >= maxPlayers) {
+      throw new Error(`Arena room #${roomCode} is full (maximum ${maxPlayers} combatants).`);
+    }
+
     const participant: any = {
       id: user.id || 'guest-combatant',
       username: user.username || 'Challenger',
@@ -305,7 +349,7 @@ class SocketService {
       isReady: true,
       isEliminated: false,
       status: 'ready',
-      rank: Object.keys(room.participants).length + 1,
+      rank: currentCount + 1,
       loadout: user.avatar || {
         color: '#06b6d4',
         visorGlow: '#67e8f9',
@@ -339,20 +383,27 @@ class SocketService {
             resolve(true);
             return;
           }
-          this.addLocalBot(difficulty);
-          resolve(true);
+          resolve(this.addLocalBot(difficulty));
         });
       } else {
-        this.addLocalBot(difficulty);
-        resolve(true);
+        resolve(this.addLocalBot(difficulty));
       }
     });
   }
 
-  private addLocalBot(difficulty: string) {
-    if (!this.localRoom) return;
+  private addLocalBot(difficulty: string): boolean {
+    if (!this.localRoom) return false;
+    const maxPlayers = this.localRoom.settings?.maxPlayers || 2;
+    const currentCount = Object.keys(this.localRoom.participants).length;
+
+    // Enforce maximum capacity limit
+    if (currentCount >= maxPlayers) {
+      console.warn(`[SocketService] Cannot add bot: Room reached maximum capacity of ${maxPlayers} combatants.`);
+      return false;
+    }
+
     const botId = `bot_${Date.now()}`;
-    const botNames = ['ByteBot [AI]', 'CyberKnight [AI]', 'AlgoRizz [AI]', 'GhostPointer [AI]'];
+    const botNames = ['ByteBot [AI]', 'CyberKnight [AI]', 'AlgoRizz [AI]', 'GhostPointer [AI]', 'SigmaCoder [AI]', 'BinaryBeast [AI]'];
     const botName = botNames[Math.floor(Math.random() * botNames.length)];
     const botParticipant = {
       id: botId,
@@ -360,16 +411,33 @@ class SocketService {
       avatar: { color: '#06b6d4', model: 'robot' },
       ratingMMR: difficulty === 'hard' ? 1450 : 1240,
       score: 0,
+      combo: 0,
+      maxCombo: 0,
       solved: 0,
       isReady: true,
       isEliminated: false,
       status: 'ready',
       isBot: true,
-      rank: Object.keys(this.localRoom.participants).length + 1
+      rank: currentCount + 1,
+      loadout: {
+        color: '#06b6d4',
+        visorGlow: '#67e8f9',
+        meshStyle: 'neon_bot',
+        trailEffect: 'electric_cyan',
+        emote: 'celebrate'
+      }
     };
     this.localRoom.participants[botId] = botParticipant;
-    this.localRoom.leaderboard = Object.values(this.localRoom.participants);
+    this.localRoom.leaderboard = Object.values(this.localRoom.participants).map((p: any, idx: number) => ({
+      id: p.id,
+      username: p.username,
+      score: p.score || 0,
+      rank: idx + 1,
+      combo: p.combo || 0,
+      isEliminated: false
+    }));
     useGameStore.getState().setActiveRoom({ ...this.localRoom });
+    return true;
   }
 
   public setReady(roomId: string, userId: string, isReady: boolean) {

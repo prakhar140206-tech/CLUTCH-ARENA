@@ -49,8 +49,8 @@ export const LobbyScreen: React.FC = () => {
   const setOnboardingOpen = useGameStore((s) => s.setOnboardingOpen);
 
   // Custom Arena Configuration State
-  const [customMaxPlayers, setCustomMaxPlayers] = useState<number>(70);
-  const [customMode, setCustomMode] = useState<any>('mega_arena_100');
+  const [customMaxPlayers, setCustomMaxPlayers] = useState<number>(2);
+  const [customMode, setCustomMode] = useState<any>('duel_1v1');
 
   // Launch official 70-Player Tournament Preset (universal time-based endless match)
   const handleStartTournament70 = async () => {
@@ -60,6 +60,7 @@ export const LobbyScreen: React.FC = () => {
       setErrorMessage('');
       await socketService.createRoom(userProfile, {
         mode: 'mega_arena_100',
+        name: '70-Player Grand Tournament',
         maxPlayers: 70,
         matchDurationMinutes: selectedMatchDuration,
         questionDurationSeconds: selectedQuestionTimer,
@@ -81,6 +82,7 @@ export const LobbyScreen: React.FC = () => {
       setErrorMessage('');
       const room = await socketService.createRoom(userProfile, {
         mode,
+        name: maxPlayers === 2 ? (mode === 'ai_arena' ? 'AI Bot Duel' : '1v1 Ranked Duel') : `Arena (${maxPlayers} Players)`,
         maxPlayers,
         matchDurationMinutes: selectedMatchDuration,
         questionDurationSeconds: selectedQuestionTimer,
@@ -120,9 +122,12 @@ export const LobbyScreen: React.FC = () => {
       soundSynth.levelUp();
       setIsJoining(true);
       setErrorMessage('');
+      const cap = Math.max(2, Math.min(100, customMaxPlayers || 2));
+      const mode = cap === 2 ? 'duel_1v1' : 'mega_arena_100';
       await socketService.createRoom(userProfile, {
-        mode: customMode,
-        maxPlayers: customMaxPlayers,
+        mode,
+        name: cap === 2 ? '1v1 Custom Duel' : `Custom Arena (${cap} Players)`,
+        maxPlayers: cap,
         matchDurationMinutes: selectedMatchDuration,
         questionDurationSeconds: selectedQuestionTimer,
         roundDurationSeconds: selectedQuestionTimer,
@@ -414,19 +419,52 @@ export const LobbyScreen: React.FC = () => {
 
             <div className="space-y-4 mb-6">
               <div>
-                <label className="text-xs font-mono text-clutch-muted block mb-1.5">
-                  PLAYER CAPACITY
-                </label>
-                <select
-                  value={customMaxPlayers}
-                  onChange={(e) => setCustomMaxPlayers(Number(e.target.value))}
-                  className="w-full bg-clutch-surface-light border border-clutch-border text-clutch-lavender text-xs p-2.5 rounded-lg focus:outline-none focus:border-clutch-violet font-mono"
-                >
-                  <option value={2}>2 Combatants (1v1 Duel)</option>
-                  <option value={4}>4 Combatants (Squad Clash)</option>
-                  <option value={10}>10 Combatants (Party Blitz)</option>
-                  <option value={70}>70 Combatants (Grand Tournament)</option>
-                </select>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-mono text-clutch-muted block">
+                    PLAYER CAPACITY (EXACT LIMIT)
+                  </label>
+                  <span className="text-[11px] font-mono font-bold text-clutch-lavender px-2 py-0.5 rounded bg-clutch-violet/20 border border-clutch-violet/30">
+                    {customMaxPlayers === 2 ? '1v1 Duel' : `${customMaxPlayers} Players`}
+                  </span>
+                </div>
+
+                {/* Preset Pills */}
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 mb-2.5">
+                  {[2, 4, 8, 10, 20, 70].map((cap) => (
+                    <button
+                      key={cap}
+                      type="button"
+                      onClick={() => setCustomMaxPlayers(cap)}
+                      className={`py-2 px-1 rounded-lg border text-xs font-mono font-bold transition-all ${
+                        customMaxPlayers === cap
+                          ? 'border-clutch-violet bg-clutch-violet/30 text-white shadow-md shadow-clutch-violet/20'
+                          : 'border-clutch-border bg-clutch-surface-light text-clutch-muted hover:text-white hover:border-clutch-border/80'
+                      }`}
+                    >
+                      {cap === 2 ? '2 (1v1)' : `${cap}P`}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Direct Custom Number Input */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-clutch-muted whitespace-nowrap">Custom Limit:</span>
+                  <input
+                    type="number"
+                    min={2}
+                    max={100}
+                    value={customMaxPlayers}
+                    onChange={(e) => setCustomMaxPlayers(Math.max(2, Math.min(100, Number(e.target.value) || 2)))}
+                    className="flex-1 bg-clutch-surface-light border border-clutch-border text-white text-xs font-mono p-2 rounded-lg focus:outline-none focus:border-clutch-violet"
+                    placeholder="Enter limit (2 - 100)"
+                  />
+                </div>
+
+                <p className="text-[10px] font-mono text-clutch-muted mt-1.5">
+                  {customMaxPlayers === 2
+                    ? '🔒 1v1 Mode: Allows you and 1 opponent (or 1 AI bot). Strictly locks at 2 players.'
+                    : `🔒 Strict Capacity: Exactly ${customMaxPlayers} combatants allowed. Room rejects joiners once full.`}
+                </p>
               </div>
 
               <div>
