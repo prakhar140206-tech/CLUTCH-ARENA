@@ -542,7 +542,11 @@ class SocketService {
     const challenge = room.activeChallenge;
     const cleanAnswer = typeof payload.answer === 'string' ? payload.answer.trim().toLowerCase() : JSON.stringify(payload.answer);
     const cleanExpected = typeof challenge.correctAnswer === 'string' ? challenge.correctAnswer.trim().toLowerCase() : JSON.stringify(challenge.correctAnswer);
-    const isCorrect = cleanAnswer === cleanExpected;
+    const optIdx = challenge.options ? challenge.options.findIndex((o: string) => o.trim().toLowerCase() === cleanAnswer) : -1;
+    const letter = optIdx >= 0 ? String.fromCharCode(65 + optIdx).toLowerCase() : '';
+    const isCorrect = cleanAnswer === cleanExpected || 
+      (letter && (cleanExpected === letter || cleanExpected === `[${letter}]` || cleanExpected === `${letter})`)) ||
+      (cleanExpected.length > 5 && (cleanAnswer.includes(cleanExpected) || cleanExpected.includes(cleanAnswer)));
 
     const timeTakenMs = payload.timeTakenMs || 2500;
     const speedBonus = isCorrect ? Math.max(50, Math.floor(500 - timeTakenMs / 40)) : 0;
